@@ -1,0 +1,19 @@
+{
+  "pocketbase": {
+    "url": "https://your-pocketbase-instance.com",
+    "adminEmail": "admin@example.com",
+    "adminPassword": "your-admin-password"
+  },
+  "collections": {
+    "books": "books",
+    "votes": "votes"
+  },
+  "backup": {
+    "directory": "./data/backups",
+    "format": "json"
+  },
+  "export": {
+    "directory": "./data/exports",
+    "includeImages": true
+  }
+}

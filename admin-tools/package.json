@@ -1,0 +1,32 @@
+{
+  "name": "bookswipe-admin-tools",
+  "version": "1.0.0",
+  "description": "Admin tools for managing BookSwipe books and analyzing votes",
+  "main": "scripts/book-manager.js",
+  "type": "module",
+  "scripts": {
+    "import-books": "node scripts/import-books.js",
+    "export-books": "node scripts/export-books.js",
+    "analyze-votes": "node scripts/analyze-votes.js",
+    "backup-data": "node scripts/backup-data.js",
+    "setup": "node scripts/setup.js"
+  },
+  "keywords": [
+    "bookswipe",
+    "admin",
+    "pocketbase"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "pocketbase": "^0.21.3",
+    "csv-writer": "^1.6.0",
+    "csv-parser": "^3.0.0",
+    "chalk": "^5.3.0",
+    "inquirer": "^9.2.12",
+    "fs-extra": "^11.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0"
+  }
+}

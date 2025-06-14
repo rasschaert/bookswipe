@@ -1,0 +1,26 @@
+# Environment and secrets
+secrets.env
+.env
+.env.local
+
+# Admin tools node modules and config
+admin-tools/node_modules/
+admin-tools/.env
+admin-tools/config.json
+
+# Data files (optional - you might want to version control some)
+admin-tools/data/*.json
+admin-tools/data/*.csv
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*

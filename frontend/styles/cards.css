@@ -1,0 +1,355 @@
+/* Card Stack */
+.card-stack {
+  position: relative;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-height: 600px;
+  margin: 1rem 0;
+}
+
+/* Book Card */
+.book-card {
+  position: absolute;
+  width: 100%;
+  max-width: 320px;
+  background: var(--bg-primary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  cursor: grab;
+  user-select: none;
+  transform-origin: center center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.book-card:active {
+  cursor: grabbing;
+}
+
+.book-card.dragging {
+  transition: none;
+}
+
+.book-card.swiping-left {
+  transform: translateX(-100%) rotate(-30deg);
+  opacity: 0;
+}
+
+.book-card.swiping-right {
+  transform: translateX(100%) rotate(30deg);
+  opacity: 0;
+}
+
+/* Card stacking effect */
+.book-card:nth-child(1) {
+  z-index: 10;
+  transform: scale(1) translateY(0);
+}
+
+.book-card:nth-child(2) {
+  z-index: 9;
+  transform: scale(0.95) translateY(10px);
+  opacity: 0.8;
+}
+
+.book-card:nth-child(3) {
+  z-index: 8;
+  transform: scale(0.9) translateY(20px);
+  opacity: 0.6;
+}
+
+.book-card:nth-child(n + 4) {
+  z-index: 7;
+  transform: scale(0.85) translateY(30px);
+  opacity: 0.4;
+}
+
+/* Book Cover */
+.book-cover {
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 1rem;
+}
+
+.book-cover img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.book-cover.no-image {
+  background: linear-gradient(135deg, var(--primary-color), #8b5cf6);
+  color: white;
+  font-size: 1.125rem;
+  font-weight: 600;
+  text-align: center;
+  padding: 1rem;
+}
+
+/* Card Content */
+.card-content {
+  padding: 1.5rem;
+}
+
+.book-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+  color: var(--text-primary);
+}
+
+.book-author {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.book-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  color: var(--text-light);
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.meta-separator {
+  color: var(--border-color);
+}
+
+/* Genre Tags */
+.genre-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.genre-tag {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: var(--primary-color);
+  color: white;
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: lowercase;
+}
+
+.genre-tag:nth-child(2n) {
+  background: #8b5cf6;
+}
+
+.genre-tag:nth-child(3n) {
+  background: var(--success-color);
+}
+
+.genre-tag:nth-child(4n) {
+  background: var(--warning-color);
+}
+
+.genre-tag:nth-child(5n) {
+  background: #ef4444;
+}
+
+/* Book Synopsis */
+.book-synopsis {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+.synopsis-short {
+  display: block;
+}
+
+.synopsis-full {
+  display: none;
+}
+
+.synopsis-toggle {
+  color: var(--primary-color);
+  cursor: pointer;
+  font-weight: 500;
+  text-decoration: none;
+  font-size: 0.875rem;
+}
+
+.synopsis-toggle:hover {
+  text-decoration: underline;
+}
+
+/* Rating and Stats */
+.book-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+  font-size: 0.875rem;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--warning-color);
+  font-weight: 600;
+}
+
+.rating-stars {
+  color: var(--warning-color);
+}
+
+.vote-count {
+  color: var(--text-light);
+  font-size: 0.8rem;
+}
+
+/* Swipe Indicators */
+.swipe-indicator {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius-lg);
+  font-size: 1.5rem;
+  font-weight: 700;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 15;
+}
+
+.swipe-indicator.like {
+  right: 1rem;
+  background: var(--success-color);
+  color: white;
+  border: 3px solid white;
+}
+
+.swipe-indicator.pass {
+  left: 1rem;
+  background: var(--danger-color);
+  color: white;
+  border: 3px solid white;
+}
+
+.swipe-indicator.show {
+  opacity: 1;
+}
+
+/* Empty State */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-secondary);
+}
+
+.empty-state .empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.empty-state p {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Loading Card */
+.loading-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3rem 2rem;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-xl);
+  border: 2px dashed var(--border-color);
+}
+
+.loading-card .loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--border-color);
+  border-top: 3px solid var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 480px) {
+  .card-stack {
+    margin: 0.5rem 0;
+    max-height: 500px;
+  }
+
+  .book-card {
+    max-width: 100%;
+    margin: 0 0.5rem;
+  }
+
+  .book-cover {
+    height: 180px;
+  }
+
+  .card-content {
+    padding: 1.25rem;
+  }
+
+  .book-title {
+    font-size: 1.125rem;
+  }
+
+  .swipe-indicator {
+    padding: 0.75rem 1rem;
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-height: 600px) {
+  .card-stack {
+    max-height: 400px;
+  }
+
+  .book-cover {
+    height: 150px;
+  }
+
+  .card-content {
+    padding: 1rem;
+  }
+
+  .book-synopsis {
+    font-size: 0.85rem;
+  }
+}

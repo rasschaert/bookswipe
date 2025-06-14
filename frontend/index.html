@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BookSwipe - Tinder for Books</title>
+    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/cards.css" />
+    <link rel="stylesheet" href="styles/animations.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="app">
+      <!-- Loading Screen -->
+      <div id="loading-screen" class="screen active">
+        <div class="loading-content">
+          <h1>BookSwipe</h1>
+          <div class="loading-spinner"></div>
+          <p>Loading books...</p>
+        </div>
+      </div>
+
+      <!-- Welcome Screen -->
+      <div id="welcome-screen" class="screen">
+        <div class="welcome-content">
+          <h1>📚 BookSwipe</h1>
+          <p class="tagline">Swipe your way to your next great read</p>
+          <div class="instructions">
+            <div class="instruction-item">
+              <span class="swipe-icon">👉</span>
+              <span>Swipe right or tap ✅ if interested</span>
+            </div>
+            <div class="instruction-item">
+              <span class="swipe-icon">👈</span>
+              <span>Swipe left or tap ❌ if not interested</span>
+            </div>
+          </div>
+          <button id="start-btn" class="primary-btn">Start Swiping</button>
+        </div>
+      </div>
+
+      <!-- Main Voting Screen -->
+      <div id="voting-screen" class="screen">
+        <header class="app-header">
+          <h1>BookSwipe</h1>
+          <div class="progress-container">
+            <div class="progress-bar">
+              <div id="progress-fill" class="progress-fill"></div>
+            </div>
+            <span id="progress-text" class="progress-text">1 of 20</span>
+          </div>
+        </header>
+
+        <main class="voting-main">
+          <div id="card-stack" class="card-stack">
+            <!-- Book cards will be dynamically inserted here -->
+          </div>
+
+          <div class="action-buttons">
+            <button
+              id="reject-btn"
+              class="action-btn reject-btn"
+              title="Not interested"
+            >
+              <span class="btn-icon">❌</span>
+              <span class="btn-text">Pass</span>
+            </button>
+            <button
+              id="accept-btn"
+              class="action-btn accept-btn"
+              title="Interested"
+            >
+              <span class="btn-icon">✅</span>
+              <span class="btn-text">Like</span>
+            </button>
+          </div>
+        </main>
+      </div>
+
+      <!-- Results Screen -->
+      <div id="results-screen" class="screen">
+        <div class="results-content">
+          <h1>🎉 All Done!</h1>
+          <p class="results-summary">You've reviewed all the books</p>
+
+          <div id="results-stats" class="results-stats">
+            <div class="stat-item">
+              <span class="stat-number" id="liked-count">0</span>
+              <span class="stat-label">Books Liked</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number" id="passed-count">0</span>
+              <span class="stat-label">Books Passed</span>
+            </div>
+          </div>
+
+          <div class="user-input-section">
+            <label for="user-name">Your name (optional):</label>
+            <input type="text" id="user-name" placeholder="Enter your name" />
+          </div>
+
+          <div class="results-actions">
+            <button id="submit-votes-btn" class="primary-btn">
+              Submit My Votes
+            </button>
+            <button id="restart-btn" class="secondary-btn">Start Over</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Success Screen -->
+      <div id="success-screen" class="screen">
+        <div class="success-content">
+          <h1>✨ Thanks!</h1>
+          <p>Your votes have been submitted successfully.</p>
+          <p class="success-subtitle">
+            The book club organizers will use everyone's votes to pick the next
+            read!
+          </p>
+          <button id="done-btn" class="primary-btn">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="scripts/api.js"></script>
+    <script src="scripts/swipe-handler.js"></script>
+    <script src="scripts/app.js"></script>
+  </body>
+</html>
