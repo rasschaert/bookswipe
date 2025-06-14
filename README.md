@@ -2,6 +2,12 @@
 
 A "Tinder for Books" voting application for book clubs. Users swipe through book suggestions to indicate their reading preferences.
 
+## Demo
+
+![BookSwipe Demo](bookswipe-demo.gif)
+
+_Swipe through book suggestions just like Tinder! Swipe right to like, left to pass._
+
 ## Project Structure
 
 ```
@@ -140,6 +146,10 @@ This generates:
 - Console report with rankings
 - CSV export in `data/exports/`
 - Raw vote data for further analysis
+
+![Vote Analysis Report](vote_analysis_report.png)
+
+*Example of the detailed voting analysis report showing book rankings, participation stats, and controversial picks.*
 
 ## Admin Tools Usage
 
