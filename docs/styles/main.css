@@ -46,7 +46,7 @@ body {
 #app {
   position: relative;
   min-height: 100vh;
-  max-width: 480px;
+  max-width: min(600px, 100vw); /* Allow for larger cards on bigger screens */
   margin: 0 auto;
   background: var(--bg-primary);
   box-shadow: var(--shadow-xl);
@@ -419,12 +419,14 @@ body {
   }
 
   .action-buttons {
-    gap: 1.5rem;
+    gap: 2rem;
+    padding: 1rem;
   }
 
   .action-btn {
-    width: 70px;
-    height: 70px;
+    width: 80px;
+    height: 80px;
+    font-size: 1.1rem;
   }
 
   .results-stats {
@@ -438,7 +440,35 @@ body {
   .primary-btn,
   .secondary-btn {
     width: 100%;
-    max-width: 280px;
+    max-width: 320px;
+    padding: 1.25rem 2rem;
+    font-size: 1.1rem;
+  }
+}
+
+/* Tablet responsive */
+@media (min-width: 481px) and (max-width: 768px) {
+  #app {
+    max-width: 100%;
+    box-shadow: var(--shadow-xl);
+  }
+
+  .action-buttons {
+    gap: 2.5rem;
+    padding: 1.5rem;
+  }
+
+  .action-btn {
+    width: 90px;
+    height: 90px;
+    font-size: 1.2rem;
+  }
+
+  .primary-btn,
+  .secondary-btn {
+    max-width: 400px;
+    padding: 1.25rem 2.5rem;
+    font-size: 1.1rem;
   }
 }
 

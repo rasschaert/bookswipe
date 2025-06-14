@@ -12,12 +12,24 @@ class SwipeHandler {
     this.threshold = 80; // Minimum distance to trigger swipe
     this.rotationFactor = 0.1; // How much the card rotates while dragging
 
+    // Scroll detection properties
+    this.allowScrolling = false;
+    this.scrollStartTime = 0;
+    this.movementThreshold = 15; // Minimum movement to determine intent
+
+    // Debug mode - set to true for detailed logging
+    this.debug = false;
+
     this.init();
   }
 
   init() {
     this.bindEvents();
     this.setupKeyboardControls();
+
+    if (this.debug) {
+      console.log("🎮 SwipeHandler initialized with debug mode enabled");
+    }
   }
 
   bindEvents() {
@@ -32,11 +44,10 @@ class SwipeHandler {
       passive: false,
     });
 
-    // Mouse events for desktop
+    // Mouse events for desktop - bind to document for proper drag behavior
     this.cardStack.addEventListener("mousedown", this.handleStart.bind(this));
-    this.cardStack.addEventListener("mousemove", this.handleMove.bind(this));
-    this.cardStack.addEventListener("mouseup", this.handleEnd.bind(this));
-    this.cardStack.addEventListener("mouseleave", this.handleEnd.bind(this));
+    document.addEventListener("mousemove", this.handleMove.bind(this));
+    document.addEventListener("mouseup", this.handleEnd.bind(this));
 
     // Prevent context menu on long press
     this.cardStack.addEventListener("contextmenu", (e) => e.preventDefault());
@@ -66,31 +77,129 @@ class SwipeHandler {
       }
     });
   }
-
   handleStart(e) {
     const card = e.target.closest(".book-card");
     if (!card || !this.isTopCard(card)) return;
 
-    this.currentCard = card;
-    this.isDragging = true;
+    // Different behavior for touch vs mouse
+    const isTouch = e.type === "touchstart";
 
-    const point = e.touches ? e.touches[0] : e;
-    this.startX = point.clientX;
-    this.startY = point.clientY;
+    if (this.debug) {
+      console.log(
+        `🎮 handleStart: ${isTouch ? "touch" : "mouse"} event on card ${
+          card.dataset.bookId
+        }`,
+      );
+    }
 
-    card.classList.add("dragging");
-    card.style.cursor = "grabbing";
+    if (isTouch) {
+      // Touch: Check if we're starting in a scrollable content area
+      const cardContent = e.target.closest(".card-content");
+      const isInContent = cardContent && cardContent.contains(e.target);
 
-    // Prevent text selection
-    e.preventDefault();
+      // If we're in the content area and it's scrollable, be more permissive
+      if (isInContent && cardContent.scrollHeight > cardContent.clientHeight) {
+        this.allowScrolling = true;
+        this.scrollStartTime = Date.now();
+      } else {
+        this.allowScrolling = false;
+      }
+
+      this.currentCard = card;
+      this.isDragging = false; // Don't start dragging immediately on touch
+
+      const point = e.touches[0];
+      this.startX = point.clientX;
+      this.startY = point.clientY;
+
+      // Don't prevent default immediately - let scroll happen if needed
+      if (!this.allowScrolling) {
+        e.preventDefault();
+      }
+    } else {
+      // Mouse: Start dragging immediately (desktop behavior)
+      this.allowScrolling = false;
+      this.currentCard = card;
+      this.isDragging = true;
+
+      this.startX = e.clientX;
+      this.startY = e.clientY;
+
+      card.classList.add("dragging");
+      card.style.cursor = "grabbing";
+
+      if (this.debug) {
+        console.log(
+          `🖱️ Mouse drag started at (${this.startX}, ${this.startY})`,
+        );
+      }
+
+      e.preventDefault();
+    }
+
+    if (this.debug) {
+      console.log(
+        `🟢 handleStart: ${isTouch ? "Touch" : "Mouse"} drag started`,
+        {
+          card,
+          allowScrolling: this.allowScrolling,
+          startX: this.startX,
+          startY: this.startY,
+        },
+      );
+    }
   }
 
   handleMove(e) {
-    if (!this.isDragging || !this.currentCard) return;
+    if (!this.currentCard) return;
 
-    const point = e.touches ? e.touches[0] : e;
-    this.currentX = point.clientX - this.startX;
-    this.currentY = point.clientY - this.startY;
+    const isTouch = e.type === "touchmove";
+
+    // For mouse events, only process if we're actually dragging
+    if (!isTouch && !this.isDragging) return;
+
+    const point = isTouch ? e.touches[0] : e;
+    const deltaX = point.clientX - this.startX;
+    const deltaY = point.clientY - this.startY;
+
+    if (isTouch) {
+      // Touch: Use smart detection for scroll vs swipe
+      if (!this.isDragging) {
+        const horizontalMovement = Math.abs(deltaX);
+        const verticalMovement = Math.abs(deltaY);
+
+        // If we're in scroll mode and vertical movement is dominant, allow scrolling
+        if (
+          this.allowScrolling &&
+          verticalMovement > horizontalMovement &&
+          verticalMovement > this.movementThreshold
+        ) {
+          return; // Let browser handle scrolling
+        }
+
+        // If horizontal movement is dominant, start swiping
+        if (
+          horizontalMovement > this.movementThreshold &&
+          horizontalMovement > verticalMovement
+        ) {
+          this.isDragging = true;
+          this.currentCard.classList.add("dragging");
+          this.currentCard.style.cursor = "grabbing";
+          e.preventDefault();
+        } else if (
+          verticalMovement < this.movementThreshold &&
+          horizontalMovement < this.movementThreshold
+        ) {
+          return; // Not enough movement to determine intent
+        }
+      }
+    }
+
+    // Both touch (after intent determined) and mouse: Handle dragging
+    if (!this.isDragging) return;
+
+    this.currentX = deltaX;
+    this.currentY = deltaY;
 
     const rotation = this.currentX * this.rotationFactor;
     const opacity = Math.max(0.7, 1 - Math.abs(this.currentX) / 300);
@@ -103,10 +212,34 @@ class SwipeHandler {
     this.updateSwipeIndicators();
 
     e.preventDefault();
+
+    if (this.debug) {
+      console.log("🔄 handleMove: Dragging in progress", {
+        currentX: this.currentX,
+        currentY: this.currentY,
+        rotation,
+        opacity,
+      });
+    }
   }
 
   handleEnd(e) {
-    if (!this.isDragging || !this.currentCard) return;
+    if (!this.currentCard) return;
+
+    const isTouch = e.type === "touchend";
+
+    // For mouse events, only process if we were actually dragging
+    if (!isTouch && !this.isDragging) return;
+
+    // Reset scroll state
+    this.allowScrolling = false;
+    this.scrollStartTime = 0;
+
+    if (!this.isDragging) {
+      // If we never started dragging, reset and exit
+      this.currentCard = null;
+      return;
+    }
 
     this.isDragging = false;
     const card = this.currentCard;
@@ -130,6 +263,14 @@ class SwipeHandler {
     this.currentCard = null;
     this.currentX = 0;
     this.currentY = 0;
+
+    if (this.debug) {
+      console.log("🏁 handleEnd: Dragging ended", {
+        distance,
+        direction,
+        threshold: this.threshold,
+      });
+    }
   }
 
   updateSwipeIndicators() {
@@ -194,6 +335,10 @@ class SwipeHandler {
       }
       this.updateCardStack();
     }, 300);
+
+    if (this.debug) {
+      console.log(`✅ completeSwipe: Card swiped ${direction}`, { bookId });
+    }
   }
 
   resetCard() {
@@ -211,6 +356,10 @@ class SwipeHandler {
         this.currentCard.style.transition = "";
       }
     }, 300);
+
+    if (this.debug) {
+      console.log("🔄 resetCard: Card position reset");
+    }
   }
 
   triggerSwipe(direction) {
@@ -219,6 +368,10 @@ class SwipeHandler {
 
     this.currentCard = topCard;
     this.completeSwipe(direction);
+
+    if (this.debug) {
+      console.log(`➡️ triggerSwipe: Swipe triggered ${direction} on top card`);
+    }
   }
 
   isTopCard(card) {
@@ -265,12 +418,26 @@ class SwipeHandler {
     if (cards.length === 0 && this.callbacks.onEmpty) {
       this.callbacks.onEmpty();
     }
+
+    if (this.debug) {
+      console.log("🔄 updateCardStack: Card stack updated", {
+        cardCount: cards.length,
+        topCard: this.currentCard ? this.currentCard.dataset.bookId : null,
+      });
+    }
   }
 
   // Public method to add a new card
   addCard(cardElement) {
     this.cardStack.appendChild(cardElement);
     this.updateCardStack();
+
+    if (this.debug) {
+      console.log("➕ addCard: New card added", {
+        cardId: cardElement.dataset.bookId,
+        remainingCount: this.getRemainingCount(),
+      });
+    }
   }
 
   // Public method to get remaining card count
@@ -284,6 +451,12 @@ class SwipeHandler {
     this.isDragging = false;
     this.currentX = 0;
     this.currentY = 0;
+    this.allowScrolling = false;
+    this.scrollStartTime = 0;
+
+    if (this.debug) {
+      console.log("🔄 reset: Handler state reset");
+    }
   }
 
   // Destroy the handler (cleanup)
@@ -293,8 +466,11 @@ class SwipeHandler {
     this.cardStack.removeEventListener("touchmove", this.handleMove);
     this.cardStack.removeEventListener("touchend", this.handleEnd);
     this.cardStack.removeEventListener("mousedown", this.handleStart);
-    this.cardStack.removeEventListener("mousemove", this.handleMove);
-    this.cardStack.removeEventListener("mouseup", this.handleEnd);
-    this.cardStack.removeEventListener("mouseleave", this.handleEnd);
+    document.removeEventListener("mousemove", this.handleMove);
+    document.removeEventListener("mouseup", this.handleEnd);
+
+    if (this.debug) {
+      console.log("🛠️ destroy: Handler destroyed and event listeners removed");
+    }
   }
 }
