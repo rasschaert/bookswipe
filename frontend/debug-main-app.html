@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Debug Main App Logic</title>
+  </head>
+  <body>
+    <h1>Debug Main App Logic</h1>
+    <div id="status">Testing...</div>
+    <div id="console"></div>
+
+    <script>
+      const logElement = document.getElementById("console");
+      const statusElement = document.getElementById("status");
+
+      function log(message) {
+        console.log(message);
+        logElement.innerHTML += `<p>${message}</p>`;
+      }
+
+      function setStatus(message) {
+        statusElement.textContent = message;
+      }
+
+      // Copy the exact API class from the main app
+      class BookSwipeAPI {
+        constructor() {
+          this.baseURL = "https://adaptable-oxpecker.pikapod.net";
+          this.pb = null;
+          this.initialized = false;
+        }
+
+        async init() {
+          if (this.initialized) return;
+
+          try {
+            if (typeof PocketBase === "undefined") {
+              await this.loadPocketBaseSDK();
+            }
+            this.pb = new PocketBase(this.baseURL);
+            this.initialized = true;
+            log("✅ PocketBase API initialized");
+          } catch (error) {
+            log(`❌ Failed to initialize PocketBase API: ${error.message}`);
+            throw error;
+          }
+        }
+
+        async loadPocketBaseSDK() {
+          return new Promise((resolve, reject) => {
+            const script = document.createElement("script");
+            script.src =
+              "https://cdn.jsdelivr.net/npm/pocketbase@0.21.3/dist/pocketbase.umd.js";
+            script.onload = () => {
+              log("✅ PocketBase SDK loaded from CDN");
+              resolve();
+            };
+            script.onerror = (error) => {
+              log(`❌ Failed to load PocketBase SDK: ${error}`);
+              reject(error);
+            };
+            document.head.appendChild(script);
+          });
+        }
+
+        async getBooks() {
+          if (!this.initialized || !this.pb) {
+            throw new Error(
+              "PocketBase API not initialized. Call init() first."
+            );
+          }
+
+          try {
+            const records = await this.pb.collection("books").getFullList({
+              sort: "+created",
+            });
+            log(`📚 Fetched ${records.length} books from PocketBase`);
+            return records;
+          } catch (error) {
+            log(`❌ Failed to fetch books: ${error.message}`);
+            throw new Error(`Failed to fetch books: ${error.message}`);
+          }
+        }
+
+        async testConnection() {
+          await this.pb.health.check();
+          return true;
+        }
+      }
+
+      async function testMainAppFlow() {
+        try {
+          setStatus("Step 1: Creating API instance...");
+          const bookSwipeAPI = new BookSwipeAPI();
+          log("✅ API instance created");
+
+          setStatus("Step 2: Initializing API...");
+          await bookSwipeAPI.init();
+          log("✅ API initialized");
+
+          setStatus("Step 3: Testing connection...");
+          await bookSwipeAPI.testConnection();
+          log("✅ Connection test passed");
+
+          setStatus("Step 4: Loading books...");
+          const books = await bookSwipeAPI.getBooks();
+          log(`✅ Loaded ${books.length} books`);
+
+          if (books.length > 0) {
+            log(`First book: ${books[0].title} by ${books[0].author}`);
+          }
+
+          setStatus("✅ All tests passed - Main app flow should work!");
+        } catch (error) {
+          log(`❌ Main app flow failed: ${error.message}`);
+          log(`Stack trace: ${error.stack}`);
+          setStatus(`❌ Failed at: ${error.message}`);
+
+          // Try to get more specific error info
+          if (error.message.includes("PocketBase")) {
+            log("🔍 This is a PocketBase-specific error");
+          }
+          if (error.message.includes("fetch")) {
+            log("🔍 This is a network/fetch error");
+          }
+        }
+      }
+
+      testMainAppFlow();
+    </script>
+  </body>
+</html>

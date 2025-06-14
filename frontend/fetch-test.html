@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Fetch Test</title>
+  </head>
+  <body>
+    <h1>Simple Fetch Test</h1>
+    <div id="status">Testing...</div>
+    <div id="console"></div>
+
+    <script>
+      const logElement = document.getElementById("console");
+      const statusElement = document.getElementById("status");
+
+      function log(message) {
+        console.log(message);
+        logElement.innerHTML += `<p>${message}</p>`;
+      }
+
+      function setStatus(message) {
+        statusElement.textContent = message;
+      }
+
+      async function testFetch() {
+        try {
+          setStatus("Testing basic fetch...");
+
+          const response = await fetch(
+            "https://adaptable-oxpecker.pikapod.net/api/health"
+          );
+          log(`Health fetch status: ${response.status}`);
+          const healthText = await response.text();
+          log(`Health response: ${healthText}`);
+
+          setStatus("Testing books API...");
+          const booksResponse = await fetch(
+            "https://adaptable-oxpecker.pikapod.net/api/collections/books/records?perPage=1"
+          );
+          log(`Books fetch status: ${booksResponse.status}`);
+
+          if (booksResponse.ok) {
+            const booksData = await booksResponse.json();
+            log(`Books data: ${JSON.stringify(booksData, null, 2)}`);
+          } else {
+            log(`Books fetch failed: ${booksResponse.statusText}`);
+          }
+
+          setStatus("✅ Fetch tests completed");
+        } catch (error) {
+          log(`❌ Fetch error: ${error.message}`);
+          setStatus(`❌ Failed: ${error.message}`);
+        }
+      }
+
+      testFetch();
+    </script>
+  </body>
+</html>

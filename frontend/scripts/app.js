@@ -6,6 +6,7 @@ class BookSwipeApp {
     this.userVotes = {};
     this.swipeHandler = null;
     this.isLoading = false;
+    this.highestLoadedBookIndex = -1; // Track the highest book index that has been loaded
 
     this.init();
   }
@@ -19,6 +20,11 @@ class BookSwipeApp {
     try {
       // Initialize PocketBase connection
       await bookSwipeAPI.init();
+
+      // Test the connection first
+      console.log("🔍 Testing PocketBase connection...");
+      await bookSwipeAPI.testConnection();
+      console.log("✅ PocketBase connection successful");
 
       // Load books
       await this.loadBooks();
@@ -37,12 +43,15 @@ class BookSwipeApp {
       }, 1500);
     } catch (error) {
       console.error("❌ Failed to initialize BookSwipe:", error);
+      console.error("❌ Error message:", error.message);
+      console.error("❌ Error stack:", error.stack);
 
       if (error.message.includes("No books available")) {
         this.showError("No books available to vote on.");
       } else if (
         error.message.includes("Failed to fetch") ||
-        error.message.includes("404")
+        error.message.includes("404") ||
+        error.message.includes("Direct fetch failed")
       ) {
         this.showError(
           'Cannot connect to PocketBase. Please check:\n\n1. PocketBase is running at https://adaptable-oxpecker.pikapod.net\n2. The "books" collection exists\n3. API rules allow public access'
@@ -139,6 +148,10 @@ class BookSwipeApp {
       if (bookIndex < this.books.length) {
         const card = this.createBookCard(this.books[bookIndex]);
         cardStack.appendChild(card);
+        this.highestLoadedBookIndex = Math.max(
+          this.highestLoadedBookIndex,
+          bookIndex
+        );
       }
     }
 
@@ -158,12 +171,12 @@ class BookSwipeApp {
 
     // Truncate synopsis for preview
     const shortSynopsis =
-      book.synopsis.length > 150
+      book.synopsis && book.synopsis.length > 150
         ? book.synopsis.substring(0, 150) + "..."
-        : book.synopsis;
+        : book.synopsis || "No synopsis available.";
 
-    // Generate genre tags HTML
-    const genreTags = book.genre_tags
+    // Generate genre tags HTML - handle potential null/undefined
+    const genreTags = (book.genre_tags || [])
       .slice(0, 6) // Limit to 6 tags
       .map((tag) => `<span class="genre-tag">${tag}</span>`)
       .join("");
@@ -172,24 +185,35 @@ class BookSwipeApp {
             <div class="swipe-indicator like">LIKE</div>
             <div class="swipe-indicator pass">PASS</div>
 
-            <div class="book-cover">
-                ${
-                  book.cover_image_url
-                    ? `<img src="${book.cover_image_url}" alt="${book.title} cover" loading="lazy" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">`
-                    : `<div class="no-image">📚<br>${book.title}</div>`
-                }
+            <div class="book-header">
+                <div class="book-cover">
+                    ${
+                      book.cover_image_url
+                        ? `<img src="${book.cover_image_url}" alt="${book.title} cover" loading="lazy" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">`
+                        : `<div class="no-image">📚<br>${book.title.substring(
+                            0,
+                            20
+                          )}</div>`
+                    }
+                </div>
+                
+                <div class="book-header-info">
+                    <h2 class="book-title">${book.title}</h2>
+                    <p class="book-author">by ${book.author}</p>
+                    
+                    <div class="book-meta">
+                        <span class="meta-item">📄 ${
+                          book.page_count || "Unknown"
+                        } pages</span>
+                        <span class="meta-separator">•</span>
+                        <span class="meta-item">📅 ${
+                          book.publication_year || "Unknown"
+                        }</span>
+                    </div>
+                </div>
             </div>
 
             <div class="card-content">
-                <h2 class="book-title">${book.title}</h2>
-                <p class="book-author">by ${book.author}</p>
-
-                <div class="book-meta">
-                    <span class="meta-item">📄 ${book.page_count} pages</span>
-                    <span class="meta-separator">•</span>
-                    <span class="meta-item">📅 ${book.publication_year}</span>
-                </div>
-
                 <div class="genre-tags">
                     ${genreTags}
                 </div>
@@ -197,7 +221,7 @@ class BookSwipeApp {
                 <div class="book-synopsis">
                     <div class="synopsis-short">${shortSynopsis}</div>
                     ${
-                      book.synopsis.length > 150
+                      book.synopsis && book.synopsis.length > 150
                         ? `
                         <div class="synopsis-full" style="display: none;">${book.synopsis}</div>
                         <a href="#" class="synopsis-toggle">Read more</a>
@@ -249,19 +273,29 @@ class BookSwipeApp {
     // Move to next book
     this.currentBookIndex++;
 
-    // Load more cards if needed
-    if (this.currentBookIndex % 3 === 0) {
-      // Load new cards every 3 swipes
-      setTimeout(() => {
-        this.loadMoreCards();
-      }, 300);
-    }
+    // Debug logging
+    console.log(
+      `🔍 Debug: currentBookIndex=${this.currentBookIndex}, total books=${
+        this.books.length
+      }, votes recorded=${Object.keys(this.userVotes).length}`
+    );
+
+    // Load more cards if needed - check after every swipe
+    setTimeout(() => {
+      this.loadMoreCards();
+    }, 300);
 
     // Update progress
     this.updateProgress();
 
     // Check if we've reviewed all books
-    if (this.currentBookIndex >= this.books.length) {
+    // We're done when we've voted on all books (not just when currentBookIndex >= books.length)
+    if (Object.keys(this.userVotes).length >= this.books.length) {
+      console.log(
+        `🏁 Triggering end: voted on ${
+          Object.keys(this.userVotes).length
+        } out of ${this.books.length} books`
+      );
       setTimeout(() => {
         this.handleAllBooksReviewed();
       }, 500);
@@ -270,22 +304,41 @@ class BookSwipeApp {
 
   loadMoreCards() {
     const cardStack = document.getElementById("card-stack");
-    const remainingBooks = this.books.length - this.currentBookIndex;
     const currentCards = cardStack.children.length;
 
-    // Add more cards if we have remaining books and fewer than 3 cards
+    // Calculate next book index to load (one after the highest loaded)
+    const nextBookIndex = this.highestLoadedBookIndex + 1;
+    const remainingBooks = this.books.length - nextBookIndex;
+
+    console.log(
+      `🔄 loadMoreCards: currentBookIndex=${this.currentBookIndex}, currentCards=${currentCards}, nextBookIndex=${nextBookIndex}, remainingBooks=${remainingBooks}`
+    );
+
+    // Add more cards if we have remaining books and fewer than 3 cards visible
     if (remainingBooks > 0 && currentCards < 3) {
-      const cardsToAdd = Math.min(2, remainingBooks);
+      const cardsToAdd = Math.min(3 - currentCards, remainingBooks);
+      console.log(`➕ Adding ${cardsToAdd} cards`);
 
       for (let i = 0; i < cardsToAdd; i++) {
-        const bookIndex = this.currentBookIndex + currentCards + i;
+        const bookIndex = nextBookIndex + i;
         if (bookIndex < this.books.length) {
+          console.log(
+            `📖 Loading book ${bookIndex}: ${this.books[bookIndex].title}`
+          );
           const card = this.createBookCard(this.books[bookIndex]);
           cardStack.appendChild(card);
+          this.highestLoadedBookIndex = Math.max(
+            this.highestLoadedBookIndex,
+            bookIndex
+          );
         }
       }
 
       this.swipeHandler?.updateCardStack();
+    } else {
+      console.log(
+        `⏹️ Not loading cards: remainingBooks=${remainingBooks}, currentCards=${currentCards}`
+      );
     }
   }
 
@@ -389,6 +442,7 @@ class BookSwipeApp {
     // Reset state
     this.currentBookIndex = 0;
     this.userVotes = {};
+    this.highestLoadedBookIndex = -1;
 
     // Clear card stack
     const cardStack = document.getElementById("card-stack");

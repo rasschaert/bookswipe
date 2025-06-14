@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Debug PocketBase Connection</title>
+  </head>
+  <body>
+    <h1>Debug PocketBase Connection</h1>
+    <div id="status">Testing...</div>
+    <div id="console"></div>
+
+    <script>
+      const logElement = document.getElementById("console");
+      const statusElement = document.getElementById("status");
+
+      function log(message) {
+        console.log(message);
+        logElement.innerHTML += `<p>${message}</p>`;
+      }
+
+      function setStatus(message) {
+        statusElement.textContent = message;
+      }
+
+      async function debugPocketBase() {
+        try {
+          setStatus("Loading PocketBase SDK...");
+
+          // Load PocketBase SDK
+          const script = document.createElement("script");
+          script.src =
+            "https://cdn.jsdelivr.net/npm/pocketbase@0.21.3/dist/pocketbase.umd.js";
+
+          await new Promise((resolve, reject) => {
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
+          });
+
+          log("✅ PocketBase SDK loaded successfully");
+
+          setStatus("Connecting to PocketBase...");
+          const pb = new PocketBase("https://adaptable-oxpecker.pikapod.net");
+
+          log("✅ PocketBase instance created");
+
+          setStatus("Testing connection...");
+          const health = await pb.health.check();
+          log(`✅ Health check: ${JSON.stringify(health)}`);
+
+          setStatus("Fetching books...");
+          const records = await pb.collection("books").getList(1, 5);
+          log(`✅ Books fetched: ${records.items.length} books found`);
+          log(`First book: ${records.items[0]?.title || "None"}`);
+
+          setStatus("✅ All tests passed!");
+        } catch (error) {
+          log(`❌ Error: ${error.message}`);
+          log(`Stack: ${error.stack}`);
+          setStatus(`❌ Failed: ${error.message}`);
+        }
+      }
+
+      debugPocketBase();
+    </script>
+  </body>
+</html>

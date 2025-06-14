@@ -3,15 +3,25 @@ class BookSwipeAPI {
   constructor() {
     this.baseURL = "https://adaptable-oxpecker.pikapod.net";
     this.pb = null;
-    this.init();
+    this.initialized = false;
+    // Don't call init() in constructor - it's async and should be called explicitly
   }
 
   async init() {
-    // Import PocketBase SDK dynamically
-    if (typeof PocketBase === "undefined") {
-      await this.loadPocketBaseSDK();
+    if (this.initialized) return;
+
+    try {
+      // Import PocketBase SDK dynamically
+      if (typeof PocketBase === "undefined") {
+        await this.loadPocketBaseSDK();
+      }
+      this.pb = new PocketBase(this.baseURL);
+      this.initialized = true;
+      console.log("✅ PocketBase API initialized");
+    } catch (error) {
+      console.error("❌ Failed to initialize PocketBase API:", error);
+      throw error;
     }
-    this.pb = new PocketBase(this.baseURL);
   }
 
   async loadPocketBaseSDK() {
@@ -19,18 +29,34 @@ class BookSwipeAPI {
       const script = document.createElement("script");
       script.src =
         "https://cdn.jsdelivr.net/npm/pocketbase@0.21.3/dist/pocketbase.umd.js";
-      script.onload = resolve;
-      script.onerror = reject;
+      script.onload = () => {
+        console.log("✅ PocketBase SDK loaded from CDN");
+        resolve();
+      };
+      script.onerror = (error) => {
+        console.error("❌ Failed to load PocketBase SDK:", error);
+        reject(error);
+      };
       document.head.appendChild(script);
     });
   }
 
   // Fetch all books from the database
   async getBooks() {
-    const records = await this.pb.collection("books").getFullList({
-      sort: "+created",
-    });
-    return records;
+    if (!this.initialized || !this.pb) {
+      throw new Error("PocketBase API not initialized. Call init() first.");
+    }
+
+    try {
+      const records = await this.pb.collection("books").getFullList({
+        sort: "+created",
+      });
+      console.log(`📚 Fetched ${records.length} books from PocketBase`);
+      return records;
+    } catch (error) {
+      console.error("❌ Failed to fetch books:", error);
+      throw new Error(`Failed to fetch books: ${error.message}`);
+    }
   }
 
   // Submit user votes
@@ -61,8 +87,20 @@ class BookSwipeAPI {
 
   // Check if PocketBase is accessible
   async testConnection() {
-    await this.pb.health.check();
-    return true;
+    try {
+      console.log("🔍 Testing PocketBase health endpoint...");
+      const health = await this.pb.health.check();
+      console.log("✅ PocketBase health check successful:", health);
+      return true;
+    } catch (error) {
+      console.error("❌ PocketBase health check failed:", error);
+      console.error("Error details:", {
+        message: error.message,
+        status: error.status,
+        data: error.data,
+      });
+      throw error;
+    }
   }
 
   // Calculate reading time based on page count
