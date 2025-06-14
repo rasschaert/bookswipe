@@ -6,8 +6,11 @@ A "Tinder for Books" voting application for book clubs. Users swipe through book
 
 ```
 bookswipe/
-├── frontend/                  # 🌐 Deployable web application
-│   ├── index.html            # Main application
+├── docs/                     # 🌐 Deployable web application
+│   ├3. Go to Settings → Pages
+4. Set source to "Deploy from a folder"
+5. Select `/docs` as the folder
+6. Your app will be available at `username.github.io/bookswipe`ndex.html            # Main application
 │   ├── styles/               # CSS files
 │   └── scripts/              # JavaScript files
 │
@@ -106,7 +109,7 @@ Select "Sample classics" when prompted.
 ### Step 4: Set Up the Frontend
 
 1. **Update the frontend configuration:**
-   Edit `frontend/scripts/api.js` and update the PocketBase URL:
+   Edit `docs/scripts/api.js` and update the PocketBase URL:
 
    ```javascript
    const POCKETBASE_URL = "http://127.0.0.1:8090"; // Your PocketBase URL
@@ -115,7 +118,7 @@ Select "Sample classics" when prompted.
 2. **Test locally:**
 
    ```bash
-   cd frontend
+   cd docs
    python -m http.server 8000
    # Visit http://localhost:8000
    ```
@@ -145,8 +148,6 @@ This generates:
 npm run setup          # Initial configuration
 npm run import-books    # Interactive book importer
 npm run analyze-votes   # Generate voting reports
-npm run export-books    # Export current books to JSON
-npm run backup-data     # Backup all collections
 ```
 
 ### Book Data Format
@@ -260,12 +261,12 @@ Both collections are configured with:
 
 **Any Static Host:**
 
-- Upload contents of `frontend/` folder
+- Upload contents of `docs/` folder
 - Ensure `index.html` is served at root
 
 ### Environment Variables
 
-Update `frontend/scripts/api.js` if your PocketBase URL changes:
+Update `docs/scripts/api.js` if your PocketBase URL changes:
 
 ```javascript
 const POCKETBASE_URL = "https://your-pocketbase-url.com";
@@ -287,18 +288,16 @@ const POCKETBASE_URL = "https://your-pocketbase-url.com";
 
 ### Updating Frontend
 
-1. Modify files in `frontend/`
+1. Modify files in `docs/`
 2. Test locally
 3. Deploy updated folder to your host
 
-### Backing Up Data
+### Data Management
 
 ```bash
 cd admin-tools
-npm run backup-data
+# Manage your book data and analyze votes
 ```
-
-Creates timestamped backups of all collections.
 
 ## Troubleshooting
 
@@ -311,7 +310,7 @@ Creates timestamped backups of all collections.
 
 ### "The frontend shows 'Failed to fetch books'"
 
-1. **Update the frontend config:** Edit `frontend/scripts/api.js` with your PocketBase URL
+1. **Update the frontend config:** Edit `docs/scripts/api.js` with your PocketBase URL
 2. **Check PocketBase is running:** Visit your PocketBase URL in a browser
 3. **Verify collections exist:** Run `npm run setup` in admin-tools to ensure collections are created
 4. **Check API permissions:** The setup script configures proper permissions automatically
@@ -325,7 +324,7 @@ Creates timestamped backups of all collections.
 ### "I imported books but they don't show up in the frontend"
 
 1. **Check PocketBase admin UI:** Look at your `books` collection - are the books there?
-2. **Verify frontend configuration:** Make sure `frontend/scripts/api.js` has the right URL
+2. **Verify frontend configuration:** Make sure `docs/scripts/api.js` has the right URL
 3. **Check browser console:** Open browser dev tools and look for error messages
 
 ### "Vote analysis shows no data"

@@ -12,6 +12,9 @@ admin-tools/config.json
 admin-tools/data/*.json
 admin-tools/data/*.csv
 
+# Debug and test files
+docs/debug-tools/
+
 # IDE files
 .vscode/
 .idea/

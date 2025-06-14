@@ -6,9 +6,7 @@
   "type": "module",
   "scripts": {
     "import-books": "node scripts/import-books.js",
-    "export-books": "node scripts/export-books.js",
     "analyze-votes": "node scripts/analyze-votes.js",
-    "backup-data": "node scripts/backup-data.js",
     "setup": "node scripts/setup.js"
   },
   "keywords": [
