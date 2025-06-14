@@ -267,7 +267,7 @@ Both collections are configured with:
 1. Push your repo to GitHub
 2. Go to Settings → Pages
 3. Set source to "Deploy from a folder"
-4. Select `/frontend` as the folder
+4. Select `/docs` as the folder
 5. Your app will be available at `username.github.io/bookswipe`
 
 **Any Static Host:**
@@ -309,54 +309,6 @@ const POCKETBASE_URL = "https://your-pocketbase-url.com";
 cd admin-tools
 # Manage your book data and analyze votes
 ```
-
-## Troubleshooting
-
-### "I have PocketBase running but the admin tools won't connect"
-
-1. **Check your PocketBase URL:** Make sure it matches what you see in your browser
-2. **Verify admin credentials:** Try logging into the PocketBase admin UI manually
-3. **Check your config.json:** Make sure you copied and edited it correctly
-4. **Look for error messages:** Run `npm run setup` and read any error output carefully
-
-### "The frontend shows 'Failed to fetch books'"
-
-1. **Update the frontend config:** Edit `docs/scripts/api.js` with your PocketBase URL
-2. **Check PocketBase is running:** Visit your PocketBase URL in a browser
-3. **Verify collections exist:** Run `npm run setup` in admin-tools to ensure collections are created
-4. **Check API permissions:** The setup script configures proper permissions automatically
-
-### "npm run import-books says 'No books found'"
-
-1. **Install dependencies first:** Run `npm install` in the admin-tools directory
-2. **Check your JSON format:** Make sure your book files match the expected format
-3. **Verify PocketBase connection:** Run `npm run setup` first to test connectivity
-
-### "I imported books but they don't show up in the frontend"
-
-1. **Check PocketBase admin UI:** Look at your `books` collection - are the books there?
-2. **Verify frontend configuration:** Make sure `docs/scripts/api.js` has the right URL
-3. **Check browser console:** Open browser dev tools and look for error messages
-
-### "Vote analysis shows no data"
-
-1. **Make sure people have voted:** The frontend needs to submit votes first
-2. **Check the votes collection:** Look in PocketBase admin to see if votes are being saved
-3. **Verify collection permissions:** The `votes` collection needs public create access
-
-### Still having issues?
-
-1. **Check the browser console:** Error messages often appear in the developer tools
-2. **Look at PocketBase logs:** PocketBase usually shows helpful error messages
-3. **Verify Node.js version:** Make sure you have Node.js v16 or higher
-4. **Try the sample data first:** Use the included sample books to test everything works
-
-## Browser Support
-
-- Chrome 80+
-- Firefox 75+
-- Safari 13+
-- Edge 80+
 
 ## License
 
