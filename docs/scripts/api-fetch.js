@@ -31,12 +31,12 @@ class BookSwipeAPI {
 
     try {
       const response = await fetch(
-        `${this.baseURL}/api/collections/books/records`
+        `${this.baseURL}/api/collections/books/records`,
       );
 
       if (!response.ok) {
         throw new Error(
-          `Failed to fetch books: ${response.status} ${response.statusText}`
+          `Failed to fetch books: ${response.status} ${response.statusText}`,
         );
       }
 
@@ -68,12 +68,12 @@ class BookSwipeAPI {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
-        }
+        },
       );
 
       if (!response.ok) {
         throw new Error(
-          `Failed to submit votes: ${response.status} ${response.statusText}`
+          `Failed to submit votes: ${response.status} ${response.statusText}`,
         );
       }
 

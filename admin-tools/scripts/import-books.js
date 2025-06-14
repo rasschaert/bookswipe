@@ -56,7 +56,7 @@ async function handleImport(manager) {
   if (jsonFiles.length === 0) {
     console.log(chalk.yellow("⚠️  No JSON files found in admin-tools/data/"));
     console.log(
-      chalk.gray("Place your book JSON files in the data/ directory first.")
+      chalk.gray("Place your book JSON files in the data/ directory first."),
     );
     return;
   }
@@ -103,8 +103,8 @@ async function handleImport(manager) {
 
     console.log(
       chalk.blue(
-        `\n📖 Preview: Found ${count} book(s) in ${path.basename(filePath)}`
-      )
+        `\n📖 Preview: Found ${count} book(s) in ${path.basename(filePath)}`,
+      ),
     );
 
     if (Array.isArray(data) && data.length > 0) {
@@ -146,7 +146,7 @@ async function handleClear(manager) {
       type: "confirm",
       name: "confirm",
       message: chalk.red(
-        `⚠️  Delete ALL ${books.length} books? This cannot be undone!`
+        `⚠️  Delete ALL ${books.length} books? This cannot be undone!`,
       ),
       default: false,
     },

@@ -85,6 +85,7 @@ Follow these steps in order. If you get stuck, see the [Troubleshooting](#troubl
    ```
 
    This will:
+
    - Connect to your PocketBase instance
    - Automatically create the `books` and `votes` collections with proper schemas
    - Set up the correct API permissions

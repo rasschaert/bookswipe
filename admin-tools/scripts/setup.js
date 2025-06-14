@@ -112,7 +112,7 @@ async function ensureCollections(pb) {
       console.log(chalk.green("✅ Created books collection"));
     } catch (createError) {
       console.log(
-        chalk.red("❌ Failed to create books collection:", createError.message)
+        chalk.red("❌ Failed to create books collection:", createError.message),
       );
     }
   }
@@ -127,7 +127,7 @@ async function ensureCollections(pb) {
       console.log(chalk.green("✅ Created votes collection"));
     } catch (createError) {
       console.log(
-        chalk.red("❌ Failed to create votes collection:", createError.message)
+        chalk.red("❌ Failed to create votes collection:", createError.message),
       );
     }
   }
@@ -159,7 +159,7 @@ async function setup() {
     } else {
       // Get new configuration from user
       console.log(
-        chalk.blue("📝 Let's configure your PocketBase connection:\n")
+        chalk.blue("📝 Let's configure your PocketBase connection:\n"),
       );
 
       const answers = await inquirer.prompt([
@@ -287,7 +287,7 @@ async function setup() {
       .collection("_superusers")
       .authWithPassword(
         config.pocketbase.adminEmail,
-        config.pocketbase.adminPassword
+        config.pocketbase.adminPassword,
       );
 
     console.log(chalk.green("✅ Connection successful!"));
@@ -302,7 +302,7 @@ async function setup() {
   console.log(chalk.blue.bold("\n🎉 Setup complete!"));
   console.log(chalk.gray("\nNext steps:"));
   console.log(
-    chalk.gray("1. Make sure your PocketBase collections are set up")
+    chalk.gray("1. Make sure your PocketBase collections are set up"),
   );
   console.log(chalk.gray("2. Run: npm run import-books"));
   console.log(chalk.gray("3. Run: npm run analyze-votes"));

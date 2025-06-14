@@ -22,8 +22,8 @@ class BookManager {
     } catch (error) {
       console.error(
         chalk.red(
-          "❌ Config file not found. Copy config.example.json to config.json and update it."
-        )
+          "❌ Config file not found. Copy config.example.json to config.json and update it.",
+        ),
       );
       process.exit(1);
     }
@@ -36,12 +36,12 @@ class BookManager {
         .collection("_superusers")
         .authWithPassword(
           this.config.pocketbase.adminEmail,
-          this.config.pocketbase.adminPassword
+          this.config.pocketbase.adminPassword,
         );
       console.log(chalk.green("✅ Connected to PocketBase as admin"));
     } catch (error) {
       console.error(
-        chalk.red("❌ Failed to authenticate with PocketBase:", error.message)
+        chalk.red("❌ Failed to authenticate with PocketBase:", error.message),
       );
       process.exit(1);
     }
@@ -57,10 +57,10 @@ class BookManager {
 
       books.forEach((book, index) => {
         console.log(
-          `${index + 1}. ${chalk.bold(book.title)} by ${book.author}`
+          `${index + 1}. ${chalk.bold(book.title)} by ${book.author}`,
         );
         console.log(
-          `   📄 ${book.page_count} pages • 📅 ${book.publication_year}`
+          `   📄 ${book.page_count} pages • 📅 ${book.publication_year}`,
         );
         console.log(`   🏷️  ${book.genre_tags?.join(", ") || "No genres"}`);
         console.log();
@@ -79,12 +79,12 @@ class BookManager {
         .collection(this.config.collections.books)
         .create(bookData);
       console.log(
-        chalk.green(`✅ Added book: ${bookData.title} (ID: ${record.id})`)
+        chalk.green(`✅ Added book: ${bookData.title} (ID: ${record.id})`),
       );
       return record;
     } catch (error) {
       console.error(
-        chalk.red(`❌ Failed to add book "${bookData.title}":`, error.message)
+        chalk.red(`❌ Failed to add book "${bookData.title}":`, error.message),
       );
       return null;
     }
@@ -97,7 +97,7 @@ class BookManager {
       return true;
     } catch (error) {
       console.error(
-        chalk.red(`❌ Failed to delete book ${bookId}:`, error.message)
+        chalk.red(`❌ Failed to delete book ${bookId}:`, error.message),
       );
       return false;
     }
@@ -130,8 +130,8 @@ class BookManager {
 
       console.log(
         chalk.green(
-          `\n🎉 Import completed: ${successCount} successful, ${failCount} failed`
-        )
+          `\n🎉 Import completed: ${successCount} successful, ${failCount} failed`,
+        ),
       );
     } catch (error) {
       console.error(chalk.red("❌ Failed to import books:", error.message));
@@ -161,7 +161,7 @@ class BookManager {
       await fs.writeJSON(filePath, cleanBooks, { spaces: 2 });
 
       console.log(
-        chalk.green(`✅ Exported ${books.length} books to: ${filePath}`)
+        chalk.green(`✅ Exported ${books.length} books to: ${filePath}`),
       );
     } catch (error) {
       console.error(chalk.red("❌ Failed to export books:", error.message));
@@ -225,12 +225,12 @@ class BookManager {
         console.log(
           `${rank.toString().padStart(2)}. ${chalk.bold(book.title)} by ${
             book.author
-          }`
+          }`,
         );
         console.log(
           `    ${chalk[scoreColor](`${book.score}% interested`)} (${
             book.interested
-          }👍 ${book.not_interested}👎 of ${book.total} votes)`
+          }👍 ${book.not_interested}👎 of ${book.total} votes)`,
         );
         console.log();
       });
