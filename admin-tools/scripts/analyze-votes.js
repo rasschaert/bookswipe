@@ -29,11 +29,9 @@ class VoteAnalyzer {
       console.log(`• Total voting sessions: ${chalk.bold(votes.length)}`);
       console.log(`• Total books: ${chalk.bold(books.length)}`);
       console.log(
-        `• Average votes per book: ${
-          chalk.bold(
-            (votes.length / books.length).toFixed(1),
-          )
-        }`,
+        `• Average votes per book: ${chalk.bold(
+          (votes.length / books.length).toFixed(1),
+        )}`,
       );
       console.log();
 
@@ -114,25 +112,25 @@ class VoteAnalyzer {
     console.log();
 
     topBooks.forEach((book, index) => {
-      const medal = index === 0
-        ? "🥇"
-        : index === 1
-        ? "🥈"
-        : index === 2
-        ? "🥉"
-        : `${index + 1}.`;
-      const scoreColor = book.score >= 70 ? "green" : book.score >= 50 ? "yellow" : "red";
+      const medal =
+        index === 0
+          ? "🥇"
+          : index === 1
+            ? "🥈"
+            : index === 2
+              ? "🥉"
+              : `${index + 1}.`;
+      const scoreColor =
+        book.score >= 70 ? "green" : book.score >= 50 ? "yellow" : "red";
 
       console.log(`${medal} ${chalk.bold(book.title)} by ${book.author}`);
       console.log(
         `   ${chalk[scoreColor](`${book.score.toFixed(1)}% liked`)} (${book.interested}👍 ${book.not_interested}👎)`,
       );
       console.log(
-        `   📄 ${book.page_count} pages • 🏷️ ${
-          book.genre_tags
-            .slice(0, 3)
-            .join(", ")
-        }`,
+        `   📄 ${book.page_count} pages • 🏷️ ${book.genre_tags
+          .slice(0, 3)
+          .join(", ")}`,
       );
       console.log();
     });

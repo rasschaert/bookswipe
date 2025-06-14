@@ -18,8 +18,8 @@ async function ensureCollections(pb) {
     listRule: "",
     viewRule: "",
     createRule: "",
-    updateRule: "@request.auth.id != \"\"",
-    deleteRule: "@request.auth.id != \"\"",
+    updateRule: '@request.auth.id != ""',
+    deleteRule: '@request.auth.id != ""',
     fields: [
       {
         name: "title",
@@ -76,8 +76,8 @@ async function ensureCollections(pb) {
     listRule: "",
     viewRule: "",
     createRule: "",
-    updateRule: "@request.auth.id != \"\"",
-    deleteRule: "@request.auth.id != \"\"",
+    updateRule: '@request.auth.id != ""',
+    deleteRule: '@request.auth.id != ""',
     fields: [
       {
         name: "user_name",

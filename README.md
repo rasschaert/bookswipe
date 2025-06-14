@@ -149,7 +149,7 @@ This generates:
 
 ![Vote Analysis Report](vote_analysis_report.png)
 
-*Example of the detailed voting analysis report showing book rankings, participation stats, and controversial picks.*
+_Example of the detailed voting analysis report showing book rankings, participation stats, and controversial picks._
 
 ## Admin Tools Usage
 
