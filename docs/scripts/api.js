@@ -27,8 +27,7 @@ class BookSwipeAPI {
   async loadPocketBaseSDK() {
     return new Promise((resolve, reject) => {
       const script = document.createElement("script");
-      script.src =
-        "https://cdn.jsdelivr.net/npm/pocketbase@0.21.3/dist/pocketbase.umd.js";
+      script.src = "https://cdn.jsdelivr.net/npm/pocketbase@0.21.3/dist/pocketbase.umd.js";
       script.onload = () => {
         console.log("✅ PocketBase SDK loaded from CDN");
         resolve();

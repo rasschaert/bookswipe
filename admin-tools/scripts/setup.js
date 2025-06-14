@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-import fs from "fs-extra";
-import path from "path";
 import chalk from "chalk";
+import fs from "fs-extra";
 import inquirer from "inquirer";
+import path from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -18,8 +18,8 @@ async function ensureCollections(pb) {
     listRule: "",
     viewRule: "",
     createRule: "",
-    updateRule: '@request.auth.id != ""',
-    deleteRule: '@request.auth.id != ""',
+    updateRule: "@request.auth.id != \"\"",
+    deleteRule: "@request.auth.id != \"\"",
     fields: [
       {
         name: "title",
@@ -76,8 +76,8 @@ async function ensureCollections(pb) {
     listRule: "",
     viewRule: "",
     createRule: "",
-    updateRule: '@request.auth.id != ""',
-    deleteRule: '@request.auth.id != ""',
+    updateRule: "@request.auth.id != \"\"",
+    deleteRule: "@request.auth.id != \"\"",
     fields: [
       {
         name: "user_name",

@@ -185,8 +185,8 @@ class BookSwipeApp {
                             20
                           )}</div>`
                     }
-                </div>        
-          
+                </div>
+
                 <div class="book-header-info">
                     <h2 class="book-title">${book.title}</h2>
                     <p class="book-author">by ${book.author}</p>

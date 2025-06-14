@@ -86,9 +86,7 @@ class SwipeHandler {
 
     if (this.debug) {
       console.log(
-        `🎮 handleStart: ${isTouch ? "touch" : "mouse"} event on card ${
-          card.dataset.bookId
-        }`,
+        `🎮 handleStart: ${isTouch ? "touch" : "mouse"} event on card ${card.dataset.bookId}`,
       );
     }
 
@@ -170,25 +168,25 @@ class SwipeHandler {
 
         // If we're in scroll mode and vertical movement is dominant, allow scrolling
         if (
-          this.allowScrolling &&
-          verticalMovement > horizontalMovement &&
-          verticalMovement > this.movementThreshold
+          this.allowScrolling
+          && verticalMovement > horizontalMovement
+          && verticalMovement > this.movementThreshold
         ) {
           return; // Let browser handle scrolling
         }
 
         // If horizontal movement is dominant, start swiping
         if (
-          horizontalMovement > this.movementThreshold &&
-          horizontalMovement > verticalMovement
+          horizontalMovement > this.movementThreshold
+          && horizontalMovement > verticalMovement
         ) {
           this.isDragging = true;
           this.currentCard.classList.add("dragging");
           this.currentCard.style.cursor = "grabbing";
           e.preventDefault();
         } else if (
-          verticalMovement < this.movementThreshold &&
-          horizontalMovement < this.movementThreshold
+          verticalMovement < this.movementThreshold
+          && horizontalMovement < this.movementThreshold
         ) {
           return; // Not enough movement to determine intent
         }
@@ -345,8 +343,7 @@ class SwipeHandler {
     if (!this.currentCard) return;
 
     // Reset transform with smooth transition
-    this.currentCard.style.transition =
-      "transform 0.3s ease, opacity 0.3s ease";
+    this.currentCard.style.transition = "transform 0.3s ease, opacity 0.3s ease";
     this.currentCard.style.transform = "translate(0px, 0px) rotate(0deg)";
     this.currentCard.style.opacity = "1";
 

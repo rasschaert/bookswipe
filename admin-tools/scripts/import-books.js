@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-import BookManager from "./book-manager.js";
-import inquirer from "inquirer";
-import fs from "fs-extra";
-import path from "path";
 import chalk from "chalk";
+import fs from "fs-extra";
+import inquirer from "inquirer";
+import path from "path";
 import { fileURLToPath } from "url";
+import BookManager from "./book-manager.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 

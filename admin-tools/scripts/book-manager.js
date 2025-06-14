@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-import PocketBase from "pocketbase";
+import chalk from "chalk";
 import fs from "fs-extra";
 import path from "path";
-import chalk from "chalk";
+import PocketBase from "pocketbase";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -201,8 +201,7 @@ class BookManager {
             not_interested: 0,
           };
           const total = stats.interested + stats.not_interested;
-          const score =
-            total > 0 ? ((stats.interested / total) * 100).toFixed(1) : 0;
+          const score = total > 0 ? ((stats.interested / total) * 100).toFixed(1) : 0;
 
           return {
             title: book.title,
@@ -219,18 +218,15 @@ class BookManager {
 
       results.forEach((book, index) => {
         const rank = index + 1;
-        const scoreColor =
-          book.score >= 70 ? "green" : book.score >= 50 ? "yellow" : "red";
+        const scoreColor = book.score >= 70 ? "green" : book.score >= 50 ? "yellow" : "red";
 
         console.log(
-          `${rank.toString().padStart(2)}. ${chalk.bold(book.title)} by ${
-            book.author
-          }`,
+          `${rank.toString().padStart(2)}. ${chalk.bold(book.title)} by ${book.author}`,
         );
         console.log(
-          `    ${chalk[scoreColor](`${book.score}% interested`)} (${
-            book.interested
-          }👍 ${book.not_interested}👎 of ${book.total} votes)`,
+          `    ${
+            chalk[scoreColor](`${book.score}% interested`)
+          } (${book.interested}👍 ${book.not_interested}👎 of ${book.total} votes)`,
         );
         console.log();
       });
