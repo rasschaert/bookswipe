@@ -34,31 +34,42 @@
    Change a value here, and it updates throughout the entire app! */
 
 :root {
-  /* COLOR PALETTE */
+  /* COLOR PALETTE - Light theme (default) */
   --primary-color: #6366f1; /* Main brand color (purple-blue) */
   --primary-hover: #5855eb; /* Darker shade for hover states */
   --success-color: #10b981; /* Green for positive actions */
   --danger-color: #ef4444; /* Red for negative actions */
   --warning-color: #f59e0b; /* Orange for warnings */
 
-  /* TEXT COLORS */
+  /* TEXT COLORS - Light theme */
   --text-primary: #1f2937; /* Main text color (dark gray) */
   --text-secondary: #6b7280; /* Secondary text (medium gray) */
   --text-light: #9ca3af; /* Light text (light gray) */
 
-  /* BACKGROUND COLORS */
+  /* BACKGROUND COLORS - Light theme */
   --bg-primary: #ffffff; /* Main background (white) */
   --bg-secondary: #f9fafb; /* Secondary background (very light gray) */
   --bg-tertiary: #f3f4f6; /* Tertiary background (light gray) */
   --border-color: #e5e7eb; /* Border color (light gray) */
 
+  /* ACTION BUTTON BACKGROUNDS - Light theme */
+  --btn-reject-bg: #fef2f2; /* Light red background for reject button */
+  --btn-reject-border: #fecaca; /* Light red border for reject button */
+  --btn-accept-bg: #f0fdf4; /* Light green background for accept button */
+  --btn-accept-border: #bbf7d0; /* Light green border for accept button */
+
+  /* GRADIENT ACCENT COLORS */
+  --accent-purple: #8b5cf6; /* Purple accent for gradients */
+  --gradient-start: #667eea; /* Gradient start color for body background */
+  --gradient-end: #764ba2; /* Gradient end color for body background */
+
   /* SHADOWS - for depth and layering */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg:
-    0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-xl:
-    0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+    0 8px 10px -6px rgb(0 0 0 / 0.1);
 
   /* BORDER RADIUS - for rounded corners */
   --radius-sm: 0.375rem; /* Small radius (6px) */
@@ -68,14 +79,68 @@
 }
 
 /* ==========================================
+   DARK THEME
+   ==========================================
+   Automatically applied when user prefers dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* COLOR PALETTE - Dark theme overrides */
+    --primary-color: #818cf8; /* Lighter purple for better contrast */
+    --primary-hover: #6366f1; /* Original primary as hover */
+    --success-color: #34d399; /* Lighter green for dark backgrounds */
+    --danger-color: #f87171; /* Lighter red for dark backgrounds */
+    --warning-color: #fbbf24; /* Lighter orange for dark backgrounds */
+
+    /* TEXT COLORS - Dark theme */
+    --text-primary: #f9fafb; /* Light text on dark background */
+    --text-secondary: #d1d5db; /* Medium light gray */
+    --text-light: #9ca3af; /* Gray for less important text */
+
+    /* BACKGROUND COLORS - Dark theme */
+    --bg-primary: #111827; /* Dark gray background */
+    --bg-secondary: #1f2937; /* Slightly lighter dark gray */
+    --bg-tertiary: #374151; /* Medium dark gray */
+    --border-color: #4b5563; /* Dark border color */
+
+    /* ACTION BUTTON BACKGROUNDS - Dark theme */
+    --btn-reject-bg: #374151; /* Dark background for reject button */
+    --btn-reject-border: #6b7280; /* Dark border for reject button */
+    --btn-accept-bg: #064e3b; /* Dark green background for accept button */
+    --btn-accept-border: #065f46; /* Dark green border for accept button */
+
+    /* GRADIENT ACCENT COLORS - Dark theme */
+    --accent-purple: #a78bfa; /* Lighter purple accent for dark backgrounds */
+    --gradient-start: #1e293b; /* Dark gradient start color for body background */
+    --gradient-end: #334155; /* Dark gradient end color for body background */
+
+    /* SHADOWS - Enhanced for dark theme */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.2);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3),
+      0 2px 4px -2px rgb(0 0 0 / 0.2);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4),
+      0 4px 6px -4px rgb(0 0 0 / 0.3);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.5),
+      0 8px 10px -6px rgb(0 0 0 / 0.4);
+  }
+
+  /* Dark theme body background */
+  body {
+    background: linear-gradient(
+      135deg,
+      var(--gradient-start) 0%,
+      var(--gradient-end) 100%
+    );
+  }
+}
+
+/* ==========================================
    BODY AND MAIN APP CONTAINER
    ==========================================
    Sets up the overall page layout and styling */
 
 body {
   /* FONT STACK - Modern, readable fonts with fallbacks */
-  font-family:
-    "Inter",
+  font-family: "Inter",
     /* Primary font (loaded from Google Fonts) */ -apple-system,
     /* macOS system font */ BlinkMacSystemFont,
     /* macOS system font (older versions) */ sans-serif; /* Generic fallback */
@@ -85,7 +150,11 @@ body {
   color: var(--text-primary); /* Use our defined text color */
 
   /* BACKGROUND - Gradient for visual appeal */
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(
+    135deg,
+    var(--gradient-start) 0%,
+    var(--gradient-end) 100%
+  );
   min-height: 100vh; /* Full viewport height */
   overflow-x: hidden; /* Prevent horizontal scrolling */
 }
@@ -143,7 +212,11 @@ body {
 #loading-screen {
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, var(--primary-color) 0%, #8b5cf6 100%);
+  background: linear-gradient(
+    135deg,
+    var(--primary-color) 0%,
+    var(--accent-purple) 100%
+  );
   color: white;
 }
 
@@ -189,7 +262,11 @@ body {
   font-size: 3rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, var(--primary-color), #8b5cf6);
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--accent-purple)
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -292,7 +369,11 @@ body {
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--primary-color), #8b5cf6);
+  background: linear-gradient(
+    90deg,
+    var(--primary-color),
+    var(--accent-purple)
+  );
   border-radius: var(--radius-sm);
   transition: width 0.3s ease;
   width: 0%;
@@ -337,9 +418,9 @@ body {
 }
 
 .reject-btn {
-  background: #fef2f2;
+  background: var(--btn-reject-bg);
   color: var(--danger-color);
-  border: 2px solid #fecaca;
+  border: 2px solid var(--btn-reject-border);
 }
 
 .reject-btn:hover {
@@ -350,9 +431,9 @@ body {
 }
 
 .accept-btn {
-  background: #f0fdf4;
+  background: var(--btn-accept-bg);
   color: var(--success-color);
-  border: 2px solid #bbf7d0;
+  border: 2px solid var(--btn-accept-border);
 }
 
 .accept-btn:hover {
@@ -473,6 +554,17 @@ body {
 .success-subtitle {
   font-size: 1rem !important;
   margin-bottom: 2rem !important;
+}
+
+/* ==========================================
+   SMOOTH THEME TRANSITIONS
+   ==========================================
+   Adds smooth transitions when switching themes */
+*:not(.book-card):not(.swipe-indicator):not(.loading-spinner),
+*:not(.book-card):not(.swipe-indicator):not(.loading-spinner)::before,
+*:not(.book-card):not(.swipe-indicator):not(.loading-spinner)::after {
+  transition: background-color 0.3s ease, border-color 0.3s ease,
+    color 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* Responsive Design */

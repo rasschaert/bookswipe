@@ -42,6 +42,7 @@ BookSwipe is a "Tinder for Books" voting application for book clubs. This folder
 
 - **Touch & Mouse Support**: Smooth swiping on mobile, clicking on desktop
 - **Responsive Design**: Works on all screen sizes
+- **Automatic Dark Theme**: Respects system/browser dark mode preference
 - **Real-time Progress**: Visual progress tracking
 - **Data Persistence**: Votes saved to PocketBase backend
 - **Error Handling**: Graceful degradation and user feedback

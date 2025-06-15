@@ -146,3 +146,34 @@ App instance available globally for debugging:
 window.bookSwipeApp.userVotes; // Current votes
 window.bookSwipeApp.books; // Loaded books
 ```
+
+## 🎨 Automatic Theme System
+
+**Files: `docs/styles/main.css`**
+
+The app includes an automatic theme system that respects user preferences:
+
+```css
+/* Light theme (default) */
+:root {
+  --bg-primary: #ffffff;
+  --text-primary: #1f2937;
+  /* ... other light theme variables */
+}
+
+/* Automatic dark theme based on system preference */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary: #111827;
+    --text-primary: #f9fafb;
+    /* ... other dark theme variables */
+  }
+}
+```
+
+**Features**:
+
+- Automatic detection of system/browser dark mode preference
+- Smooth color transitions using CSS custom properties
+- No JavaScript required for theme switching
+- Clean, simplified implementation
