@@ -54,11 +54,11 @@ After setup, your `config.json` will contain:
 
 ## 📚 Available Scripts
 
-| Command | Purpose | Description |
-|---------|---------|-------------|
-| `npm run setup` | Initial configuration | Set up PocketBase connection and create collections |
-| `npm run import-books` | Book management | Interactive tool to import books from JSON files |
-| `npm run analyze-votes` | Vote analysis | Generate comprehensive voting reports and export data |
+| Command                 | Purpose               | Description                                           |
+| ----------------------- | --------------------- | ----------------------------------------------------- |
+| `npm run setup`         | Initial configuration | Set up PocketBase connection and create collections   |
+| `npm run import-books`  | Book management       | Interactive tool to import books from JSON files      |
+| `npm run analyze-votes` | Vote analysis         | Generate comprehensive voting reports and export data |
 
 ## 🗂️ File Structure
 

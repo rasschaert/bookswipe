@@ -2,10 +2,10 @@
 
 /**
  * Interactive Book Import Tool
- * 
+ *
  * Provides a user-friendly command-line interface for importing books
  * into the BookSwipe database from JSON files.
- * 
+ *
  * Features:
  * - Interactive file selection from data directory
  * - File browsing for custom paths
@@ -13,16 +13,16 @@
  * - Confirmation prompts for safety
  * - Bulk operations (import/delete all books)
  * - Progress feedback during operations
- * 
+ *
  * Usage:
  *   npm run import-books
- *   
+ *
  * The tool will guide you through:
  * 1. Selecting an action (import, list, clear, exit)
  * 2. Choosing a JSON file or browsing for one
  * 3. Previewing the data to be imported
  * 4. Confirming the import operation
- * 
+ *
  * File format: JSON array of book objects with required fields:
  * - title (string): Book title
  * - author (string): Book author
@@ -41,7 +41,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * Main function - Entry point for the interactive book import tool
- * 
+ *
  * Initializes the BookManager and presents the main menu with options
  * for importing, listing, clearing books, or exiting.
  */
@@ -86,11 +86,11 @@ async function main() {
 
 /**
  * Handle the book import process
- * 
+ *
  * Guides the user through selecting a JSON file, previewing its contents,
  * and confirming the import operation. Supports both files in the data
  * directory and custom file paths.
- * 
+ *
  * @param {BookManager} manager - BookManager instance for database operations
  */
 async function handleImport(manager) {
@@ -185,11 +185,11 @@ async function handleImport(manager) {
 
 /**
  * Handle the bulk delete operation
- * 
+ *
  * Lists all current books and provides a confirmation prompt before
  * permanently deleting all books from the database. Includes progress
  * tracking and safety confirmations.
- * 
+ *
  * @param {BookManager} manager - BookManager instance for database operations
  */
 async function handleClear(manager) {

@@ -2,16 +2,16 @@
 
 /**
  * BookManager - Core class for managing BookSwipe book collections
- * 
+ *
  * This module provides the foundational functionality for all book-related operations
  * including database connections, CRUD operations, and data import/export.
- * 
+ *
  * Key features:
  * - PocketBase database integration with authentication
  * - Bulk book import/export with progress tracking
  * - Vote statistics and analysis
  * - Error handling and user feedback
- * 
+ *
  * Usage:
  *   const manager = new BookManager();
  *   await manager.init();
@@ -30,25 +30,25 @@ const CONFIG_PATH = path.join(__dirname, "..", "config.json");
 
 /**
  * BookManager class handles all book collection operations
- * 
+ *
  * Provides a unified interface for:
  * - Database connection management
- * - Book CRUD operations  
+ * - Book CRUD operations
  * - Bulk import/export functionality
  * - Vote analysis and statistics
  */
 class BookManager {
   constructor() {
-    this.pb = null;     // PocketBase client instance
+    this.pb = null; // PocketBase client instance
     this.config = null; // Configuration loaded from config.json
   }
 
   /**
    * Initialize the BookManager instance
-   * 
+   *
    * Loads configuration from config.json and establishes authenticated
    * connection to PocketBase. Must be called before using other methods.
-   * 
+   *
    * @throws {Error} If config file is missing or PocketBase auth fails
    */
   async init() {
@@ -86,10 +86,10 @@ class BookManager {
 
   /**
    * Retrieve and display all books in the collection
-   * 
+   *
    * Fetches all books from the database and displays them with
    * formatted output including title, author, page count, and genres.
-   * 
+   *
    * @returns {Array} Array of book objects from database
    */
   async listBooks() {
@@ -122,10 +122,10 @@ class BookManager {
 
   /**
    * Add a single book to the collection
-   * 
+   *
    * Creates a new book record in the database with provided data.
    * Handles validation errors and provides user feedback.
-   * 
+   *
    * @param {Object} bookData - Book information object
    * @param {string} bookData.title - Book title (required)
    * @param {string} bookData.author - Book author (required)
@@ -167,11 +167,11 @@ class BookManager {
 
   /**
    * Import multiple books from a JSON file
-   * 
+   *
    * Reads a JSON file containing an array of book objects and imports
    * each one to the database. Provides progress tracking and error handling
    * for individual book imports.
-   * 
+   *
    * @param {string} filePath - Path to JSON file containing book array
    */
   async importBooksFromFile(filePath) {

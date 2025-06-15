@@ -363,16 +363,19 @@ PocketBase Server (Database)
 ### Frontend Configuration
 
 **File**: `docs/scripts/api-fetch.js`
+
 - Line 23: `this.baseURL` - PocketBase server URL
 - Must be updated for production deployment
 
 **File**: `docs/index.html`
+
 - Lines 130-132: Cache-busting version parameters (`?v=4`)
 - Increment when deploying code changes
 
 ### Backend Configuration
 
 **File**: `admin-tools/config.json`
+
 - PocketBase connection settings for admin tools
 - Created from `config.example.json` during setup
 

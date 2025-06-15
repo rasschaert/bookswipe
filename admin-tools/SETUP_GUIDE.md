@@ -18,6 +18,7 @@ npm install
 ```
 
 This installs all required packages:
+
 - `pocketbase` - Database client
 - `inquirer` - Interactive prompts
 - `chalk` - Terminal styling
@@ -35,10 +36,12 @@ The setup wizard will guide you through:
 #### Configuration Prompts
 
 1. **PocketBase URL**
+
    - Enter your PocketBase instance URL
    - Examples: `https://yourapp.pocketbase.io` or `http://localhost:8090`
 
 2. **Admin Email**
+
    - Your PocketBase admin email address
    - Must have admin privileges to create collections
 
@@ -49,6 +52,7 @@ The setup wizard will guide you through:
 #### Automatic Setup
 
 The setup script will:
+
 - ✅ Test your PocketBase connection
 - ✅ Create required database collections
 - ✅ Set up directory structure
@@ -61,6 +65,7 @@ The setup creates two main collections:
 ### Books Collection
 
 Stores book information with fields:
+
 - `title` (text, required)
 - `author` (text, required)
 - `synopsis` (editor, optional)
@@ -74,6 +79,7 @@ Stores book information with fields:
 ### Votes Collection
 
 Stores voting data with fields:
+
 - `user_name` (text, optional)
 - `votes` (json object, required)
 - `session_id` (text, required)
@@ -131,12 +137,14 @@ npm run import-books
 ```
 
 If setup was successful, you should see:
+
 - ✅ Connection to PocketBase
 - 📚 Book import interface
 
 ### Test Data Import
 
 1. Use the provided sample data:
+
    ```bash
    # The import tool will find sample-classics.json automatically
    npm run import-books
@@ -153,6 +161,7 @@ If setup was successful, you should see:
 **Problem**: "Failed to authenticate with PocketBase"
 
 **Solutions**:
+
 - Verify PocketBase URL is correct and accessible
 - Check admin email and password
 - Ensure PocketBase instance is running
@@ -163,6 +172,7 @@ If setup was successful, you should see:
 **Problem**: "Failed to create collections"
 
 **Solutions**:
+
 - Verify admin account has collection creation permissions
 - Check PocketBase version compatibility
 - Try creating collections manually in PocketBase admin panel
@@ -172,6 +182,7 @@ If setup was successful, you should see:
 **Problem**: "Cannot write to directory"
 
 **Solutions**:
+
 - Check write permissions in admin-tools directory
 - Run with appropriate user permissions
 - Verify disk space availability
@@ -181,9 +192,11 @@ If setup was successful, you should see:
 To change your configuration:
 
 1. **Re-run setup**:
+
    ```bash
    npm run setup
    ```
+
    Choose "Yes" when asked to overwrite existing config
 
 2. **Manual editing**:
@@ -206,6 +219,7 @@ To change your configuration:
 After successful setup:
 
 1. **Import Books**: Add your book club's reading list
+
    ```bash
    npm run import-books
    ```

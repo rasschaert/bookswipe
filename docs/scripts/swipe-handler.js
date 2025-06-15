@@ -128,7 +128,7 @@ class SwipeHandler {
       console.log(
         `🎮 handleStart: ${isTouch ? "touch" : "mouse"} event on card ${
           card.dataset.bookId
-        }`
+        }`,
       );
     }
 
@@ -170,7 +170,7 @@ class SwipeHandler {
 
       if (this.debug) {
         console.log(
-          `🖱️ Mouse drag started at (${this.startX}, ${this.startY})`
+          `🖱️ Mouse drag started at (${this.startX}, ${this.startY})`,
         );
       }
 
@@ -185,7 +185,7 @@ class SwipeHandler {
           allowScrolling: this.allowScrolling,
           startX: this.startX,
           startY: this.startY,
-        }
+        },
       );
     }
   }
@@ -320,10 +320,10 @@ class SwipeHandler {
     const direction = this.currentX > 0 ? "right" : "left";
 
     const likeIndicator = this.currentCard.querySelector(
-      ".swipe-indicator.like"
+      ".swipe-indicator.like",
     );
     const passIndicator = this.currentCard.querySelector(
-      ".swipe-indicator.pass"
+      ".swipe-indicator.pass",
     );
 
     if (distance > 30) {
@@ -356,7 +356,7 @@ class SwipeHandler {
 
     // Add animation class
     card.classList.add(
-      direction === "right" ? "animate-swipe-right" : "animate-swipe-left"
+      direction === "right" ? "animate-swipe-right" : "animate-swipe-left",
     );
 
     // Call callback
@@ -364,7 +364,7 @@ class SwipeHandler {
       this.callbacks.onSwipe(
         bookId,
         direction === "right" ? "interested" : "not_interested",
-        direction
+        direction,
       );
     }
 

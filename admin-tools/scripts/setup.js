@@ -135,7 +135,7 @@ async function ensureCollections(pb) {
 
 /**
  * Main setup function
- * 
+ *
  * Orchestrates the entire setup process including configuration,
  * directory creation, database connection testing, and collection setup.
  */

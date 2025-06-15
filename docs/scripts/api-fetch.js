@@ -67,13 +67,13 @@ class BookSwipeAPI {
       // Make HTTP GET request to the books collection
       // PocketBase API pattern: /api/collections/{collection_name}/records
       const response = await fetch(
-        `${this.baseURL}/api/collections/books/records`
+        `${this.baseURL}/api/collections/books/records`,
       );
 
       // Check if request was successful
       if (!response.ok) {
         throw new Error(
-          `Failed to fetch books: ${response.status} ${response.statusText}`
+          `Failed to fetch books: ${response.status} ${response.statusText}`,
         );
       }
 
@@ -119,13 +119,13 @@ class BookSwipeAPI {
             "Content-Type": "application/json", // Tell server we're sending JSON
           },
           body: JSON.stringify(data), // Convert JavaScript object to JSON string
-        }
+        },
       );
 
       // Check if request was successful
       if (!response.ok) {
         throw new Error(
-          `Failed to submit votes: ${response.status} ${response.statusText}`
+          `Failed to submit votes: ${response.status} ${response.statusText}`,
         );
       }
 

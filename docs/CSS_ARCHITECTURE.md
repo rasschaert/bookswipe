@@ -48,7 +48,8 @@ Creates a visual depth illusion with automatic stacking order.
 
 .book-card.dragging {
   transition: none;
-  transform: translateX(var(--drag-x)) translateY(var(--drag-y)) rotate(var(--drag-rotation));
+  transform: translateX(var(--drag-x)) translateY(var(--drag-y))
+    rotate(var(--drag-rotation));
 }
 ```
 
@@ -105,9 +106,8 @@ Prevents browser interference with custom gesture handling.
   --drag-y: 0;
   --drag-rotation: 0;
 
-  transform: translateX(calc(var(--drag-x) * 1px)) translateY(
-      calc(var(--drag-y) * 1px)
-    )
+  transform: translateX(calc(var(--drag-x) * 1px))
+    translateY(calc(var(--drag-y) * 1px))
     rotate(calc(var(--drag-rotation) * 1deg));
 }
 ```

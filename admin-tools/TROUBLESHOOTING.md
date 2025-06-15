@@ -11,12 +11,14 @@ Common issues and solutions for the BookSwipe admin tools.
 **Problem**: `❌ Config file not found. Copy config.example.json to config.json and update it.`
 
 **Solution**:
+
 ```bash
 # Run the setup script to create config.json
 npm run setup
 ```
 
 **Alternative Manual Fix**:
+
 ```bash
 # Copy the example config
 cp config.example.json config.json
@@ -29,12 +31,15 @@ cp config.example.json config.json
 **Problem**: Cannot connect to PocketBase with provided credentials.
 
 **Solutions**:
+
 1. **Verify PocketBase URL**:
+
    - Ensure URL is correct and accessible
    - Try accessing `https://your-url.com/_/` in browser
    - Check for typos in protocol (http vs https)
 
 2. **Check Admin Credentials**:
+
    - Verify email and password in PocketBase admin panel
    - Ensure account has admin privileges
    - Try logging in manually at `https://your-url.com/_/`
@@ -51,12 +56,15 @@ cp config.example.json config.json
 **Problem**: Cannot create required database collections.
 
 **Solutions**:
+
 1. **Permission Check**:
+
    - Ensure admin account can create collections
    - Check PocketBase version compatibility
    - Try creating collections manually in admin panel
 
 2. **Manual Collection Creation**:
+
    ```json
    // Books collection fields:
    title: Text (required)
@@ -66,7 +74,7 @@ cp config.example.json config.json
    publication_year: Number (optional)
    genre_tags: JSON (optional)
    cover_image_url: URL (optional)
-   
+
    // Votes collection fields:
    user_name: Text (optional)
    votes: JSON (required)
@@ -83,6 +91,7 @@ cp config.example.json config.json
 **Problem**: Import file is not properly formatted.
 
 **Solution**: Ensure your JSON file contains an array:
+
 ```json
 [
   {
@@ -96,6 +105,7 @@ cp config.example.json config.json
 ```
 
 **Not this**:
+
 ```json
 {
   "title": "Book Title",
@@ -108,18 +118,21 @@ cp config.example.json config.json
 **Problem**: Individual books failing to import.
 
 **Solutions**:
+
 1. **Check Required Fields**:
+
    - `title` and `author` are required
    - Verify data types match schema
 
 2. **Fix Data Issues**:
+
    ```json
    // ❌ Incorrect types
    {
      "title": 123,           // Should be string
      "page_count": "250"     // Should be number
    }
-   
+
    // ✅ Correct types
    {
      "title": "Book Title",
@@ -139,13 +152,16 @@ cp config.example.json config.json
 **Problem**: Cannot locate or access book data files.
 
 **Solutions**:
+
 1. **Check File Location**:
+
    ```bash
    # Files should be in admin-tools/data/
    ls admin-tools/data/*.json
    ```
 
 2. **File Permissions**:
+
    ```bash
    # Ensure files are readable
    chmod 644 admin-tools/data/*.json
@@ -164,12 +180,15 @@ cp config.example.json config.json
 **Problem**: Vote analysis shows no data or empty results.
 
 **Solutions**:
+
 1. **Check Web App Configuration**:
+
    - Ensure web app is connected to same PocketBase
    - Verify votes are being submitted
    - Check votes collection in PocketBase admin
 
 2. **Manual Vote Check**:
+
    ```bash
    # In PocketBase admin panel:
    # Go to Collections > votes
@@ -187,13 +206,16 @@ cp config.example.json config.json
 **Problem**: Cannot create analysis reports.
 
 **Solutions**:
+
 1. **Directory Permissions**:
+
    ```bash
    # Ensure exports directory is writable
    chmod 755 admin-tools/data/exports/
    ```
 
 2. **Disk Space**:
+
    - Check available disk space
    - Clear old export files if needed
 
@@ -210,11 +232,14 @@ cp config.example.json config.json
 **Problem**: Sporadic connection issues with PocketBase.
 
 **Solutions**:
+
 1. **Retry Logic**:
+
    - Tools automatically retry failed operations
    - Wait and try again if operations fail
 
 2. **Network Stability**:
+
    - Check internet connection
    - Consider local PocketBase instance for development
 
@@ -230,7 +255,9 @@ cp config.example.json config.json
 **Problem**: HTTPS connection issues.
 
 **Solutions**:
+
 1. **Certificate Problems**:
+
    - Verify SSL certificate is valid
    - Try HTTP URL for local development
    - Check certificate expiration
@@ -254,7 +281,9 @@ cp config.example.json config.json
 **Problem**: Operations taking unusually long time.
 
 **Solutions**:
+
 1. **Batch Size Optimization**:
+
    - Import includes automatic delays between operations
    - Consider smaller JSON files for large imports
 
@@ -270,7 +299,9 @@ cp config.example.json config.json
 **Problem**: Books appearing multiple times or with incorrect data.
 
 **Solutions**:
+
 1. **Clean Import**:
+
    ```bash
    # Use the clear option to start fresh
    npm run import-books
@@ -291,17 +322,20 @@ cp config.example.json config.json
 **Problem**: Node.js or dependency issues.
 
 **Solutions**:
+
 1. **Reinstall Dependencies**:
+
    ```bash
    rm -rf node_modules package-lock.json
    npm install
    ```
 
 2. **Node Version**:
+
    ```bash
    # Ensure Node.js 18+
    node --version
-   
+
    # Update if needed
    nvm install 18
    nvm use 18
@@ -318,6 +352,7 @@ cp config.example.json config.json
 **Problem**: Cannot execute npm scripts.
 
 **Solutions**:
+
 ```bash
 # Make scripts executable
 chmod +x scripts/*.js
@@ -335,6 +370,7 @@ node scripts/analyze-votes.js
 When reporting issues, include:
 
 1. **System Information**:
+
    ```bash
    node --version
    npm --version
@@ -342,6 +378,7 @@ When reporting issues, include:
    ```
 
 2. **Configuration** (without passwords):
+
    ```bash
    cat config.json | sed 's/"adminPassword.*/"adminPassword": "***"/'
    ```
