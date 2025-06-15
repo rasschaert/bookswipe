@@ -1,22 +1,58 @@
 #!/usr/bin/env node
 
+/**
+ * BookManager - Core class for managing BookSwipe book collections
+ * 
+ * This module provides the foundational functionality for all book-related operations
+ * including database connections, CRUD operations, and data import/export.
+ * 
+ * Key features:
+ * - PocketBase database integration with authentication
+ * - Bulk book import/export with progress tracking
+ * - Vote statistics and analysis
+ * - Error handling and user feedback
+ * 
+ * Usage:
+ *   const manager = new BookManager();
+ *   await manager.init();
+ *   const books = await manager.listBooks();
+ */
+
 import chalk from "chalk";
 import fs from "fs-extra";
 import path from "path";
 import PocketBase from "pocketbase";
 import { fileURLToPath } from "url";
 
+// Get current directory for ES modules
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CONFIG_PATH = path.join(__dirname, "..", "config.json");
 
+/**
+ * BookManager class handles all book collection operations
+ * 
+ * Provides a unified interface for:
+ * - Database connection management
+ * - Book CRUD operations  
+ * - Bulk import/export functionality
+ * - Vote analysis and statistics
+ */
 class BookManager {
   constructor() {
-    this.pb = null;
-    this.config = null;
+    this.pb = null;     // PocketBase client instance
+    this.config = null; // Configuration loaded from config.json
   }
 
+  /**
+   * Initialize the BookManager instance
+   * 
+   * Loads configuration from config.json and establishes authenticated
+   * connection to PocketBase. Must be called before using other methods.
+   * 
+   * @throws {Error} If config file is missing or PocketBase auth fails
+   */
   async init() {
-    // Load configuration
+    // Load configuration from config.json
     try {
       this.config = await fs.readJSON(CONFIG_PATH);
     } catch (error) {
@@ -28,9 +64,10 @@ class BookManager {
       process.exit(1);
     }
 
-    // Initialize PocketBase
+    // Initialize PocketBase client with configured URL
     this.pb = new PocketBase(this.config.pocketbase.url);
 
+    // Authenticate as admin to access collections
     try {
       await this.pb
         .collection("_superusers")
@@ -47,14 +84,24 @@ class BookManager {
     }
   }
 
+  /**
+   * Retrieve and display all books in the collection
+   * 
+   * Fetches all books from the database and displays them with
+   * formatted output including title, author, page count, and genres.
+   * 
+   * @returns {Array} Array of book objects from database
+   */
   async listBooks() {
     try {
+      // Fetch all books from the configured books collection
       const books = await this.pb
         .collection(this.config.collections.books)
         .getFullList();
 
       console.log(chalk.blue(`\n📚 Found ${books.length} books:\n`));
 
+      // Display each book with formatted information
       books.forEach((book, index) => {
         console.log(
           `${index + 1}. ${chalk.bold(book.title)} by ${book.author}`,
@@ -73,8 +120,23 @@ class BookManager {
     }
   }
 
+  /**
+   * Add a single book to the collection
+   * 
+   * Creates a new book record in the database with provided data.
+   * Handles validation errors and provides user feedback.
+   * 
+   * @param {Object} bookData - Book information object
+   * @param {string} bookData.title - Book title (required)
+   * @param {string} bookData.author - Book author (required)
+   * @param {string} [bookData.synopsis] - Book description
+   * @param {number} [bookData.page_count] - Number of pages
+   * @param {Array} [bookData.genre_tags] - Genre categories
+   * @returns {Object|null} Created book record or null if failed
+   */
   async addBook(bookData) {
     try {
+      // Create new book record in PocketBase
       const record = await this.pb
         .collection(this.config.collections.books)
         .create(bookData);
@@ -103,10 +165,21 @@ class BookManager {
     }
   }
 
+  /**
+   * Import multiple books from a JSON file
+   * 
+   * Reads a JSON file containing an array of book objects and imports
+   * each one to the database. Provides progress tracking and error handling
+   * for individual book imports.
+   * 
+   * @param {string} filePath - Path to JSON file containing book array
+   */
   async importBooksFromFile(filePath) {
     try {
+      // Read and parse the JSON file
       const booksData = await fs.readJSON(filePath);
 
+      // Validate that the file contains an array
       if (!Array.isArray(booksData)) {
         throw new Error("JSON file must contain an array of books");
       }
@@ -116,6 +189,7 @@ class BookManager {
       let successCount = 0;
       let failCount = 0;
 
+      // Import each book individually to handle partial failures gracefully
       for (const book of booksData) {
         const result = await this.addBook(book);
         if (result) {
@@ -124,7 +198,7 @@ class BookManager {
           failCount++;
         }
 
-        // Small delay to avoid overwhelming the server
+        // Small delay to avoid overwhelming the PocketBase server
         await new Promise((resolve) => setTimeout(resolve, 100));
       }
 

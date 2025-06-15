@@ -133,13 +133,20 @@ async function ensureCollections(pb) {
   }
 }
 
+/**
+ * Main setup function
+ * 
+ * Orchestrates the entire setup process including configuration,
+ * directory creation, database connection testing, and collection setup.
+ */
 async function setup() {
   console.log(chalk.blue.bold("🛠️  BookSwipe Admin Tools Setup\n"));
 
+  // Define paths for configuration files
   const configPath = path.join(__dirname, "..", "config.json");
   const exampleConfigPath = path.join(__dirname, "..", "config.example.json");
 
-  // Check if config already exists
+  // Check if configuration already exists
   const configExists = await fs.pathExists(configPath);
   let config;
 
