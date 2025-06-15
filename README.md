@@ -116,10 +116,10 @@ Select "Sample classics" when prompted.
 ### Step 4: Set Up the Frontend
 
 1. **Update the frontend configuration:**
-   Edit `docs/scripts/api.js` and update the PocketBase URL:
+   Edit `docs/scripts/api-fetch.js` and update the PocketBase URL:
 
    ```javascript
-   const POCKETBASE_URL = "http://127.0.0.1:8090"; // Your PocketBase URL
+   this.baseURL = "http://127.0.0.1:8090"; // Your PocketBase URL (line 23)
    ```
 
 2. **Test locally:**
@@ -275,13 +275,29 @@ Both collections are configured with:
 - Upload contents of `docs/` folder
 - Ensure `index.html` is served at root
 
-### Environment Variables
+### Pre-Deployment Checklist
 
-Update `docs/scripts/api.js` if your PocketBase URL changes:
+Before deploying to production:
+
+- [ ] Update PocketBase URL in `docs/scripts/api-fetch.js` (line 23)
+- [ ] Test with production PocketBase instance
+- [ ] Verify CORS settings on PocketBase allow your domain
+- [ ] Increment cache-busting version in `docs/index.html` (`?v=4` → `?v=5`)
+- [ ] Test all functionality on target deployment platform
+- [ ] Ensure PocketBase collections have correct API rules for production
+
+### Production Configuration
+
+**Important**: Before deploying to production, update the PocketBase URL in `docs/scripts/api-fetch.js`:
 
 ```javascript
-const POCKETBASE_URL = "https://your-pocketbase-url.com";
+// Line 23 in constructor - change from:
+this.baseURL = "https://adaptable-oxpecker.pikapod.net";
+// To your production PocketBase URL:
+this.baseURL = "https://your-pocketbase-url.com";
 ```
+
+**Security Note**: Ensure your production PocketBase instance has proper CORS settings and API rules configured.
 
 ## Development Workflow
 
@@ -309,6 +325,45 @@ const POCKETBASE_URL = "https://your-pocketbase-url.com";
 cd admin-tools
 # Manage your book data and analyze votes
 ```
+
+## Testing & Debugging
+
+### Manual Testing Checklist
+
+- ✅ App loads without errors in browser console
+- ✅ Books display correctly with proper data
+- ✅ Swipe gestures work on mobile devices
+- ✅ Button clicks work on desktop
+- ✅ Votes are recorded and submitted successfully
+- ✅ Network errors display user-friendly messages
+- ✅ Offline functionality works as expected
+
+### Debug Mode
+
+Enable detailed logging in the browser console:
+
+```javascript
+// In browser console, enable debug mode:
+window.bookSwipeApp.swipeHandler.debug = true;
+
+// Check application state:
+console.log(window.bookSwipeApp.userVotes); // Current votes
+console.log(window.bookSwipeApp.books); // Loaded books
+console.log(window.bookSwipeApp.currentBookIndex); // Current position
+```
+
+### Browser Developer Tools
+
+1. **Network Tab**: Monitor API calls to PocketBase
+2. **Console Tab**: Check for JavaScript errors
+3. **Application Tab**: Inspect local storage for offline votes
+4. **Performance Tab**: Analyze gesture smoothness
+
+### Common Issues
+
+**Books not loading**: Check PocketBase URL and collection permissions
+**Swipe not working**: Verify touch-action CSS properties
+**Votes not submitting**: Check network connectivity and API endpoints
 
 ## License
 

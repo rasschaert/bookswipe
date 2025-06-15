@@ -72,6 +72,18 @@ The code is structured for easy modification:
 - **Change interactions**: Touch logic in `swipe-handler.js`
 - **API changes**: Backend communication in `api-fetch.js`
 
+### Version Management
+
+Script files use cache-busting parameters in `index.html`:
+
+```html
+<script src="scripts/api-fetch.js?v=4"></script>
+<script src="scripts/swipe-handler.js?v=4"></script>
+<script src="scripts/app.js?v=4"></script>
+```
+
+**Important**: Increment the version number (e.g., `?v=5`) when deploying changes to ensure browsers load the updated files.
+
 ## 🎯 Understanding the Code
 
 Each file includes detailed comments explaining:
