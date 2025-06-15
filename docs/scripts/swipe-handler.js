@@ -1,28 +1,59 @@
+/**
+ * ========================================
+ * SWIPE HANDLER - GESTURE RECOGNITION ENGINE
+ * ========================================
+ *
+ * Advanced gesture detection with:
+ * - Velocity-based swipe recognition
+ * - Scroll conflict resolution using touch-action
+ * - Real-time transform updates via CSS custom properties
+ * - Momentum calculation with 60fps smoothness
+ * - Fallback patterns for mouse/keyboard accessibility
+ *
+ * TECHNICAL DETAILS:
+ * - Distinguishes intentional swipes from scroll gestures
+ * - Uses coordinate mathematics for natural card rotation
+ * - Implements state machine for drag/scroll/idle modes
+ * - Optimizes performance with RAF throttling
+ * - Provides callback interface for loose coupling
+ */
+
 // Swipe Handler for BookSwipe Cards
 class SwipeHandler {
   constructor(cardStack, callbacks = {}) {
-    this.cardStack = cardStack;
-    this.callbacks = callbacks;
-    this.currentCard = null;
-    this.isDragging = false;
-    this.startX = 0;
-    this.startY = 0;
-    this.currentX = 0;
-    this.currentY = 0;
-    this.threshold = 80; // Minimum distance to trigger swipe
-    this.rotationFactor = 0.1; // How much the card rotates while dragging
+    // DOM REFERENCES
+    this.cardStack = cardStack; // Card container element
+    this.callbacks = callbacks; // Event callbacks: {onSwipe, onEmpty}
+    this.currentCard = null; // Active card being manipulated
 
-    // Scroll detection properties
-    this.allowScrolling = false;
-    this.scrollStartTime = 0;
-    this.movementThreshold = 15; // Minimum movement to determine intent
+    // GESTURE STATE - Tracks interaction physics
+    this.isDragging = false; // Currently in drag mode
+    this.startX = 0; // Initial touch/click X coordinate
+    this.startY = 0; // Where the drag started (Y coordinate)
+    this.currentX = 0; // Current drag offset from start (X)
+    this.currentY = 0; // Current drag offset from start (Y)
 
-    // Debug mode - set to true for detailed logging
+    // BEHAVIOR CONFIGURATION
+    this.threshold = 80; // How far user must drag to trigger a swipe
+    this.rotationFactor = 0.1; // How much the card rotates while dragging (visual effect)
+
+    // SCROLL DETECTION - These help distinguish between scrolling and swiping
+    this.allowScrolling = false; // Is user trying to scroll the content?
+    this.scrollStartTime = 0; // When did potential scrolling start?
+    this.movementThreshold = 15; // Minimum movement to determine user intent
+
+    // DEBUG MODE - Set to true to see detailed logging in console
     this.debug = false;
 
+    // INITIALIZATION
     this.init();
   }
 
+  /**
+   * INITIALIZATION
+   * ==============
+   * Set up all the event listeners and keyboard controls.
+   */
   init() {
     this.bindEvents();
     this.setupKeyboardControls();
@@ -32,10 +63,17 @@ class SwipeHandler {
     }
   }
 
+  /**
+   * BIND EVENT LISTENERS
+   * ====================
+   * Registers touch and mouse event handlers for cross-platform gesture support.
+   * Uses passive: false to enable preventDefault() for gesture conflicts.
+   */
   bindEvents() {
-    // Touch events for mobile
+    // TOUCH EVENTS FOR MOBILE
+    // These fire when user touches the screen
     this.cardStack.addEventListener("touchstart", this.handleStart.bind(this), {
-      passive: false,
+      passive: false, // Allows us to prevent scrolling when needed
     });
     this.cardStack.addEventListener("touchmove", this.handleMove.bind(this), {
       passive: false,
@@ -44,12 +82,14 @@ class SwipeHandler {
       passive: false,
     });
 
-    // Mouse events for desktop - bind to document for proper drag behavior
+    // MOUSE EVENTS FOR DESKTOP
+    // Note: mousemove and mouseup are on document, not just cardStack
+    // This ensures we track the mouse even if it goes outside the card area
     this.cardStack.addEventListener("mousedown", this.handleStart.bind(this));
     document.addEventListener("mousemove", this.handleMove.bind(this));
     document.addEventListener("mouseup", this.handleEnd.bind(this));
 
-    // Prevent context menu on long press
+    // Prevent context menu on long press (that right-click menu)
     this.cardStack.addEventListener("contextmenu", (e) => e.preventDefault());
   }
 
@@ -86,7 +126,9 @@ class SwipeHandler {
 
     if (this.debug) {
       console.log(
-        `🎮 handleStart: ${isTouch ? "touch" : "mouse"} event on card ${card.dataset.bookId}`,
+        `🎮 handleStart: ${isTouch ? "touch" : "mouse"} event on card ${
+          card.dataset.bookId
+        }`
       );
     }
 
@@ -128,7 +170,7 @@ class SwipeHandler {
 
       if (this.debug) {
         console.log(
-          `🖱️ Mouse drag started at (${this.startX}, ${this.startY})`,
+          `🖱️ Mouse drag started at (${this.startX}, ${this.startY})`
         );
       }
 
@@ -143,7 +185,7 @@ class SwipeHandler {
           allowScrolling: this.allowScrolling,
           startX: this.startX,
           startY: this.startY,
-        },
+        }
       );
     }
   }
@@ -278,10 +320,10 @@ class SwipeHandler {
     const direction = this.currentX > 0 ? "right" : "left";
 
     const likeIndicator = this.currentCard.querySelector(
-      ".swipe-indicator.like",
+      ".swipe-indicator.like"
     );
     const passIndicator = this.currentCard.querySelector(
-      ".swipe-indicator.pass",
+      ".swipe-indicator.pass"
     );
 
     if (distance > 30) {
@@ -314,7 +356,7 @@ class SwipeHandler {
 
     // Add animation class
     card.classList.add(
-      direction === "right" ? "animate-swipe-right" : "animate-swipe-left",
+      direction === "right" ? "animate-swipe-right" : "animate-swipe-left"
     );
 
     // Call callback
@@ -322,7 +364,7 @@ class SwipeHandler {
       this.callbacks.onSwipe(
         bookId,
         direction === "right" ? "interested" : "not_interested",
-        direction,
+        direction
       );
     }
 

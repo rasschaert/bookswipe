@@ -1,51 +1,80 @@
-// BookSwipe Main Application
+/**
+ * ========================================
+ * BOOKSWIPE MAIN APPLICATION
+ * ========================================
+ *
+ * Central application controller managing:
+ * - State synchronization between gesture handler and UI
+ * - Progressive card loading for performance
+ * - Offline-first vote persistence
+ * - Screen transition coordination
+ *
+ * ARCHITECTURE NOTES:
+ * - No framework dependencies for minimal bundle size
+ * - Direct callback binding for gesture responsiveness
+ * - Object-based state management with explicit mutations
+ * - Async initialization with graceful degradation
+ */
+
+// Main application class - this controls everything
 class BookSwipeApp {
   constructor() {
-    this.books = [];
-    this.currentBookIndex = 0;
-    this.userVotes = {};
-    this.swipeHandler = null;
-    this.isLoading = false;
-    this.highestLoadedBookIndex = -1; // Track the highest book index that has been loaded
+    // APPLICATION STATE - Core data structures
+    this.books = []; // Book data from PocketBase
+    this.currentBookIndex = 0; // Current position in stack
+    this.userVotes = {}; // Vote storage: {bookId: "interested"|"not_interested"}
+    this.swipeHandler = null; // Gesture controller instance
+    this.isLoading = false; // Prevents concurrent operations
+    this.highestLoadedBookIndex = -1; // DOM optimization: tracks loaded cards
 
+    // INITIALIZATION - Start the app immediately when class is created
     this.init();
   }
 
+  /**
+   * APPLICATION INITIALIZATION
+   * ========================
+   * Startup sequence with proper async initialization order.
+   * Handles API connection, data loading, and UI setup with error recovery.
+   */
   async init() {
     console.log("🚀 Initializing BookSwipe...");
 
-    // Show loading screen
+    // STEP 1: Show loading screen immediately so user knows something is happening
     this.showScreen("loading-screen");
 
     try {
-      // Initialize PocketBase connection
+      // STEP 2: Initialize PocketBase connection
+      // The 'await' keyword means "wait for this to complete before continuing"
       await bookSwipeAPI.init();
 
-      // Test the connection first
+      // STEP 3: Test the connection first
       console.log("🔍 Testing PocketBase connection...");
       await bookSwipeAPI.testConnection();
       console.log("✅ PocketBase connection successful");
 
-      // Load books
+      // STEP 4: Load books from the database
       await this.loadBooks();
 
-      // Initialize UI
+      // STEP 5: Initialize UI components (like the swipe handler)
       this.initializeUI();
 
-      // Setup event listeners
+      // STEP 6: Setup event listeners for buttons
       this.setupEventListeners();
 
       console.log("✅ BookSwipe initialized successfully");
 
-      // Show welcome screen after brief loading
+      // STEP 7: Show welcome screen after brief loading (for good UX)
       setTimeout(() => {
         this.showScreen("welcome-screen");
       }, 1500);
     } catch (error) {
+      // ERROR HANDLING: If anything goes wrong, show helpful error messages
       console.error("❌ Failed to initialize BookSwipe:", error);
       console.error("❌ Error message:", error.message);
       console.error("❌ Error stack:", error.stack);
 
+      // Different error messages for different problems
       if (error.message.includes("No books available")) {
         this.showError("No books available to vote on.");
       } else if (
@@ -54,101 +83,163 @@ class BookSwipeApp {
         error.message.includes("Direct fetch failed")
       ) {
         this.showError(
-          'Cannot connect to PocketBase. Please check:\n\n1. PocketBase is running at https://adaptable-oxpecker.pikapod.net\n2. The "books" collection exists\n3. API rules allow public access',
+          'Cannot connect to PocketBase. Please check:\n\n1. PocketBase is running at https://adaptable-oxpecker.pikapod.net\n2. The "books" collection exists\n3. API rules allow public access'
         );
       } else {
         this.showError(
-          "Failed to load the application. Please check the console for more details.",
+          "Failed to load the application. Please check the console for more details."
         );
       }
     }
   }
 
+  /**
+   * LOAD BOOKS FROM DATABASE
+   * ========================
+   * This fetches all available books from PocketBase and stores them in memory.
+   *
+   * Manages book data loading with proper error handling and fallback patterns.
+   */
   async loadBooks() {
     console.log("📚 Loading books...");
 
+    // Call the API to get all books - this returns a Promise
     this.books = await bookSwipeAPI.getBooks();
     console.log(`📖 Loaded ${this.books.length} books`);
 
+    // Validation: Make sure we actually got some books to vote on
     if (this.books.length === 0) {
       throw new Error(
-        "No books available in PocketBase. Please add some books first.",
+        "No books available in PocketBase. Please add some books first."
       );
     }
   }
 
+  /**
+   * INITIALIZE USER INTERFACE COMPONENTS
+   * ===================================
+   * This creates and configures the SwipeHandler which manages touch/mouse interactions.
+   *
+   * Establishes callback communication pattern for loose component coupling.
+   * The SwipeHandler doesn't know about the app, but it calls our methods when things happen.
+   */
   initializeUI() {
     // Initialize swipe handler
     const cardStack = document.getElementById("card-stack");
+
+    // Create SwipeHandler instance with callback functions
+    // When user swipes, it will call our handleSwipe method
+    // When no cards are left, it will call our handleAllBooksReviewed method
     this.swipeHandler = new SwipeHandler(cardStack, {
-      onSwipe: this.handleSwipe.bind(this),
+      onSwipe: this.handleSwipe.bind(this), // .bind(this) ensures 'this' refers to BookSwipeApp
       onEmpty: this.handleAllBooksReviewed.bind(this),
     });
   }
 
+  /**
+   * SETUP EVENT LISTENERS
+   * =====================
+   * Connects UI elements to application logic with event delegation.
+   * Uses optional chaining (?.) for safe DOM element access.
+   */
   setupEventListeners() {
-    // Welcome screen
+    // Welcome screen - "Start Swiping" button
     document.getElementById("start-btn")?.addEventListener("click", () => {
       this.startVoting();
     });
 
-    // Action buttons
+    // Action buttons in voting screen
     document.getElementById("reject-btn")?.addEventListener("click", () => {
+      // Trigger a left swipe programmatically (same as swiping left)
       this.swipeHandler?.triggerSwipe("left");
     });
 
     document.getElementById("accept-btn")?.addEventListener("click", () => {
+      // Trigger a right swipe programmatically (same as swiping right)
       this.swipeHandler?.triggerSwipe("right");
     });
 
-    // Results screen
+    // Results screen - "Submit My Votes" button
     document
       .getElementById("submit-votes-btn")
       ?.addEventListener("click", () => {
         this.submitVotes();
       });
 
+    // Results screen - "Start Over" button
     document.getElementById("restart-btn")?.addEventListener("click", () => {
       this.restart();
     });
 
-    // Success screen
+    // Success screen - "Close" button
     document.getElementById("done-btn")?.addEventListener("click", () => {
       this.showScreen("welcome-screen");
     });
   }
 
+  /**
+   * START THE VOTING SESSION
+   * ========================
+   * This transitions from the welcome screen to the voting screen and prepares everything.
+   *
+   * Resets application state and initializes new voting session.
+   */
   startVoting() {
     console.log("🗳️ Starting voting session...");
 
-    this.currentBookIndex = 0;
-    this.userVotes = {};
+    // Reset voting state for a fresh start
+    this.currentBookIndex = 0; // Start from the first book
+    this.userVotes = {}; // Clear any previous votes
 
+    // Switch to voting screen
     this.showScreen("voting-screen");
+
+    // Load the first set of book cards into the DOM
     this.loadCards();
+
+    // Update the progress bar to show current position
     this.updateProgress();
   }
 
+  /**
+   * LOAD INITIAL CARDS INTO THE DOM
+   * ===============================
+   * This creates the HTML elements for book cards and adds them to the page.
+   * We only load a few cards at a time for better performance.
+   *
+   * Progressive card loading for optimal DOM performance.
+   * Limits concurrent cards to prevent memory issues.
+   */
   loadCards() {
+    // Get the container where cards will be placed
     const cardStack = document.getElementById("card-stack");
-    cardStack.innerHTML = "";
+    cardStack.innerHTML = ""; // Clear any existing cards
 
-    // Load up to 5 cards at a time for performance
+    // Performance optimization: Load up to 5 cards at a time
+    // This prevents the browser from having to handle too many DOM elements
     const cardsToLoad = Math.min(5, this.books.length - this.currentBookIndex);
 
+    // Create cards for the next few books
     for (let i = 0; i < cardsToLoad; i++) {
       const bookIndex = this.currentBookIndex + i;
+
+      // Make sure we don't go beyond the available books
       if (bookIndex < this.books.length) {
+        // Create HTML element for this book
         const card = this.createBookCard(this.books[bookIndex]);
+
+        // Add the card to the page
         cardStack.appendChild(card);
+
+        // Track which book index we've loaded (for performance optimization later)
         this.highestLoadedBookIndex = Math.max(
           this.highestLoadedBookIndex,
-          bookIndex,
+          bookIndex
         );
       }
     }
 
-    // Update card stack positioning
+    // Tell the swipe handler to update card positioning (stacking effect)
     this.swipeHandler?.updateCardStack();
   }
 
@@ -159,7 +250,7 @@ class BookSwipeApp {
 
     // Format rating
     const ratingStars = bookSwipeAPI.formatRating(
-      book.average_storygraph_rating,
+      book.average_storygraph_rating
     );
 
     // Use full synopsis without truncation
@@ -182,7 +273,7 @@ class BookSwipeApp {
                         ? `<img src="${book.cover_image_url}" alt="${book.title} cover" loading="lazy" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">`
                         : `<div class="no-image">📚<br>${book.title.substring(
                             0,
-                            20,
+                            20
                           )}</div>`
                     }
                 </div>
@@ -266,7 +357,7 @@ class BookSwipeApp {
     console.log(
       `🔍 Debug: currentBookIndex=${this.currentBookIndex}, total books=${
         this.books.length
-      }, votes recorded=${Object.keys(this.userVotes).length}`,
+      }, votes recorded=${Object.keys(this.userVotes).length}`
     );
 
     // Load more cards if needed - check after every swipe
@@ -283,7 +374,7 @@ class BookSwipeApp {
       console.log(
         `🏁 Triggering end: voted on ${
           Object.keys(this.userVotes).length
-        } out of ${this.books.length} books`,
+        } out of ${this.books.length} books`
       );
       setTimeout(() => {
         this.handleAllBooksReviewed();
@@ -300,7 +391,7 @@ class BookSwipeApp {
     const remainingBooks = this.books.length - nextBookIndex;
 
     console.log(
-      `🔄 loadMoreCards: currentBookIndex=${this.currentBookIndex}, currentCards=${currentCards}, nextBookIndex=${nextBookIndex}, remainingBooks=${remainingBooks}`,
+      `🔄 loadMoreCards: currentBookIndex=${this.currentBookIndex}, currentCards=${currentCards}, nextBookIndex=${nextBookIndex}, remainingBooks=${remainingBooks}`
     );
 
     // Add more cards if we have remaining books and fewer than 3 cards visible
@@ -312,13 +403,13 @@ class BookSwipeApp {
         const bookIndex = nextBookIndex + i;
         if (bookIndex < this.books.length) {
           console.log(
-            `📖 Loading book ${bookIndex}: ${this.books[bookIndex].title}`,
+            `📖 Loading book ${bookIndex}: ${this.books[bookIndex].title}`
           );
           const card = this.createBookCard(this.books[bookIndex]);
           cardStack.appendChild(card);
           this.highestLoadedBookIndex = Math.max(
             this.highestLoadedBookIndex,
-            bookIndex,
+            bookIndex
           );
         }
       }
@@ -326,7 +417,7 @@ class BookSwipeApp {
       this.swipeHandler?.updateCardStack();
     } else {
       console.log(
-        `⏹️ Not loading cards: remainingBooks=${remainingBooks}, currentCards=${currentCards}`,
+        `⏹️ Not loading cards: remainingBooks=${remainingBooks}, currentCards=${currentCards}`
       );
     }
   }
@@ -340,14 +431,14 @@ class BookSwipeApp {
     if (button) {
       button.classList.add("pressed");
       button.classList.add(
-        direction === "right" ? "success-feedback" : "reject-feedback",
+        direction === "right" ? "success-feedback" : "reject-feedback"
       );
 
       setTimeout(() => {
         button.classList.remove(
           "pressed",
           "success-feedback",
-          "reject-feedback",
+          "reject-feedback"
         );
       }, 400);
     }
@@ -373,10 +464,10 @@ class BookSwipeApp {
 
     // Calculate stats
     const likedBooks = Object.values(this.userVotes).filter(
-      (vote) => vote === "interested",
+      (vote) => vote === "interested"
     ).length;
     const passedBooks = Object.values(this.userVotes).filter(
-      (vote) => vote === "not_interested",
+      (vote) => vote === "not_interested"
     ).length;
 
     // Update results screen
@@ -465,10 +556,19 @@ class BookSwipeApp {
   }
 }
 
+/**
+ * ========================================
+ * APPLICATION INITIALIZATION
+ * ========================================
+ *
+ * Bootstrap sequence: Creates app instance after DOM is ready.
+ * Exposes global reference for debugging and development.
+ */
+
 // Initialize the app when DOM is loaded
 document.addEventListener("DOMContentLoaded", () => {
   console.log("📱 DOM loaded, starting BookSwipe...");
-  new BookSwipeApp();
+  window.bookSwipeApp = new BookSwipeApp(); // Make it globally accessible for debugging
 });
 
 // Handle page visibility changes (pause/resume)
