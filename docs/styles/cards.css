@@ -5,7 +5,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  max-height: calc(100vh - 120px); /* Only reserve space for header since buttons float */
+  max-height: calc(
+    100vh - 120px
+  ); /* Only reserve space for header since buttons float */
   margin: 0.25rem 0.5rem;
   overflow: hidden;
 }
@@ -15,10 +17,8 @@
   position: absolute;
   width: 100%;
   max-width: min(420px, calc(100vw - 1rem)); /* Better use of screen space */
-  height: calc(
-    100vh - 140px
-  ); /* More height available since buttons float */
-  background: var(--bg-primary);
+  height: calc(100vh - 140px); /* More height available since buttons float */
+  background: var(--bg-card);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
   overflow: hidden;
@@ -274,8 +274,8 @@
 /* Rating and Stats - Now in header */
 .book-header-info .book-stats {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 0.5rem;
   font-size: 0.8rem;
   margin: 0;
   padding: 0;
@@ -345,8 +345,8 @@
 /* Rating and Stats */
 .book-stats {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 0.5rem;
   padding-top: 0.75rem;
   border-top: 1px solid var(--border-color);
   font-size: 0.875rem;
@@ -465,7 +465,7 @@
   right: 1rem;
   font-size: 0.75rem;
   color: var(--primary-color);
-  background: var(--bg-primary);
+  background: var(--bg-card);
   padding: 0.25rem 0.5rem;
   border-radius: var(--radius-sm);
   text-align: center;
@@ -492,12 +492,16 @@
 @media (max-width: 480px) {
   .card-stack {
     margin: 0.25rem 0.25rem;
-    max-height: calc(100vh - 110px); /* Only header space needed since buttons float */
+    max-height: calc(
+      100vh - 110px
+    ); /* Only header space needed since buttons float */
   }
 
   .book-card {
     max-width: calc(100vw - 0.5rem);
-    height: calc(100vh - 130px); /* More height available with floating buttons */
+    height: calc(
+      100vh - 130px
+    ); /* More height available with floating buttons */
     margin: 0 0.25rem;
   }
 
@@ -562,9 +566,9 @@
   .card-content.has-overflow {
     background: linear-gradient(
       to bottom,
-      var(--bg-primary) 0%,
+      var(--bg-card) 0%,
       var(--bg-secondary) 50%,
-      var(--bg-primary) 100%
+      var(--bg-card) 100%
     );
     border-radius: var(--radius-md);
     margin: 0 -0.25rem;

@@ -50,6 +50,7 @@
   --bg-primary: #ffffff; /* Main background (white) */
   --bg-secondary: #f9fafb; /* Secondary background (very light gray) */
   --bg-tertiary: #f3f4f6; /* Tertiary background (light gray) */
+  --bg-card: #fefefe; /* Card background (very subtle off-white for contrast) */
   --border-color: #e5e7eb; /* Border color (light gray) */
 
   /* ACTION BUTTON BACKGROUNDS - Light theme */
@@ -100,6 +101,7 @@
     --bg-primary: #111827; /* Dark gray background */
     --bg-secondary: #1f2937; /* Slightly lighter dark gray */
     --bg-tertiary: #374151; /* Medium dark gray */
+    --bg-card: #1a1f2e; /* Card background (slightly lighter than primary for contrast) */
     --border-color: #4b5563; /* Dark border color */
 
     /* ACTION BUTTON BACKGROUNDS - Dark theme */
