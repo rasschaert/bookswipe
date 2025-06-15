@@ -15,9 +15,9 @@
   position: absolute;
   width: 100%;
   max-width: min(420px, calc(100vw - 2rem)); /* Better use of screen space */
-  max-height: calc(
+  height: calc(
     100vh - 200px
-  ); /* Ensure card doesn't exceed available space */
+  ); /* Fixed height to ensure all cards are the same size */
   background: var(--bg-primary);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
@@ -488,6 +488,7 @@
 
   .book-card {
     max-width: calc(100vw - 1rem);
+    height: calc(100vh - 160px); /* Fixed height for mobile */
     margin: 0 0.5rem;
   }
 
@@ -571,6 +572,7 @@
 
   .book-card {
     max-width: min(500px, calc(100vw - 2rem));
+    height: calc(100vh - 160px); /* Fixed height for tablet */
   }
 
   .book-header {
@@ -620,6 +622,7 @@
 
   .book-card {
     max-width: min(520px, calc(100vw - 3rem));
+    height: calc(100vh - 140px); /* Fixed height for desktop */
   }
 
   .book-header {
@@ -667,6 +670,10 @@
 @media (max-height: 600px) {
   .card-stack {
     max-height: 400px;
+  }
+
+  .book-card {
+    height: 400px; /* Fixed height for small screen heights */
   }
 
   .book-cover {
