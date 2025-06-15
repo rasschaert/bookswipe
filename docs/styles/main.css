@@ -344,6 +344,8 @@ body {
   background: var(--bg-primary);
   border-bottom: 1px solid var(--border-color);
   text-align: center;
+  position: relative;
+  z-index: 20;
 }
 
 .app-header h1 {
@@ -392,15 +394,22 @@ body {
   display: flex;
   flex-direction: column;
   padding: 0.75rem;
-  padding-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  position: relative; /* Enable absolute positioning for children */
 }
 
 /* Action Buttons */
 .action-buttons {
+  position: absolute; /* Float over content instead of taking layout space */
+  bottom: 1rem; /* Position from bottom */
+  left: 50%;
+  transform: translateX(-50%); /* Center horizontally */
   display: flex;
   justify-content: center;
   gap: 2rem;
-  margin-top: 1rem;
+  background: transparent; /* Transparent container to prevent visual "box" effect */
+  z-index: 15; /* Ensure buttons stay above cards */
+  pointer-events: none; /* Allow pointer events to pass through container */
 }
 
 .action-btn {
@@ -408,13 +417,14 @@ body {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
+  padding: 0.6rem 1.25rem;
   border: none;
   border-radius: var(--radius-lg);
   cursor: pointer;
   transition: all 0.2s ease;
   font-weight: 600;
   font-size: 0.9rem;
+  pointer-events: auto; /* Re-enable pointer events for actual buttons */
 }
 
 .reject-btn {
@@ -579,14 +589,25 @@ body {
   }
 
   .action-buttons {
-    gap: 2rem;
-    padding: 1rem;
+    gap: 1.5rem;
+    bottom: 0.5rem; /* Closer to bottom on mobile */
   }
 
   .action-btn {
-    width: 80px;
-    height: 80px;
-    font-size: 1.1rem;
+    width: 60px;
+    height: 60px;
+    font-size: 1rem;
+    padding: 0.5rem;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .btn-icon {
+    font-size: 1rem;
+  }
+
+  .btn-text {
+    font-size: 0.7rem;
   }
 
   .results-stats {
@@ -604,6 +625,8 @@ body {
     padding: 1.25rem 2rem;
     font-size: 1.1rem;
   }
+
+  /* Remove padding-bottom since buttons now float */
 }
 
 /* Tablet responsive */
@@ -615,7 +638,7 @@ body {
 
   .action-buttons {
     gap: 2.5rem;
-    padding: 1.5rem;
+    bottom: 1.5rem; /* More space from bottom on tablet */
   }
 
   .action-btn {

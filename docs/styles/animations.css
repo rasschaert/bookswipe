@@ -323,11 +323,6 @@
 
 /* Hover Effects */
 @media (hover: hover) {
-  .book-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-xl);
-  }
-
   .action-btn:hover {
     transform: scale(1.05);
   }

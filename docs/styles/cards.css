@@ -5,8 +5,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  max-height: calc(100vh - 180px); /* Reserve space for header and buttons */
-  margin: 0.5rem 1rem;
+  max-height: calc(100vh - 120px); /* Only reserve space for header since buttons float */
+  margin: 0.25rem 0.5rem;
   overflow: hidden;
 }
 
@@ -14,10 +14,10 @@
 .book-card {
   position: absolute;
   width: 100%;
-  max-width: min(420px, calc(100vw - 2rem)); /* Better use of screen space */
+  max-width: min(420px, calc(100vw - 1rem)); /* Better use of screen space */
   height: calc(
-    100vh - 200px
-  ); /* Fixed height to ensure all cards are the same size */
+    100vh - 140px
+  ); /* More height available since buttons float */
   background: var(--bg-primary);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
@@ -25,7 +25,8 @@
   cursor: grab;
   user-select: none;
   transform-origin: center center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s ease; /* Removed box-shadow transition to prevent hover effects */
+  box-shadow: var(--shadow-lg) !important; /* Force static shadow */
   display: flex;
   flex-direction: column;
 }
@@ -36,6 +37,14 @@
 
 .book-card.dragging {
   transition: none;
+}
+
+/* Explicitly disable any box-shadow transitions on cards */
+.book-card,
+.book-card *,
+.book-card::before,
+.book-card::after {
+  transition: transform 0.3s ease, opacity 0.3s ease !important;
 }
 
 .book-card.swiping-left {
@@ -75,8 +84,8 @@
 /* Book Header - Cover and Title Side by Side */
 .book-header {
   display: flex;
-  gap: 1rem;
-  padding: 1rem;
+  gap: 0.75rem;
+  padding: 0.75rem;
   border-bottom: 1px solid var(--border-color);
 }
 
@@ -123,7 +132,7 @@
 
 /* Card Content */
 .card-content {
-  padding: 1rem;
+  padding: 0.75rem;
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
@@ -231,7 +240,7 @@
 .book-header-info .genre-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: 0.3rem;
   margin: 0;
 }
 
@@ -294,8 +303,8 @@
 .genre-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 0.75rem;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
 }
 
 .genre-tag {
@@ -330,7 +339,7 @@
   font-size: 0.9rem;
   line-height: 1.5;
   color: var(--text-secondary);
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
 /* Rating and Stats */
@@ -338,7 +347,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 1rem;
+  padding-top: 0.75rem;
   border-top: 1px solid var(--border-color);
   font-size: 0.875rem;
 }
@@ -482,19 +491,19 @@
 /* Responsive Adjustments */
 @media (max-width: 480px) {
   .card-stack {
-    margin: 0.5rem 0.5rem;
-    max-height: calc(100vh - 160px); /* Better mobile height usage */
+    margin: 0.25rem 0.25rem;
+    max-height: calc(100vh - 110px); /* Only header space needed since buttons float */
   }
 
   .book-card {
-    max-width: calc(100vw - 1rem);
-    height: calc(100vh - 160px); /* Fixed height for mobile */
-    margin: 0 0.5rem;
+    max-width: calc(100vw - 0.5rem);
+    height: calc(100vh - 130px); /* More height available with floating buttons */
+    margin: 0 0.25rem;
   }
 
   .book-header {
-    padding: 1rem;
-    gap: 1rem;
+    padding: 0.75rem;
+    gap: 0.75rem;
   }
 
   .book-cover {
@@ -533,7 +542,7 @@
   }
 
   .card-content {
-    padding: 1rem 1.25rem; /* More padding for readability */
+    padding: 0.75rem 1rem; /* More padding for readability */
     /* Make scrollbar more visible on mobile */
     scrollbar-width: auto;
   }
@@ -559,25 +568,25 @@
     );
     border-radius: var(--radius-md);
     margin: 0 -0.25rem;
-    padding: 1rem 1.5rem;
+    padding: 0.75rem 1.25rem;
   }
 }
 
 /* Tablet and larger screens */
 @media (min-width: 481px) and (max-width: 768px) {
   .card-stack {
-    margin: 1rem;
-    max-height: calc(100vh - 160px);
+    margin: 0.5rem;
+    max-height: calc(100vh - 110px); /* Only header space needed */
   }
 
   .book-card {
-    max-width: min(500px, calc(100vw - 2rem));
-    height: calc(100vh - 160px); /* Fixed height for tablet */
+    max-width: min(500px, calc(100vw - 1rem));
+    height: calc(100vh - 130px); /* More height with floating buttons */
   }
 
   .book-header {
-    padding: 1.5rem;
-    gap: 1.25rem;
+    padding: 1rem;
+    gap: 1rem;
   }
 
   .book-cover {
@@ -594,7 +603,7 @@
   }
 
   .card-content {
-    padding: 1.5rem;
+    padding: 1rem;
   }
 
   .book-synopsis {
@@ -616,18 +625,18 @@
 /* Large screens */
 @media (min-width: 769px) {
   .card-stack {
-    margin: 1.5rem;
-    max-height: calc(100vh - 140px);
+    margin: 0.75rem;
+    max-height: calc(100vh - 100px); /* Only header space needed */
   }
 
   .book-card {
-    max-width: min(520px, calc(100vw - 3rem));
-    height: calc(100vh - 140px); /* Fixed height for desktop */
+    max-width: min(520px, calc(100vw - 1.5rem));
+    height: calc(100vh - 120px); /* More height with floating buttons */
   }
 
   .book-header {
-    padding: 2rem;
-    gap: 1.5rem;
+    padding: 1.25rem;
+    gap: 1.25rem;
   }
 
   .book-cover {
@@ -644,7 +653,7 @@
   }
 
   .card-content {
-    padding: 2rem;
+    padding: 1.25rem;
   }
 
   .book-synopsis {
