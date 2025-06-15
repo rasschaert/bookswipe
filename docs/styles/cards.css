@@ -44,7 +44,9 @@
 .book-card *,
 .book-card::before,
 .book-card::after {
-  transition: transform 0.3s ease, opacity 0.3s ease !important;
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease !important;
 }
 
 .book-card.swiping-left {
