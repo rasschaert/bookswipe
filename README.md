@@ -91,7 +91,6 @@ Follow these steps in order. If you get stuck, see the [Troubleshooting](#troubl
    ```
 
    This will:
-
    - Connect to your PocketBase instance
    - Automatically create the `books` and `votes` collections with proper schemas
    - Set up the correct API permissions
@@ -292,7 +291,7 @@ Before deploying to production:
 
 ```javascript
 // Line 23 in constructor - change from:
-this.baseURL = "https://adaptable-oxpecker.pikapod.net";
+this.baseURL = "https://pompous-pelican.pikapod.net";
 // To your production PocketBase URL:
 this.baseURL = "https://your-pocketbase-url.com";
 ```

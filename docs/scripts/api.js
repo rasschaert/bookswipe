@@ -1,7 +1,7 @@
 // PocketBase API Integration for BookSwipe
 class BookSwipeAPI {
   constructor() {
-    this.baseURL = "https://adaptable-oxpecker.pikapod.net";
+    this.baseURL = "https://pompous-pelican.pikapod.net";
     this.pb = null;
     this.initialized = false;
     // Don't call init() in constructor - it's async and should be called explicitly
