@@ -165,11 +165,8 @@ class VoteAnalyzer {
    * @param {Array} results - Processed book statistics
    */
   displayTopPicks(results) {
-    // Filter books with sufficient votes and sort by interest score
-    const topBooks = results
-      .filter((book) => book.total >= 3) // Require minimum votes for meaningful ranking
-      .sort((a, b) => b.score - a.score) // Sort by highest interest score
-      .slice(0, 10); // Show top 10
+    // Sort all books by interest score and show top 10 (no minimum vote filter)
+    const topBooks = results.sort((a, b) => b.score - a.score).slice(0, 10);
 
     console.log(chalk.green.bold("🏆 Top Book Picks (Most Liked):"));
     console.log();
@@ -180,10 +177,10 @@ class VoteAnalyzer {
         index === 0
           ? "🥇" // Gold medal
           : index === 1
-          ? "🥈" // Silver medal
-          : index === 2
-          ? "🥉" // Bronze medal
-          : `${index + 1}.`; // Numbered ranking
+            ? "🥈" // Silver medal
+            : index === 2
+              ? "🥉" // Bronze medal
+              : `${index + 1}.`; // Numbered ranking
 
       // Color-code scores: green (70%+), yellow (50-69%), red (<50%)
       const scoreColor =
