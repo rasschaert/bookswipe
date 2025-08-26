@@ -6,7 +6,7 @@ Administrative tools for managing BookSwipe book collections and analyzing votin
 
 1. **Setup**: Run `npm run setup` to configure your PocketBase connection
 2. **Import books**: Use `npm run import-books` to add books from JSON files
-3. **Analyze votes**: Run `npm run analyze-votes` to generate voting reports
+3. **Analyze votes**: Run `npm run analyze-votes` to generate voting reports and web results
 
 ## 📦 Installation
 
@@ -54,11 +54,11 @@ After setup, your `config.json` will contain:
 
 ## 📚 Available Scripts
 
-| Command                 | Purpose               | Description                                           |
-| ----------------------- | --------------------- | ----------------------------------------------------- |
-| `npm run setup`         | Initial configuration | Set up PocketBase connection and create collections   |
-| `npm run import-books`  | Book management       | Interactive tool to import books from JSON files      |
-| `npm run analyze-votes` | Vote analysis         | Generate comprehensive voting reports and export data |
+| Command                 | Purpose               | Description                                                         |
+| ----------------------- | --------------------- | ------------------------------------------------------------------- |
+| `npm run setup`         | Initial configuration | Set up PocketBase connection and create collections                 |
+| `npm run import-books`  | Book management       | Interactive tool to import books from JSON files                    |
+| `npm run analyze-votes` | Vote analysis         | Generate comprehensive voting reports, CSV exports, and web results |
 
 ## 🗂️ File Structure
 

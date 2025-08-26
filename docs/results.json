@@ -1,0 +1,148 @@
+{
+  "timestamp": "2025-08-26T19:37:51.014Z",
+  "total_sessions": 6,
+  "books": [
+    {
+      "title": "The Haunting of Hill House",
+      "author": "Shirley Jackson 🇺🇸",
+      "score": 100,
+      "interested": 6,
+      "not_interested": 0,
+      "total": 6,
+      "controversy": 50,
+      "page_count": 182,
+      "genres": [
+        "fiction",
+        "classics",
+        "horror",
+        "literary"
+      ]
+    },
+    {
+      "title": "The Dispossessed",
+      "author": "Ursula K. Le Guin 🇺🇸",
+      "score": 83.33333333333334,
+      "interested": 5,
+      "not_interested": 1,
+      "total": 6,
+      "controversy": 66.66666666666666,
+      "page_count": 341,
+      "genres": [
+        "fiction",
+        "classics",
+        "science fiction",
+        "speculative fiction"
+      ]
+    },
+    {
+      "title": "The Man in the High Castle",
+      "author": "Philip K. Dick 🇺🇸",
+      "score": 83.33333333333334,
+      "interested": 5,
+      "not_interested": 1,
+      "total": 6,
+      "controversy": 66.66666666666666,
+      "page_count": 259,
+      "genres": [
+        "fiction",
+        "classics",
+        "dystopian",
+        "science fiction"
+      ]
+    },
+    {
+      "title": "This Is How You Lose the Time War",
+      "author": "Max Gladstone 🇺🇸 & Amal El-Mohtar 🇨🇦",
+      "score": 66.66666666666666,
+      "interested": 4,
+      "not_interested": 2,
+      "total": 6,
+      "controversy": 83.33333333333334,
+      "page_count": 198,
+      "genres": [
+        "fiction",
+        "lgbtqia+",
+        "romance",
+        "science fiction"
+      ]
+    },
+    {
+      "title": "Roadside Picnic",
+      "author": "Boris Strugatsky 🇷🇺 & Arkady Strugatsky 🇬🇪🇷🇺",
+      "score": 66.66666666666666,
+      "interested": 4,
+      "not_interested": 2,
+      "total": 6,
+      "controversy": 83.33333333333334,
+      "page_count": 145,
+      "genres": [
+        "fiction",
+        "science fiction",
+        "classics",
+        "speculative fiction"
+      ]
+    },
+    {
+      "title": "Complicity",
+      "author": "Iain Banks 🏴󠁧󠁢󠁳󠁣󠁴󠁿",
+      "score": 66.66666666666666,
+      "interested": 4,
+      "not_interested": 2,
+      "total": 6,
+      "controversy": 83.33333333333334,
+      "page_count": 313,
+      "genres": [
+        "fiction",
+        "crime",
+        "mystery"
+      ]
+    },
+    {
+      "title": "Fight Club",
+      "author": "Chuck Palahniuk 🇺🇸",
+      "score": 50,
+      "interested": 3,
+      "not_interested": 3,
+      "total": 6,
+      "controversy": 100,
+      "page_count": 218,
+      "genres": [
+        "fiction",
+        "classics",
+        "thriller"
+      ]
+    },
+    {
+      "title": "The Shadow of the Wind",
+      "author": "Carlos Ruiz Zafón 🇪🇸",
+      "score": 33.33333333333333,
+      "interested": 2,
+      "not_interested": 4,
+      "total": 6,
+      "controversy": 83.33333333333333,
+      "page_count": 487,
+      "genres": [
+        "fiction",
+        "historical fiction",
+        "mystery",
+        "literary"
+      ]
+    },
+    {
+      "title": "Artemis Fowl",
+      "author": "Eoin Colfer 🇺🇸",
+      "score": 0,
+      "interested": 0,
+      "not_interested": 6,
+      "total": 6,
+      "controversy": 50,
+      "page_count": 279,
+      "genres": [
+        "fiction",
+        "fantasy",
+        "middle grade",
+        "science fiction"
+      ]
+    }
+  ]
+}

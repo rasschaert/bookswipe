@@ -6,7 +6,14 @@ A "Tinder for Books" voting application for book clubs. Users swipe through book
 
 ![BookSwipe Demo](bookswipe-demo.gif)
 
-_Swipe through book suggestions just like Tinder! Swipe right to like, left to pass._
+\_Swipe through book sugges**🌐 Web Results Features**
+
+- Responsive design that works on all devices
+- Interactive results presentation
+- Dramatic winner reveal with confetti animation
+- Vote visualizations with progress bars
+- Proper tie detection and ranking (tied books share the same rank)
+- Real-time data updatesst like Tinder! Swipe right to like, left to pass.\_
 
 ## Project Structure
 
@@ -157,7 +164,7 @@ _Example of the detailed voting analysis report showing book rankings, participa
 ```bash
 npm run setup          # Initial configuration
 npm run import-books    # Interactive book importer
-npm run analyze-votes   # Generate voting reports
+npm run analyze-votes   # Generate voting reports and web results
 ```
 
 ### Book Data Format
@@ -216,6 +223,48 @@ The analysis tool provides:
 - Detailed CSV reports
 - Raw JSON vote data
 - Timestamped exports
+
+### Web Results Dashboard
+
+Beautiful web-based presentation of voting results:
+
+**� Web Results Features**
+
+- Responsive design that works on all devices
+- Interactive results presentation
+- Dramatic winner reveal with confetti animation
+- Vote visualizations with progress bars
+- Automatic tie detection and handling
+- Real-time data updates
+
+**📊 Accessible Results Sharing**
+
+- Shareable web link for all participants
+- No additional software needed - just a web browser!
+- Works on phones, tablets, and computers
+- Perfect for remote book club members
+- Automatic generation with every vote analysis
+
+**🎯 Auto-Generated Content**
+
+- Results automatically published to `docs/results.html`
+- Dramatic reveal version available at `docs/dramatic-results.html`
+- Data updates with every `npm run analyze-votes` command
+- Beautiful styling with CSS animations
+- JSON data source for easy customization
+
+**🎭 Dramatic Results Page**
+
+- Scroll-triggered reveal of results in reverse order (worst to best)
+- Books grouped into dramatic tiers: "Struggling Tales" → "Underdogs" → "Rising Stars" → "The Champion(s)"
+- Winner gets confetti celebration and special styling
+- Perfect for building suspense during book club meetings
+
+**🔧 CSV Conversion Tool**
+
+- Convert historical CSV exports back to web format
+- Usage: `node scripts/csv-to-json.js data/exports/vote-analysis-YYYY-MM-DD.csv`
+- Useful for testing different data sets or recreating past results
 
 ## Frontend Features
 

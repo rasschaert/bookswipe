@@ -1,0 +1,628 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BookSwipe Results - The Dramatic Reveal</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Arial", sans-serif;
+        background: linear-gradient(
+          180deg,
+          #1a1a2e 0%,
+          #16213e 25%,
+          #0f3460 50%,
+          #533483 75%,
+          #7209b7 100%
+        );
+        color: white;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 4rem;
+        position: relative;
+      }
+
+      .header h1 {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+        text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+        background: linear-gradient(
+          45deg,
+          #ff6b6b,
+          #ffd93d,
+          #6bcf7f,
+          #4d96ff,
+          #9c88ff
+        );
+        background-size: 300% 300%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: gradientShift 3s ease-in-out infinite;
+      }
+
+      @keyframes gradientShift {
+        0%,
+        100% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+      }
+
+      .header .subtitle {
+        font-size: 1.4rem;
+        opacity: 0.9;
+        margin-bottom: 1rem;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+      }
+
+      .stats {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 20px;
+        padding: 1.5rem 2.5rem;
+        display: inline-block;
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      }
+
+      .reveal-section {
+        margin-bottom: 6rem;
+        opacity: 0;
+        transform: translateY(100px);
+        transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      }
+
+      .reveal-section.revealed {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .section-title {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        position: relative;
+      }
+
+      .section-title::before,
+      .section-title::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        width: 100px;
+        height: 2px;
+        background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+      }
+
+      .section-title::before {
+        left: -120px;
+      }
+
+      .section-title::after {
+        right: -120px;
+      }
+
+      .books-grid {
+        display: grid;
+        gap: 2rem;
+        grid-template-columns: 1fr;
+      }
+
+      .book-card {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 2rem;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+        opacity: 0;
+        transform: scale(0.9);
+        animation: cardReveal 0.6s ease forwards;
+      }
+
+      @keyframes cardReveal {
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .book-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+      }
+
+      .book-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+      }
+
+      .book-rank {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #ffd93d;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        min-width: 60px;
+      }
+
+      .book-info {
+        flex: 1;
+        margin-left: 1rem;
+      }
+
+      .book-title {
+        font-size: 1.4rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        line-height: 1.3;
+      }
+
+      .book-author {
+        font-size: 1rem;
+        opacity: 0.8;
+        margin-bottom: 0.5rem;
+      }
+
+      .book-details {
+        font-size: 0.9rem;
+        opacity: 0.7;
+        margin-bottom: 1rem;
+      }
+
+      .vote-display {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 15px;
+        padding: 1rem;
+        margin-top: 1rem;
+      }
+
+      .vote-percentage {
+        font-size: 1.8rem;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 0.5rem;
+      }
+
+      .vote-counts {
+        text-align: center;
+        font-size: 1rem;
+        opacity: 0.9;
+        margin-bottom: 1rem;
+      }
+
+      .vote-bar-container {
+        height: 20px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .vote-bar {
+        height: 100%;
+        border-radius: 10px;
+        transition: width 1s ease-in-out;
+        position: relative;
+        background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      .vote-bar::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+          45deg,
+          transparent 30%,
+          rgba(255, 255, 255, 0.3) 50%,
+          transparent 70%
+        );
+        animation: shine 2s infinite;
+      }
+
+      @keyframes shine {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(100%);
+        }
+      }
+
+      .winner-section {
+        background: radial-gradient(
+          circle,
+          rgba(255, 215, 0, 0.3) 0%,
+          rgba(255, 107, 107, 0.2) 100%
+        );
+        border: 2px solid gold;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .confetti {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        background: #ffd93d;
+        top: -10px;
+        z-index: 1000;
+        pointer-events: none;
+      }
+
+      .scroll-hint {
+        position: fixed;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+        opacity: 0.7;
+        animation: bounce 2s infinite;
+        z-index: 100;
+      }
+
+      @keyframes bounce {
+        0%,
+        20%,
+        50%,
+        80%,
+        100% {
+          transform: translateX(-50%) translateY(0);
+        }
+        40% {
+          transform: translateX(-50%) translateY(-10px);
+        }
+        60% {
+          transform: translateX(-50%) translateY(-5px);
+        }
+      }
+
+      .scroll-hint.hidden {
+        opacity: 0;
+        transition: opacity 0.5s ease;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 1rem;
+        }
+        .header h1 {
+          font-size: 2.5rem;
+        }
+        .section-title {
+          font-size: 2rem;
+        }
+        .section-title::before,
+        .section-title::after {
+          display: none;
+        }
+        .book-card {
+          padding: 1.5rem;
+        }
+        .book-header {
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+        }
+        .book-info {
+          margin-left: 0;
+          margin-top: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🎭 The Dramatic Reveal</h1>
+        <div class="subtitle">BookSwipe Voting Results</div>
+        <div class="stats">
+          <span id="total-sessions">Loading...</span> voting sessions •
+          <span id="total-books">Loading...</span> books •
+          <span id="avg-votes">Loading...</span> avg votes per book
+        </div>
+      </div>
+
+      <div id="results-container">
+        <!-- Results will be loaded here -->
+      </div>
+    </div>
+
+    <div class="scroll-hint" id="scroll-hint">
+      <div>👇 Scroll to reveal the next tier</div>
+    </div>
+
+    <script>
+      let votingData = null;
+      let currentSection = 0;
+      let totalSections = 0;
+
+      // Load the voting data
+      async function loadVotingData() {
+        try {
+          const response = await fetch("results.json");
+          votingData = await response.json();
+
+          // Update stats
+          document.getElementById("total-sessions").textContent =
+            votingData.total_sessions;
+          document.getElementById("total-books").textContent =
+            votingData.books.length;
+          const avgVotes =
+            votingData.books.length > 0
+              ? (
+                  votingData.books.reduce(
+                    (sum, book) => sum + (book.total || 0),
+                    0
+                  ) / votingData.books.length
+                ).toFixed(1)
+              : "0";
+          document.getElementById("avg-votes").textContent = avgVotes;
+
+          renderDramaticResults();
+        } catch (error) {
+          console.error("Error loading voting data:", error);
+          document.getElementById("results-container").innerHTML =
+            '<div style="text-align: center; color: #ff6b6b;">Error loading results. Please try again.</div>';
+        }
+      }
+
+      function renderDramaticResults() {
+        if (!votingData || !votingData.books) return;
+
+        const container = document.getElementById("results-container");
+
+        // Add proper ranks to books handling ties, then reverse order - worst first
+        const rankedBooks = addProperRanks(votingData.books).reverse();
+
+        // Group books by performance tiers
+        const tiers = groupBooksByTiers(rankedBooks);
+        totalSections = tiers.length;
+
+        container.innerHTML = "";
+
+        tiers.forEach((tier, index) => {
+          const section = createTierSection(tier, index);
+          container.appendChild(section);
+        });
+
+        // Set up scroll detection
+        setupScrollReveal();
+      }
+
+      function addProperRanks(books) {
+        // Books are already sorted by score (best first)
+        let currentRank = 1;
+
+        return books.map((book, index) => {
+          if (index > 0 && books[index - 1].score !== book.score) {
+            // Score changed, update rank to current position
+            currentRank = index + 1;
+          }
+
+          return {
+            ...book,
+            rank: currentRank,
+          };
+        });
+      }
+
+      function groupBooksByTiers(books) {
+        if (books.length === 0) return [];
+
+        const tiers = [];
+
+        // Separate the winner(s) - books with the highest score
+        const topScore = books[books.length - 1].score; // Last book has highest score (reversed order)
+        const winners = books.filter((book) => book.score === topScore);
+        const remaining = books.filter((book) => book.score !== topScore);
+
+        // Group remaining books into tiers
+        if (remaining.length > 0) {
+          const tierSize = Math.ceil(remaining.length / 3); // Aim for 3 tiers for non-winners
+
+          for (let i = 0; i < remaining.length; i += tierSize) {
+            const tierBooks = remaining.slice(i, i + tierSize);
+            const tierIndex = Math.floor(i / tierSize);
+
+            let tierName;
+            if (tierIndex === 0) tierName = "The Struggling Tales";
+            else if (tierIndex === 1) tierName = "The Underdogs";
+            else tierName = "The Rising Stars";
+
+            tiers.push({
+              name: tierName,
+              books: tierBooks,
+              index: tierIndex,
+            });
+          }
+        }
+
+        // Add winners as the final tier
+        tiers.push({
+          name: winners.length > 1 ? "The Champions" : "The Champion",
+          books: winners,
+          index: tiers.length,
+          isWinner: true,
+        });
+
+        return tiers;
+      }
+
+      function createTierSection(tier, sectionIndex) {
+        const section = document.createElement("div");
+        section.className = "reveal-section";
+        section.dataset.section = sectionIndex;
+
+        const isWinner = tier.isWinner || false;
+        if (isWinner) {
+          section.classList.add("winner-section");
+        }
+
+        const titleElement = document.createElement("div");
+        titleElement.className = "section-title";
+        titleElement.textContent = tier.name;
+
+        const booksGrid = document.createElement("div");
+        booksGrid.className = "books-grid";
+
+        tier.books.forEach((book, bookIndex) => {
+          const bookCard = createBookCard(book, bookIndex);
+          booksGrid.appendChild(bookCard);
+        });
+
+        section.appendChild(titleElement);
+        section.appendChild(booksGrid);
+
+        return section;
+      }
+
+      function createBookCard(book, index) {
+        const card = document.createElement("div");
+        card.className = "book-card";
+        card.style.animationDelay = `${index * 0.2}s`;
+
+        const percentage = book.total > 0 ? book.score : 0;
+        const likes = book.interested || 0;
+        const dislikes = book.not_interested || 0;
+        const pages = book.page_count || "Unknown";
+        const tags = book.genres ? book.genres.join(", ") : "No tags";
+
+        card.innerHTML = `
+          <div class="book-header">
+            <div class="book-rank">#${book.rank}</div>
+            <div class="book-info">
+              <div class="book-title">${book.title}</div>
+              <div class="book-author">by ${book.author}</div>
+              <div class="book-details">
+                📄 ${pages} pages • 🏷️ ${tags}
+              </div>
+            </div>
+          </div>
+          <div class="vote-display">
+            <div class="vote-percentage">${percentage.toFixed(1)}% liked</div>
+            <div class="vote-counts">${likes}👍 ${dislikes}👎</div>
+            <div class="vote-bar-container">
+              <div class="vote-bar" style="width: ${percentage}%"></div>
+            </div>
+          </div>
+        `;
+
+        return card;
+      }
+
+      function setupScrollReveal() {
+        const sections = document.querySelectorAll(".reveal-section");
+        const scrollHint = document.getElementById("scroll-hint");
+
+        // Reveal first section immediately
+        if (sections.length > 0) {
+          sections[0].classList.add("revealed");
+          currentSection = 1;
+        }
+
+        function checkScroll() {
+          const scrollPosition = window.scrollY + window.innerHeight;
+          const documentHeight = document.documentElement.scrollHeight;
+
+          // Check if we should reveal the next section
+          if (currentSection < sections.length) {
+            const nextSection = sections[currentSection];
+            const sectionTop = nextSection.offsetTop;
+
+            if (scrollPosition > sectionTop + 200) {
+              nextSection.classList.add("revealed");
+              currentSection++;
+
+              // Trigger confetti for winner section
+              if (
+                currentSection === sections.length &&
+                nextSection.classList.contains("winner-section")
+              ) {
+                triggerConfetti();
+              }
+            }
+          }
+
+          // Hide scroll hint when near bottom or all sections revealed
+          if (
+            scrollPosition > documentHeight - 200 ||
+            currentSection >= sections.length
+          ) {
+            scrollHint.classList.add("hidden");
+          } else {
+            scrollHint.classList.remove("hidden");
+          }
+        }
+
+        window.addEventListener("scroll", checkScroll);
+        checkScroll(); // Check initially
+      }
+
+      function triggerConfetti() {
+        const colors = ["#ffd93d", "#ff6b6b", "#6bcf7f", "#4d96ff", "#9c88ff"];
+
+        for (let i = 0; i < 50; i++) {
+          setTimeout(() => {
+            const confetti = document.createElement("div");
+            confetti.className = "confetti";
+            confetti.style.backgroundColor =
+              colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.left = Math.random() * 100 + "vw";
+            confetti.style.animationDuration = Math.random() * 2 + 1 + "s";
+            confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+
+            document.body.appendChild(confetti);
+
+            // Animate confetti falling
+            confetti.animate(
+              [
+                {
+                  transform: `translateY(-10px) rotate(${Math.random() * 360}deg)`,
+                  opacity: 1,
+                },
+                {
+                  transform: `translateY(100vh) rotate(${Math.random() * 360 + 360}deg)`,
+                  opacity: 0,
+                },
+              ],
+              {
+                duration: 3000,
+                easing: "ease-out",
+              }
+            ).onfinish = () => confetti.remove();
+          }, i * 100);
+        }
+      }
+
+      // Load data when page loads
+      window.addEventListener("DOMContentLoaded", loadVotingData);
+    </script>
+  </body>
+</html>

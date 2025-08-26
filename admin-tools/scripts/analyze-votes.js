@@ -89,6 +89,7 @@ class VoteAnalyzer {
 
       // Export processed data for external analysis
       await this.exportToCSV(results);
+      await this.exportWebResults(results, votes.length);
 
       return results;
     } catch (error) {
@@ -327,6 +328,42 @@ class VoteAnalyzer {
     } catch (error) {
       console.error(
         chalk.red("❌ Failed to export vote details:", error.message)
+      );
+    }
+  }
+
+  async exportWebResults(results, totalSessions) {
+    try {
+      // Path to the docs directory (web results)
+      const webPath = path.join(__dirname, "..", "..", "docs", "results.json");
+
+      // Sort results by score (highest first)
+      const sortedResults = results.sort((a, b) => b.score - a.score);
+
+      // Create web-friendly format
+      const webData = {
+        timestamp: new Date().toISOString(),
+        total_sessions: totalSessions,
+        books: sortedResults.map((book) => ({
+          title: book.title,
+          author: book.author,
+          score: book.score,
+          interested: book.interested,
+          not_interested: book.not_interested,
+          total: book.total,
+          controversy: book.controversy || 0,
+          page_count: book.page_count || 0,
+          genres: book.genre_tags || [],
+        })),
+      };
+
+      await fs.writeJSON(webPath, webData, { spaces: 2 });
+
+      console.log(chalk.green(`✅ Web results exported to: ${webPath}`));
+      console.log(chalk.blue(`🌐 View results at: docs/results.html`));
+    } catch (error) {
+      console.error(
+        chalk.red("❌ Failed to export web results:", error.message)
       );
     }
   }
