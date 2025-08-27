@@ -409,9 +409,9 @@ console.log(window.bookSwipeApp.currentBookIndex); // Current position
 
 ### Common Issues
 
-**Books not loading**: Check PocketBase URL and collection permissions
-**Swipe not working**: Verify touch-action CSS properties
-**Votes not submitting**: Check network connectivity and API endpoints
+- **Books not loading**: Check PocketBase URL and collection permissions
+- **Swipe not working**: Verify touch-action CSS properties
+- **Votes not submitting**: Check network connectivity and API endpoints
 
 ## License
 

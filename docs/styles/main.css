@@ -28,10 +28,10 @@
 }
 
 /* ==========================================
-   CSS CUSTOM PROPERTIES (VARIABLES)
-   ==========================================
-   These variables make it easy to maintain consistent colors and spacing.
-   Change a value here, and it updates throughout the entire app! */
+  CSS CUSTOM PROPERTIES (VARIABLES)
+  ==========================================
+  These variables make it easy to maintain consistent colors and spacing.
+  Change a value here, and it updates throughout the entire app! */
 
 :root {
   /* COLOR PALETTE - Light theme (default) */
@@ -136,9 +136,9 @@
 }
 
 /* ==========================================
-   BODY AND MAIN APP CONTAINER
-   ==========================================
-   Sets up the overall page layout and styling */
+  BODY AND MAIN APP CONTAINER
+  ==========================================
+  Sets up the overall page layout and styling */
 
 body {
   /* FONT STACK - Modern, readable fonts with fallbacks */
@@ -178,10 +178,10 @@ body {
 }
 
 /* ==========================================
-   SCREEN MANAGEMENT SYSTEM
-   ==========================================
-   BookSwipe uses a single-page application pattern.
-   Different "screens" are shown/hidden using CSS classes.
+  SCREEN MANAGEMENT SYSTEM
+  ==========================================
+  BookSwipe uses a single-page application pattern.
+  Different "screens" are shown/hidden using CSS classes.
 
    SPA pattern: Multiple sections controlled via JavaScript visibility. */
 
@@ -570,9 +570,9 @@ body {
 }
 
 /* ==========================================
-   SMOOTH THEME TRANSITIONS
-   ==========================================
-   Adds smooth transitions when switching themes */
+  SMOOTH THEME TRANSITIONS
+  ==========================================
+  Adds smooth transitions when switching themes */
 *:not(.book-card):not(.swipe-indicator):not(.loading-spinner),
 *:not(.book-card):not(.swipe-indicator):not(.loading-spinner)::before,
 *:not(.book-card):not(.swipe-indicator):not(.loading-spinner)::after {
