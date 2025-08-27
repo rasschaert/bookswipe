@@ -200,17 +200,17 @@
       }
 
       .vote-percentage {
-        font-size: 1.8rem;
-        font-weight: bold;
-        text-align: center;
-        margin-bottom: 0.5rem;
-      }
-
-      .vote-counts {
         text-align: center;
         font-size: 1rem;
         opacity: 0.9;
         margin-bottom: 1rem;
+      }
+
+      .vote-counts {
+        font-size: 1.8rem;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 0.5rem;
       }
 
       .vote-bar-container {
@@ -408,7 +408,7 @@
         container.innerHTML = "";
 
         tiers.forEach((tier, index) => {
-          const section = createTierSection(tier, index);
+          const section = createTierSection(tier, index, rankedBooks);
           container.appendChild(section);
         });
 
@@ -443,25 +443,22 @@
         const winners = books.filter((book) => book.score === topScore);
         const remaining = books.filter((book) => book.score !== topScore);
 
-        // Group remaining books into tiers
+        // Group remaining books into tiers, but respect ties
         if (remaining.length > 0) {
-          const tierSize = Math.ceil(remaining.length / 3); // Aim for 3 tiers for non-winners
+          const tierGroups = createTierGroupsRespectingTies(remaining);
 
-          for (let i = 0; i < remaining.length; i += tierSize) {
-            const tierBooks = remaining.slice(i, i + tierSize);
-            const tierIndex = Math.floor(i / tierSize);
-
+          tierGroups.forEach((group, index) => {
             let tierName;
-            if (tierIndex === 0) tierName = "The Struggling Tales";
-            else if (tierIndex === 1) tierName = "The Underdogs";
+            if (index === 0) tierName = "The Struggling Tales";
+            else if (index === 1) tierName = "The Underdogs";
             else tierName = "The Rising Stars";
 
             tiers.push({
               name: tierName,
-              books: tierBooks,
-              index: tierIndex,
+              books: group,
+              index: index,
             });
-          }
+          });
         }
 
         // Add winners as the final tier
@@ -475,7 +472,45 @@
         return tiers;
       }
 
-      function createTierSection(tier, sectionIndex) {
+      function createTierGroupsRespectingTies(books) {
+        if (books.length === 0) return [];
+
+        // Aim for roughly 3 groups, but keep tied books together
+        const targetGroupSize = Math.ceil(books.length / 3);
+        const groups = [];
+        let currentGroup = [];
+        let currentRank = null;
+
+        for (const book of books) {
+          // If we're starting a new group or this book has the same rank as previous
+          if (
+            currentRank === null ||
+            book.rank === currentRank ||
+            currentGroup.length < targetGroupSize
+          ) {
+            currentGroup.push(book);
+            currentRank = book.rank;
+          } else {
+            // Start a new group, but only if we don't already have 3 groups
+            if (groups.length < 2) {
+              groups.push(currentGroup);
+              currentGroup = [book];
+              currentRank = book.rank;
+            } else {
+              // Add to the last group to avoid too many tiers
+              currentGroup.push(book);
+            }
+          }
+        }
+
+        // Add the final group
+        if (currentGroup.length > 0) {
+          groups.push(currentGroup);
+        }
+
+        return groups;
+      }
+      function createTierSection(tier, sectionIndex, allBooks) {
         const section = document.createElement("div");
         section.className = "reveal-section";
         section.dataset.section = sectionIndex;
@@ -493,7 +528,7 @@
         booksGrid.className = "books-grid";
 
         tier.books.forEach((book, bookIndex) => {
-          const bookCard = createBookCard(book, bookIndex);
+          const bookCard = createBookCard(book, bookIndex, allBooks);
           booksGrid.appendChild(bookCard);
         });
 
@@ -503,7 +538,7 @@
         return section;
       }
 
-      function createBookCard(book, index) {
+      function createBookCard(book, index, allBooks) {
         const card = document.createElement("div");
         card.className = "book-card";
         card.style.animationDelay = `${index * 0.2}s`;
@@ -514,9 +549,14 @@
         const pages = book.page_count || "Unknown";
         const tags = book.genres ? book.genres.join(", ") : "No tags";
 
+        // Check if this book is tied with others
+        const booksWithSameRank = allBooks.filter((b) => b.rank === book.rank);
+        const isTied = booksWithSameRank.length > 1;
+        const rankDisplay = isTied ? `#${book.rank} (tied)` : `#${book.rank}`;
+
         card.innerHTML = `
           <div class="book-header">
-            <div class="book-rank">#${book.rank}</div>
+            <div class="book-rank">${rankDisplay}</div>
             <div class="book-info">
               <div class="book-title">${book.title}</div>
               <div class="book-author">by ${book.author}</div>
@@ -526,8 +566,8 @@
             </div>
           </div>
           <div class="vote-display">
-            <div class="vote-percentage">${percentage.toFixed(1)}% liked</div>
             <div class="vote-counts">${likes}👍 ${dislikes}👎</div>
+            <div class="vote-percentage">${percentage.toFixed(1)}% liked</div>
             <div class="vote-bar-container">
               <div class="vote-bar" style="width: ${percentage}%"></div>
             </div>

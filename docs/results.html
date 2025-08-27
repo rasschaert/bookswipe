@@ -54,13 +54,15 @@
       }
 
       .winner-card {
-        background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+        background: rgba(255, 255, 255, 0.15);
+        border: 2px solid #d4af37;
         border-radius: 20px;
         padding: 2rem;
         text-align: center;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
         margin-bottom: 2rem;
-        color: #2c3e50;
+        color: white;
+        backdrop-filter: blur(10px);
       }
 
       .winner-card h2 {
@@ -153,14 +155,14 @@
 
       .score-text {
         text-align: center;
-        font-weight: bold;
-        font-size: 1.1rem;
+        font-size: 0.9rem;
+        margin: 0.5rem 0;
       }
 
       .vote-details {
-        font-size: 0.9rem;
+        font-size: 1.1rem;
+        font-weight: bold;
         text-align: center;
-        margin: 0.5rem 0;
       }
 
       .genres {
@@ -279,8 +281,14 @@
                     <div style="font-size: 3rem; margin-bottom: 1rem;">🏆</div>
                     <h2>${winner.title}</h2>
                     <p class="author">by ${winner.author}</p>
-                    <div class="score">${winner.score.toFixed(1)}%</div>
-                    <p>${winner.interested} people loved it out of ${winner.total} votes</p>
+                    
+                    <div style="font-size: 1.4rem; font-weight: bold; margin: 1rem 0;">${winner.interested}👍 ${winner.not_interested}👎</div>
+                    <div style="font-size: 1rem; margin-bottom: 1rem;">${winner.score.toFixed(1)}% liked</div>
+                    
+                    <div class="vote-bar" style="margin: 1rem auto; max-width: 300px;">
+                        <div class="liked-section" style="width: ${winner.score}%"></div>
+                        <div class="disliked-section" style="width: ${100 - winner.score}%"></div>
+                    </div>
                 </div>
             `;
       }
@@ -303,15 +311,16 @@
                         <h3>${book.title}</h3>
                         <p class="author">by ${book.author}</p>
 
+                        <div class="vote-details">
+                            ${book.interested}👍 ${book.not_interested}👎
+                        </div>
+                        <div class="score-text">${book.score.toFixed(1)}% liked</div>
+
                         <div class="vote-bar">
                             <div class="liked-section" style="width: ${book.score}%"></div>
                             <div class="disliked-section" style="width: ${100 - book.score}%"></div>
                         </div>
 
-                        <div class="score-text">${book.score.toFixed(1)}% liked</div>
-                        <div class="vote-details">
-                            ${book.interested}👍 ${book.not_interested}👎 (${book.total} total votes)
-                        </div>
                         <div class="genres">
                             ${book.genres.slice(0, 3).join(" • ")}
                         </div>
