@@ -1,14 +1,14 @@
 {
-  "timestamp": "2025-08-26T19:37:51.014Z",
-  "total_sessions": 6,
+  "timestamp": "2025-08-27T13:03:36.339Z",
+  "total_sessions": 7,
   "books": [
     {
       "title": "The Haunting of Hill House",
       "author": "Shirley Jackson 🇺🇸",
       "score": 100,
-      "interested": 6,
+      "interested": 7,
       "not_interested": 0,
-      "total": 6,
+      "total": 7,
       "controversy": 50,
       "page_count": 182,
       "genres": [
@@ -21,11 +21,11 @@
     {
       "title": "The Dispossessed",
       "author": "Ursula K. Le Guin 🇺🇸",
-      "score": 83.33333333333334,
-      "interested": 5,
+      "score": 85.71428571428571,
+      "interested": 6,
       "not_interested": 1,
-      "total": 6,
-      "controversy": 66.66666666666666,
+      "total": 7,
+      "controversy": 64.28571428571429,
       "page_count": 341,
       "genres": [
         "fiction",
@@ -37,11 +37,11 @@
     {
       "title": "The Man in the High Castle",
       "author": "Philip K. Dick 🇺🇸",
-      "score": 83.33333333333334,
-      "interested": 5,
+      "score": 85.71428571428571,
+      "interested": 6,
       "not_interested": 1,
-      "total": 6,
-      "controversy": 66.66666666666666,
+      "total": 7,
+      "controversy": 64.28571428571429,
       "page_count": 259,
       "genres": [
         "fiction",
@@ -51,29 +51,13 @@
       ]
     },
     {
-      "title": "This Is How You Lose the Time War",
-      "author": "Max Gladstone 🇺🇸 & Amal El-Mohtar 🇨🇦",
-      "score": 66.66666666666666,
-      "interested": 4,
-      "not_interested": 2,
-      "total": 6,
-      "controversy": 83.33333333333334,
-      "page_count": 198,
-      "genres": [
-        "fiction",
-        "lgbtqia+",
-        "romance",
-        "science fiction"
-      ]
-    },
-    {
       "title": "Roadside Picnic",
       "author": "Boris Strugatsky 🇷🇺 & Arkady Strugatsky 🇬🇪🇷🇺",
-      "score": 66.66666666666666,
-      "interested": 4,
+      "score": 71.42857142857143,
+      "interested": 5,
       "not_interested": 2,
-      "total": 6,
-      "controversy": 83.33333333333334,
+      "total": 7,
+      "controversy": 78.57142857142857,
       "page_count": 145,
       "genres": [
         "fiction",
@@ -85,11 +69,11 @@
     {
       "title": "Complicity",
       "author": "Iain Banks 🏴󠁧󠁢󠁳󠁣󠁴󠁿",
-      "score": 66.66666666666666,
-      "interested": 4,
+      "score": 71.42857142857143,
+      "interested": 5,
       "not_interested": 2,
-      "total": 6,
-      "controversy": 83.33333333333334,
+      "total": 7,
+      "controversy": 78.57142857142857,
       "page_count": 313,
       "genres": [
         "fiction",
@@ -98,13 +82,29 @@
       ]
     },
     {
+      "title": "This Is How You Lose the Time War",
+      "author": "Max Gladstone 🇺🇸 & Amal El-Mohtar 🇨🇦",
+      "score": 57.14285714285714,
+      "interested": 4,
+      "not_interested": 3,
+      "total": 7,
+      "controversy": 92.85714285714286,
+      "page_count": 198,
+      "genres": [
+        "fiction",
+        "lgbtqia+",
+        "romance",
+        "science fiction"
+      ]
+    },
+    {
       "title": "Fight Club",
       "author": "Chuck Palahniuk 🇺🇸",
-      "score": 50,
-      "interested": 3,
+      "score": 57.14285714285714,
+      "interested": 4,
       "not_interested": 3,
-      "total": 6,
-      "controversy": 100,
+      "total": 7,
+      "controversy": 92.85714285714286,
       "page_count": 218,
       "genres": [
         "fiction",
@@ -115,11 +115,11 @@
     {
       "title": "The Shadow of the Wind",
       "author": "Carlos Ruiz Zafón 🇪🇸",
-      "score": 33.33333333333333,
+      "score": 28.57142857142857,
       "interested": 2,
-      "not_interested": 4,
-      "total": 6,
-      "controversy": 83.33333333333333,
+      "not_interested": 5,
+      "total": 7,
+      "controversy": 78.57142857142857,
       "page_count": 487,
       "genres": [
         "fiction",
@@ -133,8 +133,8 @@
       "author": "Eoin Colfer 🇺🇸",
       "score": 0,
       "interested": 0,
-      "not_interested": 6,
-      "total": 6,
+      "not_interested": 7,
+      "total": 7,
       "controversy": 50,
       "page_count": 279,
       "genres": [
