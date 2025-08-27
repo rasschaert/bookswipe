@@ -119,6 +119,7 @@ class VoteAnalyzer {
         author: book.author,
         genre_tags: book.genre_tags || [],
         page_count: book.page_count,
+        cover_image_url: book.cover_image_url,
         interested: 0, // Count of "interested" votes
         not_interested: 0, // Count of "not interested" votes
         total: 0, // Total votes for this book
@@ -354,6 +355,7 @@ class VoteAnalyzer {
           controversy: book.controversy || 0,
           page_count: book.page_count || 0,
           genres: book.genre_tags || [],
+          cover_image_url: book.cover_image_url || null,
         })),
       };
 

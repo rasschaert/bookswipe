@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-08-27T13:03:36.339Z",
+  "timestamp": "2025-08-27T13:36:08.072Z",
   "total_sessions": 7,
   "books": [
     {
@@ -16,7 +16,8 @@
         "classics",
         "horror",
         "literary"
-      ]
+      ],
+      "cover_image_url": "https://cdn.thestorygraph.com/16c1xk8bu7a8ayp9p7zg4wqgrqcn"
     },
     {
       "title": "The Dispossessed",
@@ -32,7 +33,8 @@
         "classics",
         "science fiction",
         "speculative fiction"
-      ]
+      ],
+      "cover_image_url": "https://cdn.thestorygraph.com/cwreulin67ys8vx9ad201lsrg3y5"
     },
     {
       "title": "The Man in the High Castle",
@@ -48,7 +50,8 @@
         "classics",
         "dystopian",
         "science fiction"
-      ]
+      ],
+      "cover_image_url": "https://cdn.thestorygraph.com/l8jqcorqgbarku0r14ftg08rpie5"
     },
     {
       "title": "Roadside Picnic",
@@ -64,7 +67,8 @@
         "science fiction",
         "classics",
         "speculative fiction"
-      ]
+      ],
+      "cover_image_url": "https://cdn.thestorygraph.com/3bswcj3fe1nx057w8nkblgtcpbi1"
     },
     {
       "title": "Complicity",
@@ -79,7 +83,8 @@
         "fiction",
         "crime",
         "mystery"
-      ]
+      ],
+      "cover_image_url": "https://cdn.thestorygraph.com/ymjn1x3jr2ysqdupyu42gvbljuby"
     },
     {
       "title": "This Is How You Lose the Time War",
@@ -95,7 +100,8 @@
         "lgbtqia+",
         "romance",
         "science fiction"
-      ]
+      ],
+      "cover_image_url": "https://cdn.thestorygraph.com/n0oebfd0xe4fvy2d0k8yi7t7659q"
     },
     {
       "title": "Fight Club",
@@ -110,7 +116,8 @@
         "fiction",
         "classics",
         "thriller"
-      ]
+      ],
+      "cover_image_url": "https://cdn.thestorygraph.com/7ao1dfgwza80cw6v2ff3f0qtslil"
     },
     {
       "title": "The Shadow of the Wind",
@@ -126,7 +133,8 @@
         "historical fiction",
         "mystery",
         "literary"
-      ]
+      ],
+      "cover_image_url": "https://cdn.thestorygraph.com/bsen2ebh8e1uq79uv13g69d3gygs"
     },
     {
       "title": "Artemis Fowl",
@@ -142,7 +150,8 @@
         "fantasy",
         "middle grade",
         "science fiction"
-      ]
+      ],
+      "cover_image_url": "https://cdn.thestorygraph.com/2yzq6apqj559vgkm6lem48uo8r8f"
     }
   ]
 }

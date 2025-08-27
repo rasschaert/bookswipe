@@ -58,11 +58,70 @@
         border: 2px solid #d4af37;
         border-radius: 20px;
         padding: 2rem;
-        text-align: center;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
         margin-bottom: 2rem;
         color: white;
         backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
+        min-height: 240px;
+      }
+
+      .winner-content {
+        flex: 1;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 100%;
+      }
+
+      .winner-cover {
+        width: 150px;
+        height: 225px;
+        object-fit: cover;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        background: rgba(255, 255, 255, 0.1);
+        flex-shrink: 0;
+        align-self: center;
+      }
+
+      .winner-cover.placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #d4af37 0%, #f7d794 100%);
+        color: #333;
+        font-weight: bold;
+        font-size: 1rem;
+        text-align: center;
+        padding: 1rem;
+      }
+
+      .tied-winner-cover {
+        width: 80px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin: 0 auto 1rem auto;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        background: rgba(255, 255, 255, 0.1);
+        display: block;
+      }
+
+      .tied-winner-cover.placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        font-weight: bold;
+        font-size: 0.8rem;
+        text-align: center;
+        padding: 0.5rem;
       }
 
       .winner-card h2 {
@@ -99,6 +158,30 @@
         transition:
           transform 0.3s ease,
           box-shadow 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .book-cover {
+        width: 120px;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .book-cover.placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        font-weight: bold;
+        font-size: 0.9rem;
       }
 
       .book-card:hover {
@@ -214,6 +297,16 @@
         .books-grid {
           grid-template-columns: 1fr;
         }
+
+        .winner-card {
+          flex-direction: column;
+          text-align: center;
+          gap: 1rem;
+        }
+
+        .winner-cover {
+          margin: 0 auto;
+        }
       }
     </style>
   </head>
@@ -262,7 +355,7 @@
             displayWinner(winners[0]);
           } else if (winners.length > 1) {
             // Multiple winners (tie)
-            document.getElementById("tied-notice").style.display = "block";
+            displayTiedWinners(winners);
           }
 
           // Display all books
@@ -278,19 +371,76 @@
         const winnerSection = document.getElementById("winner-section");
         winnerSection.innerHTML = `
                 <div class="winner-card">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🏆</div>
-                    <h2>${winner.title}</h2>
-                    <p class="author">by ${winner.author}</p>
+                    ${
+                      winner.cover_image_url
+                        ? `<img src="${winner.cover_image_url}" alt="${winner.title} cover" class="winner-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />`
+                        : ""
+                    }
+                    <div class="winner-cover placeholder" style="${winner.cover_image_url ? "display: none;" : "display: flex;"}">
+                        ${winner.title.length > 30 ? winner.title.substring(0, 30) + "..." : winner.title}
+                    </div>
                     
-                    <div style="font-size: 1.4rem; font-weight: bold; margin: 1rem 0;">${winner.interested}👍 ${winner.not_interested}👎</div>
-                    <div style="font-size: 1rem; margin-bottom: 1rem;">${winner.score.toFixed(1)}% liked</div>
-                    
-                    <div class="vote-bar" style="margin: 1rem auto; max-width: 300px;">
-                        <div class="liked-section" style="width: ${winner.score}%"></div>
-                        <div class="disliked-section" style="width: ${100 - winner.score}%"></div>
+                    <div class="winner-content">
+                        <div style="font-size: 3rem; margin-bottom: 0.5rem;">🏆</div>
+                        <h2 style="margin-bottom: 0.3rem;">${winner.title}</h2>
+                        <p class="author" style="margin-bottom: 1rem;">by ${winner.author}</p>
+                        
+                        <div style="font-size: 1.4rem; font-weight: bold; margin: 0.8rem 0;">${winner.interested}👍 ${winner.not_interested}👎</div>
+                        <div style="font-size: 1rem; margin-bottom: 0.8rem;">${winner.score.toFixed(1)}% liked</div>
+                        
+                        <div class="vote-bar" style="margin: 0 auto; max-width: 300px;">
+                            <div class="liked-section" style="width: ${winner.score}%"></div>
+                            <div class="disliked-section" style="width: ${100 - winner.score}%"></div>
+                        </div>
                     </div>
                 </div>
             `;
+      }
+
+      function displayTiedWinners(winners) {
+        const winnerSection = document.getElementById("winner-section");
+
+        const winnersHtml = winners
+          .map(
+            (winner) => `
+          <div style="background: rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 1.5rem; margin: 1rem 0; backdrop-filter: blur(5px); text-align: center;">
+            ${
+              winner.cover_image_url
+                ? `<img src="${winner.cover_image_url}" alt="${winner.title} cover" class="tied-winner-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />`
+                : ""
+            }
+            <div class="tied-winner-cover placeholder" style="${winner.cover_image_url ? "display: none;" : ""}">
+                ${winner.title.length > 15 ? winner.title.substring(0, 15) + "..." : winner.title}
+            </div>
+            
+            <h3 style="font-size: 1.8rem; margin-bottom: 0.5rem;">${winner.title}</h3>
+            <p style="font-size: 1.2rem; opacity: 0.9; margin-bottom: 1rem;">by ${winner.author}</p>
+            
+            <div style="font-size: 1.2rem; font-weight: bold; margin: 0.5rem 0;">${winner.interested}👍 ${winner.not_interested}👎</div>
+            <div style="font-size: 0.9rem; margin-bottom: 1rem;">${winner.score.toFixed(1)}% liked</div>
+            
+            <div class="vote-bar" style="max-width: 250px; margin: 0 auto;">
+              <div class="liked-section" style="width: ${winner.score}%"></div>
+              <div class="disliked-section" style="width: ${100 - winner.score}%"></div>
+            </div>
+          </div>
+        `
+          )
+          .join("");
+
+        winnerSection.innerHTML = `
+          <div class="winner-card">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">🤝</div>
+            <h2 style="margin-bottom: 1rem;">We have a tie!</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 2rem; opacity: 0.9;">
+              ${winners.length} books received the same top score of ${winners[0].score.toFixed(1)}%
+            </p>
+            
+            <div style="display: grid; gap: 1rem;">
+              ${winnersHtml}
+            </div>
+          </div>
+        `;
       }
 
       function displayBooks(books) {
@@ -308,6 +458,16 @@
             return `
                     <div class="book-card ${isTop3 ? "top-3" : ""}" style="position: relative;">
                         ${isTop3 ? `<div class="ranking-badge">${book.rank}</div>` : ""}
+                        
+                        ${
+                          book.cover_image_url
+                            ? `<img src="${book.cover_image_url}" alt="${book.title} cover" class="book-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />`
+                            : ""
+                        }
+                        <div class="book-cover placeholder" style="${book.cover_image_url ? "display: none;" : ""}">
+                            ${book.title.substring(0, 20)}...
+                        </div>
+
                         <h3>${book.title}</h3>
                         <p class="author">by ${book.author}</p>
 
