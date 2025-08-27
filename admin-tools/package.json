@@ -21,7 +21,7 @@
     "csv-parser": "^3.2.0",
     "csv-writer": "^1.6.0",
     "fs-extra": "^11.2.0",
-    "inquirer": "^9.2.12",
+    "inquirer": "^12.9.4",
     "pocketbase": "^0.21.3"
   },
   "devDependencies": {
