@@ -1,14 +1,14 @@
 {
-  "timestamp": "2025-08-27T13:36:08.072Z",
-  "total_sessions": 7,
+  "timestamp": "2025-08-28T09:37:31.640Z",
+  "total_sessions": 8,
   "books": [
     {
       "title": "The Haunting of Hill House",
       "author": "Shirley Jackson 🇺🇸",
       "score": 100,
-      "interested": 7,
+      "interested": 8,
       "not_interested": 0,
-      "total": 7,
+      "total": 8,
       "controversy": 50,
       "page_count": 182,
       "genres": [
@@ -22,11 +22,11 @@
     {
       "title": "The Dispossessed",
       "author": "Ursula K. Le Guin 🇺🇸",
-      "score": 85.71428571428571,
+      "score": 75,
       "interested": 6,
-      "not_interested": 1,
-      "total": 7,
-      "controversy": 64.28571428571429,
+      "not_interested": 2,
+      "total": 8,
+      "controversy": 75,
       "page_count": 341,
       "genres": [
         "fiction",
@@ -39,11 +39,11 @@
     {
       "title": "The Man in the High Castle",
       "author": "Philip K. Dick 🇺🇸",
-      "score": 85.71428571428571,
+      "score": 75,
       "interested": 6,
-      "not_interested": 1,
-      "total": 7,
-      "controversy": 64.28571428571429,
+      "not_interested": 2,
+      "total": 8,
+      "controversy": 75,
       "page_count": 259,
       "genres": [
         "fiction",
@@ -54,30 +54,13 @@
       "cover_image_url": "https://cdn.thestorygraph.com/l8jqcorqgbarku0r14ftg08rpie5"
     },
     {
-      "title": "Roadside Picnic",
-      "author": "Boris Strugatsky 🇷🇺 & Arkady Strugatsky 🇬🇪🇷🇺",
-      "score": 71.42857142857143,
-      "interested": 5,
-      "not_interested": 2,
-      "total": 7,
-      "controversy": 78.57142857142857,
-      "page_count": 145,
-      "genres": [
-        "fiction",
-        "science fiction",
-        "classics",
-        "speculative fiction"
-      ],
-      "cover_image_url": "https://cdn.thestorygraph.com/3bswcj3fe1nx057w8nkblgtcpbi1"
-    },
-    {
       "title": "Complicity",
       "author": "Iain Banks 🏴󠁧󠁢󠁳󠁣󠁴󠁿",
-      "score": 71.42857142857143,
-      "interested": 5,
+      "score": 75,
+      "interested": 6,
       "not_interested": 2,
-      "total": 7,
-      "controversy": 78.57142857142857,
+      "total": 8,
+      "controversy": 75,
       "page_count": 313,
       "genres": [
         "fiction",
@@ -89,11 +72,11 @@
     {
       "title": "This Is How You Lose the Time War",
       "author": "Max Gladstone 🇺🇸 & Amal El-Mohtar 🇨🇦",
-      "score": 57.14285714285714,
-      "interested": 4,
+      "score": 62.5,
+      "interested": 5,
       "not_interested": 3,
-      "total": 7,
-      "controversy": 92.85714285714286,
+      "total": 8,
+      "controversy": 87.5,
       "page_count": 198,
       "genres": [
         "fiction",
@@ -104,13 +87,30 @@
       "cover_image_url": "https://cdn.thestorygraph.com/n0oebfd0xe4fvy2d0k8yi7t7659q"
     },
     {
+      "title": "Roadside Picnic",
+      "author": "Boris Strugatsky 🇷🇺 & Arkady Strugatsky 🇬🇪🇷🇺",
+      "score": 62.5,
+      "interested": 5,
+      "not_interested": 3,
+      "total": 8,
+      "controversy": 87.5,
+      "page_count": 145,
+      "genres": [
+        "fiction",
+        "science fiction",
+        "classics",
+        "speculative fiction"
+      ],
+      "cover_image_url": "https://cdn.thestorygraph.com/3bswcj3fe1nx057w8nkblgtcpbi1"
+    },
+    {
       "title": "Fight Club",
       "author": "Chuck Palahniuk 🇺🇸",
-      "score": 57.14285714285714,
+      "score": 50,
       "interested": 4,
-      "not_interested": 3,
-      "total": 7,
-      "controversy": 92.85714285714286,
+      "not_interested": 4,
+      "total": 8,
+      "controversy": 100,
       "page_count": 218,
       "genres": [
         "fiction",
@@ -122,11 +122,11 @@
     {
       "title": "The Shadow of the Wind",
       "author": "Carlos Ruiz Zafón 🇪🇸",
-      "score": 28.57142857142857,
-      "interested": 2,
+      "score": 37.5,
+      "interested": 3,
       "not_interested": 5,
-      "total": 7,
-      "controversy": 78.57142857142857,
+      "total": 8,
+      "controversy": 87.5,
       "page_count": 487,
       "genres": [
         "fiction",
@@ -141,8 +141,8 @@
       "author": "Eoin Colfer 🇺🇸",
       "score": 0,
       "interested": 0,
-      "not_interested": 7,
-      "total": 7,
+      "not_interested": 8,
+      "total": 8,
       "controversy": 50,
       "page_count": 279,
       "genres": [
