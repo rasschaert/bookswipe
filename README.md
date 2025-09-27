@@ -340,7 +340,7 @@ Before deploying to production:
 
 ```javascript
 // Line 23 in constructor - change from:
-this.baseURL = "https://pompous-pelican.pikapod.net";
+this.baseURL = "https://bookswipe-backend.duckdns.org";
 // To your production PocketBase URL:
 this.baseURL = "https://your-pocketbase-url.com";
 ```

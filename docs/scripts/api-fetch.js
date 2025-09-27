@@ -20,7 +20,7 @@
 class BookSwipeAPI {
   constructor() {
     // CONFIGURATION
-    this.baseURL = "https://pompous-pelican.pikapod.net"; // PocketBase instance
+    this.baseURL = "https://bookswipe-backend.duckdns.org"; // PocketBase instance
     this.initialized = false; // Connection status flag
   }
 
