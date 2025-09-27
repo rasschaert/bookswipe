@@ -1,7 +1,7 @@
 // PocketBase API Integration for BookSwipe
 class BookSwipeAPI {
   constructor() {
-    this.baseURL = "https://bookswipe-backend.duckdns.org";
+    this.baseURL = "https://bookswipe.modest-moray-8349.pomerium.app";
     this.pb = null;
     this.initialized = false;
     // Don't call init() in constructor - it's async and should be called explicitly

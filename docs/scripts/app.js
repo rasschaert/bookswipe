@@ -83,7 +83,7 @@ class BookSwipeApp {
         error.message.includes("Direct fetch failed")
       ) {
         this.showError(
-          'Cannot connect to PocketBase. Please check:\n\n1. PocketBase is running at https://bookswipe-backend.duckdns.org\n2. The "books" collection exists\n3. API rules allow public access'
+          'Cannot connect to PocketBase. Please check:\n\n1. PocketBase is running at https://bookswipe.modest-moray-8349.pomerium.app\n2. The "books" collection exists\n3. API rules allow public access'
         );
       } else {
         this.showError(

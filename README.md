@@ -340,7 +340,7 @@ Before deploying to production:
 
 ```javascript
 // Line 23 in constructor - change from:
-this.baseURL = "https://bookswipe-backend.duckdns.org";
+this.baseURL = "https://bookswipe.modest-moray-8349.pomerium.app";
 // To your production PocketBase URL:
 this.baseURL = "https://your-pocketbase-url.com";
 ```

@@ -20,7 +20,7 @@
 class BookSwipeAPI {
   constructor() {
     // CONFIGURATION
-    this.baseURL = "https://bookswipe-backend.duckdns.org"; // PocketBase instance
+    this.baseURL = "https://bookswipe.modest-moray-8349.pomerium.app"; // PocketBase instance
     this.initialized = false; // Connection status flag
   }
 
