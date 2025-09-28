@@ -112,7 +112,7 @@ async function ensureCollections(pb) {
       console.log(chalk.green("✅ Created books collection"));
     } catch (createError) {
       console.log(
-        chalk.red("❌ Failed to create books collection:", createError.message),
+        chalk.red("❌ Failed to create books collection:", createError.message)
       );
     }
   }
@@ -127,7 +127,7 @@ async function ensureCollections(pb) {
       console.log(chalk.green("✅ Created votes collection"));
     } catch (createError) {
       console.log(
-        chalk.red("❌ Failed to create votes collection:", createError.message),
+        chalk.red("❌ Failed to create votes collection:", createError.message)
       );
     }
   }
@@ -166,7 +166,7 @@ async function setup() {
     } else {
       // Get new configuration from user
       console.log(
-        chalk.blue("📝 Let's configure your PocketBase connection:\n"),
+        chalk.blue("📝 Let's configure your PocketBase connection:\n")
       );
 
       const answers = await inquirer.prompt([
@@ -290,29 +290,70 @@ async function setup() {
     const PocketBase = (await import("pocketbase")).default;
     const pb = new PocketBase(config.pocketbase.url);
 
+    console.log(
+      chalk.gray(`Attempting to connect to: ${config.pocketbase.url}`)
+    );
+    console.log(
+      chalk.gray(`Using admin email: ${config.pocketbase.adminEmail}`)
+    );
+
     await pb
       .collection("_superusers")
       .authWithPassword(
         config.pocketbase.adminEmail,
-        config.pocketbase.adminPassword,
+        config.pocketbase.adminPassword
       );
 
     console.log(chalk.green("✅ Connection successful!"));
 
     // Check and create collections if needed
     await ensureCollections(pb);
-  } catch (error) {
-    console.log(chalk.red("❌ Connection failed:", error.message));
-    console.log(chalk.yellow("Please check your credentials and try again."));
-  }
 
-  console.log(chalk.blue.bold("\n🎉 Setup complete!"));
-  console.log(chalk.gray("\nNext steps:"));
-  console.log(
-    chalk.gray("1. Make sure your PocketBase collections are set up"),
-  );
-  console.log(chalk.gray("2. Run: npm run import-books"));
-  console.log(chalk.gray("3. Run: npm run analyze-votes"));
+    console.log(chalk.blue.bold("\n🎉 Setup complete!"));
+    console.log(chalk.gray("\nNext steps:"));
+    console.log(
+      chalk.gray("1. Make sure your PocketBase collections are set up")
+    );
+    console.log(chalk.gray("2. Run: npm run import-books"));
+    console.log(chalk.gray("3. Run: npm run analyze-votes"));
+  } catch (error) {
+    console.log(chalk.red("\n❌ Connection failed!"));
+    console.log(chalk.red("Error details:"));
+    console.log(chalk.red(`  Message: ${error.message}`));
+    console.log(chalk.red(`  Status: ${error.status || "Unknown"}`));
+    console.log(chalk.red(`  URL: ${error.url || config.pocketbase.url}`));
+
+    if (error.data) {
+      console.log(
+        chalk.red(`  Response data: ${JSON.stringify(error.data, null, 2)}`)
+      );
+    }
+
+    if (error.originalError) {
+      console.log(
+        chalk.red(`  Original error: ${error.originalError.message}`)
+      );
+    }
+
+    console.log(chalk.yellow("\nTroubleshooting:"));
+    console.log(
+      chalk.yellow("1. Check that PocketBase is running at the specified URL")
+    );
+    console.log(
+      chalk.yellow("2. Verify your admin email and password are correct")
+    );
+    console.log(
+      chalk.yellow(
+        "3. Ensure the URL includes the correct protocol (http/https)"
+      )
+    );
+    console.log(
+      chalk.yellow("4. Check if there are any firewall or network issues")
+    );
+
+    // Exit with error code
+    process.exit(1);
+  }
 }
 
 setup().catch(console.error);
