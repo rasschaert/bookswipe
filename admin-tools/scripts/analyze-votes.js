@@ -6,7 +6,6 @@
  * This module provides detailed analysis of BookSwipe voting data including:
  * - Statistical summaries of voting patterns
  * - Top book rankings and controversial selections
- * - Participation analysis (named vs anonymous voters)
  * - CSV and JSON export functionality
  *
  * Key features:
@@ -40,7 +39,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
  * Processes voting data to generate insights including:
  * - Book popularity rankings
  * - Controversial selections (divided opinions)
- * - Participation statistics
  * - Data export in multiple formats
  */
 class VoteAnalyzer {
@@ -85,7 +83,7 @@ class VoteAnalyzer {
       // Generate and display different analysis sections
       this.displayTopPicks(results);
       this.displayControversialBooks(results);
-      this.displayParticipationStats(votes);
+      await this.displayParticipants(votes);
 
       // Export processed data for external analysis
       await this.exportToCSV(results);
@@ -235,33 +233,54 @@ class VoteAnalyzer {
     }
   }
 
-  displayParticipationStats(votes) {
-    console.log(chalk.blue.bold("👥 Participation Statistics:"));
+  async displayParticipants(votes) {
+    console.log(chalk.blue.bold("👥 Participants:"));
     console.log();
 
-    const namedVotes = votes.filter(
-      (v) =>
-        v.user_name &&
-        v.user_name.trim() &&
-        v.user_name.trim().toLowerCase() !== "anonymous"
-    );
-    const anonymousVotes = votes.filter(
-      (v) =>
-        !v.user_name ||
-        !v.user_name.trim() ||
-        v.user_name.trim().toLowerCase() === "anonymous"
-    );
+    try {
+      // Get unique email addresses from votes
+      const participantEmails = [...new Set(votes
+        .map(vote => vote.user_name)
+        .filter(email => email && email.trim())
+      )];
 
-    console.log(`• Named participants: ${chalk.bold(namedVotes.length)}`);
-    console.log(
-      `• Anonymous participants: ${chalk.bold(anonymousVotes.length)}`
-    );
+      // Fetch all users from the users collection
+      const users = await this.manager.pb.collection("users").getFullList();
+      
+      // Create a map of email to name for quick lookup
+      const emailToNameMap = {};
+      users.forEach(user => {
+        if (user.email) {
+          emailToNameMap[user.email] = user.name || user.email;
+        }
+      });
 
-    if (namedVotes.length > 0) {
-      console.log("\n📝 Named Participants:");
-      namedVotes.forEach((vote) => {
-        const voteCount = Object.keys(vote.votes || {}).length;
-        console.log(`   • ${vote.user_name} (${voteCount} books rated)`);
+      // Display participants with their names (or email if name not found)
+      const participantList = participantEmails
+        .map(email => ({
+          email,
+          displayName: emailToNameMap[email] || email
+        }))
+        .sort((a, b) => a.displayName.localeCompare(b.displayName));
+
+      if (participantList.length > 0) {
+        participantList.forEach((participant) => {
+          const nameDisplay = participant.displayName !== participant.email 
+            ? `${participant.displayName} (${participant.email})`
+            : participant.email;
+          console.log(`   • ${nameDisplay}`);
+        });
+      }
+    } catch (error) {
+      console.error(chalk.red("❌ Failed to fetch user names:", error.message));
+      // Fallback to showing just the email addresses
+      const participants = votes
+        .map(vote => vote.user_name)
+        .filter(name => name && name.trim())
+        .sort();
+      
+      participants.forEach((participant) => {
+        console.log(`   • ${participant}`);
       });
     }
 
