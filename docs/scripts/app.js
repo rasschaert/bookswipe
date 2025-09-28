@@ -376,8 +376,8 @@ class BookSwipeApp {
           Object.keys(this.userVotes).length
         } out of ${this.books.length} books`
       );
-      setTimeout(() => {
-        this.handleAllBooksReviewed();
+      setTimeout(async () => {
+        await this.handleAllBooksReviewed();
       }, 500);
     }
   }
@@ -459,7 +459,7 @@ class BookSwipeApp {
     }
   }
 
-  handleAllBooksReviewed() {
+  async handleAllBooksReviewed() {
     console.log("🎉 All books reviewed!");
 
     // Calculate stats
@@ -477,6 +477,15 @@ class BookSwipeApp {
     if (likedCount) likedCount.textContent = likedBooks;
     if (passedCount) passedCount.textContent = passedBooks;
 
+    // Check if user is authenticated and update UI accordingly
+    try {
+      const currentUser = await bookSwipeAPI.getCurrentUser();
+      this.updateResultsScreenForAuth(currentUser);
+    } catch (error) {
+      console.log("Could not check authentication:", error);
+      // Continue with default behavior (show name input)
+    }
+
     // Show results screen
     setTimeout(() => {
       this.showScreen("results-screen");
@@ -485,7 +494,28 @@ class BookSwipeApp {
 
   async submitVotes() {
     const submitBtn = document.getElementById("submit-votes-btn");
-    const userName = document.getElementById("user-name")?.value || "";
+
+    // Try to get the user identifier from authenticated user or input field
+    let userName = "";
+    try {
+      const currentUser = await bookSwipeAPI.getCurrentUser();
+      if (currentUser && currentUser.email) {
+        // Use email as the identifier for authenticated users
+        userName = currentUser.email;
+      } else {
+        // Fall back to manual input for non-authenticated users
+        userName = document.getElementById("user-name")?.value?.trim() || "";
+      }
+    } catch (error) {
+      // If auth check fails, fall back to input field
+      userName = document.getElementById("user-name")?.value?.trim() || "";
+    }
+
+    // Validate that we have a user identifier
+    if (!userName) {
+      alert("Please enter your name before submitting your votes.");
+      return;
+    }
 
     if (submitBtn) {
       submitBtn.disabled = true;
@@ -512,6 +542,64 @@ class BookSwipeApp {
       if (submitBtn) {
         submitBtn.disabled = false;
         submitBtn.textContent = "Submit My Votes";
+      }
+    }
+  }
+
+  /**
+   * UPDATE RESULTS SCREEN BASED ON AUTHENTICATION STATUS
+   * ===================================================
+   * If user is authenticated, show their display name and hide name input.
+   * If not authenticated, show the name input field.
+   */
+  updateResultsScreenForAuth(currentUser) {
+    const userInputSection = document.querySelector(".user-input-section");
+    const resultsActions = document.querySelector(".results-actions");
+
+    if (currentUser && currentUser.email) {
+      // User is authenticated - show their display name and hide input
+      console.log(
+        "✅ User authenticated:",
+        currentUser.displayName || currentUser.email
+      );
+
+      // Hide the name input section
+      if (userInputSection) {
+        userInputSection.style.display = "none";
+      }
+
+      // Create or update the user display
+      let userDisplay = document.getElementById("authenticated-user-display");
+      if (!userDisplay) {
+        userDisplay = document.createElement("div");
+        userDisplay.id = "authenticated-user-display";
+        userDisplay.className = "authenticated-user-info";
+
+        // Insert before the results actions (submit/start over buttons)
+        if (resultsActions) {
+          resultsActions.parentNode.insertBefore(userDisplay, resultsActions);
+        }
+      }
+
+      // Show display name to user, but we'll use email for submission
+      const displayText = currentUser.displayName || currentUser.email;
+      userDisplay.innerHTML = `
+        <p class="user-label">Submitting as:</p>
+        <p class="user-display-name">${displayText}</p>
+      `;
+    } else {
+      // User is not authenticated - show name input
+      console.log("ℹ️ User not authenticated - showing name input");
+
+      // Show the name input section
+      if (userInputSection) {
+        userInputSection.style.display = "block";
+      }
+
+      // Hide any existing user display
+      const userDisplay = document.getElementById("authenticated-user-display");
+      if (userDisplay) {
+        userDisplay.style.display = "none";
       }
     }
   }

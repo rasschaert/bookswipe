@@ -104,7 +104,7 @@ class BookSwipeAPI {
 
       // Prepare the data to send
       const data = {
-        user_name: userName || "Anonymous", // Optional user name
+        user_name: userName, // User identifier (email or manual input)
         votes: votes, // Object with bookId: vote pairs
         session_id: sessionId, // Unique identifier for this session
         submitted_at: new Date().toISOString(), // Timestamp when submitted
@@ -155,6 +155,48 @@ class BookSwipeAPI {
     return (
       "session_" + Date.now() + "_" + Math.random().toString(36).substr(2, 9)
     );
+  }
+
+  /**
+   * CHECK USER AUTHENTICATION
+   * =========================
+   * Check if user is authenticated via Pomerium and return their info.
+   * Returns null if not authenticated, or user object if authenticated.
+   */
+  async getCurrentUser() {
+    try {
+      // Check authentication using Pomerium's /me endpoint
+      const response = await fetch(`${this.baseURL}/api/pomerium/me`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // Include cookies for Pomerium auth
+      });
+
+      if (!response.ok) {
+        // Not authenticated or other error
+        return null;
+      }
+
+      const authResult = await response.json();
+
+      // Check if user is authenticated based on response structure
+      if (authResult.authenticated && authResult.user) {
+        return {
+          id: authResult.user.id,
+          email: authResult.user.email,
+          displayName: authResult.user.display_name,
+          username: authResult.user.username,
+          verified: authResult.user.verified || false,
+        };
+      }
+
+      return null; // Not authenticated
+    } catch (error) {
+      console.log("Authentication check failed:", error);
+      return null; // Error checking auth means not authenticated
+    }
   }
 
   /**

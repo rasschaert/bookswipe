@@ -51,6 +51,15 @@ Before you start, you need:
 2. **A running PocketBase instance** with admin access
 3. **Basic terminal/command line knowledge**
 
+### Optional: Enhanced Authentication
+
+For automatic user identification (instead of manual name entry), you can use the custom PocketBase variant with Pomerium JWT authentication support:
+
+- **Custom PocketBase**: [pocketbase-pomerium-jwt-auth](https://github.com/rasschaert/pocketbase-pomerium-jwt-auth)
+- Enables automatic user lookup via `/api/pomerium/me` endpoint
+- Displays user's display name while using email for vote attribution
+- Falls back to manual name entry if authentication is unavailable
+
 ## Complete Setup Guide
 
 Follow these steps in order. If you get stuck, see the [Troubleshooting](#troubleshooting) section below.
@@ -275,6 +284,11 @@ Beautiful web-based presentation of voting results:
 - **🚀 Fast Performance** - Optimized loading and animations
 - **🔄 Real-time Progress** - See voting progress
 - **✅ Vote Submission** - Secure PocketBase integration
+- **🔐 Smart Authentication** - Automatic user identification via Pomerium JWT (optional)
+  - Shows user's display name when authenticated
+  - Uses email address for vote attribution
+  - Graceful fallback to manual name entry
+  - Requires [custom PocketBase variant](https://github.com/rasschaert/pocketbase-pomerium-jwt-auth)
 
 ## PocketBase Setup
 
