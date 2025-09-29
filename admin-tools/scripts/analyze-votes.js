@@ -239,17 +239,20 @@ class VoteAnalyzer {
 
     try {
       // Get unique email addresses from votes
-      const participantEmails = [...new Set(votes
-        .map(vote => vote.user_name)
-        .filter(email => email && email.trim())
-      )];
+      const participantEmails = [
+        ...new Set(
+          votes
+            .map((vote) => vote.user_name)
+            .filter((email) => email && email.trim())
+        ),
+      ];
 
       // Fetch all users from the users collection
       const users = await this.manager.pb.collection("users").getFullList();
-      
+
       // Create a map of email to name for quick lookup
       const emailToNameMap = {};
-      users.forEach(user => {
+      users.forEach((user) => {
         if (user.email) {
           emailToNameMap[user.email] = user.name || user.email;
         }
@@ -257,17 +260,18 @@ class VoteAnalyzer {
 
       // Display participants with their names (or email if name not found)
       const participantList = participantEmails
-        .map(email => ({
+        .map((email) => ({
           email,
-          displayName: emailToNameMap[email] || email
+          displayName: emailToNameMap[email] || email,
         }))
         .sort((a, b) => a.displayName.localeCompare(b.displayName));
 
       if (participantList.length > 0) {
         participantList.forEach((participant) => {
-          const nameDisplay = participant.displayName !== participant.email 
-            ? `${participant.displayName} (${participant.email})`
-            : participant.email;
+          const nameDisplay =
+            participant.displayName !== participant.email
+              ? `${participant.displayName} (${participant.email})`
+              : participant.email;
           console.log(`   • ${nameDisplay}`);
         });
       }
@@ -275,10 +279,10 @@ class VoteAnalyzer {
       console.error(chalk.red("❌ Failed to fetch user names:", error.message));
       // Fallback to showing just the email addresses
       const participants = votes
-        .map(vote => vote.user_name)
-        .filter(name => name && name.trim())
+        .map((vote) => vote.user_name)
+        .filter((name) => name && name.trim())
         .sort();
-      
+
       participants.forEach((participant) => {
         console.log(`   • ${participant}`);
       });
