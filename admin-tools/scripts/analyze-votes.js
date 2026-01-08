@@ -70,11 +70,6 @@ class VoteAnalyzer {
       console.log(chalk.blue("📈 Summary Statistics:"));
       console.log(`• Total voting sessions: ${chalk.bold(votes.length)}`);
       console.log(`• Total books: ${chalk.bold(books.length)}`);
-      console.log(
-        `• Average votes per book: ${chalk.bold(
-          (votes.length / books.length).toFixed(1)
-        )}`
-      );
       console.log();
 
       // Process raw voting data into analyzable format
@@ -177,10 +172,10 @@ class VoteAnalyzer {
         index === 0
           ? "🥇" // Gold medal
           : index === 1
-            ? "🥈" // Silver medal
-            : index === 2
-              ? "🥉" // Bronze medal
-              : `${index + 1}.`; // Numbered ranking
+          ? "🥈" // Silver medal
+          : index === 2
+          ? "🥉" // Bronze medal
+          : `${index + 1}.`; // Numbered ranking
 
       // Color-code scores: green (70%+), yellow (50-69%), red (<50%)
       const scoreColor =
@@ -193,14 +188,14 @@ class VoteAnalyzer {
       console.log(
         `   ${chalk[scoreColor](`${book.score.toFixed(1)}% liked`)} (${
           book.interested
-        }👍 ${book.not_interested}👎)`
+        }👍 ${book.not_interested}👎)`,
       );
 
       // Display additional book metadata
       console.log(
         `   📄 ${book.page_count} pages • 🏷️ ${book.genre_tags
           .slice(0, 3) // Show first 3 genres to avoid clutter
-          .join(", ")}`
+          .join(", ")}`,
       );
       console.log();
     });
@@ -214,18 +209,18 @@ class VoteAnalyzer {
 
     if (controversial.length > 0) {
       console.log(
-        chalk.yellow.bold("🔥 Most Controversial Books (Divided Opinions):")
+        chalk.yellow.bold("🔥 Most Controversial Books (Divided Opinions):"),
       );
       console.log();
 
       controversial.forEach((book, index) => {
         console.log(
-          `${index + 1}. ${chalk.bold(book.title)} by ${book.author}`
+          `${index + 1}. ${chalk.bold(book.title)} by ${book.author}`,
         );
         console.log(
           `   ${book.score.toFixed(1)}% liked (${book.interested}👍 ${
             book.not_interested
-          }👎)`
+          }👎)`,
         );
         console.log(`   Controversy score: ${book.controversy.toFixed(1)}/100`);
         console.log();
@@ -243,7 +238,7 @@ class VoteAnalyzer {
         ...new Set(
           votes
             .map((vote) => vote.user_name)
-            .filter((email) => email && email.trim())
+            .filter((email) => email && email.trim()),
         ),
       ];
 
@@ -351,7 +346,7 @@ class VoteAnalyzer {
       console.log(chalk.green(`✅ Raw vote data exported to: ${jsonPath}`));
     } catch (error) {
       console.error(
-        chalk.red("❌ Failed to export vote details:", error.message)
+        chalk.red("❌ Failed to export vote details:", error.message),
       );
     }
   }
@@ -388,7 +383,7 @@ class VoteAnalyzer {
       console.log(chalk.blue(`🌐 View results at: docs/results.html`));
     } catch (error) {
       console.error(
-        chalk.red("❌ Failed to export web results:", error.message)
+        chalk.red("❌ Failed to export web results:", error.message),
       );
     }
   }

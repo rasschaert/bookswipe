@@ -80,6 +80,16 @@ class BookManager {
       console.error(
         chalk.red("❌ Failed to authenticate with PocketBase:", error.message),
       );
+      console.error(chalk.red("\nDebug information:"));
+      console.error(chalk.yellow("  PocketBase URL:", this.config.pocketbase.url));
+      console.error(chalk.yellow("  Admin email:", this.config.pocketbase.adminEmail));
+      console.error(chalk.yellow("  Error details:", JSON.stringify(error, null, 2)));
+      if (error.data) {
+        console.error(chalk.yellow("  Server response:", JSON.stringify(error.data, null, 2)));
+      }
+      if (error.status) {
+        console.error(chalk.yellow("  HTTP status:", error.status));
+      }
       process.exit(1);
     }
   }
@@ -162,6 +172,31 @@ class BookManager {
         chalk.red(`❌ Failed to delete book ${bookId}:`, error.message),
       );
       return false;
+    }
+  }
+
+  async deleteVote(voteId) {
+    try {
+      await this.pb.collection(this.config.collections.votes).delete(voteId);
+      console.log(chalk.green(`✅ Deleted vote with ID: ${voteId}`));
+      return true;
+    } catch (error) {
+      console.error(
+        chalk.red(`❌ Failed to delete vote ${voteId}:`, error.message),
+      );
+      return false;
+    }
+  }
+
+  async listVotes() {
+    try {
+      const votes = await this.pb
+        .collection(this.config.collections.votes)
+        .getFullList();
+      return votes;
+    } catch (error) {
+      console.error(chalk.red("❌ Failed to fetch votes:", error.message));
+      return [];
     }
   }
 

@@ -1,132 +1,52 @@
 {
-  "timestamp": "2025-08-28T09:37:31.640Z",
-  "total_sessions": 8,
+  "timestamp": "2026-01-08T12:53:08.556Z",
+  "total_sessions": 9,
   "books": [
     {
-      "title": "The Haunting of Hill House",
-      "author": "Shirley Jackson 🇺🇸",
-      "score": 100,
+      "title": "Flowers for Algernon",
+      "author": "Daniel Keyes 🇺🇸",
+      "score": 88.88888888888889,
       "interested": 8,
-      "not_interested": 0,
-      "total": 8,
-      "controversy": 50,
-      "page_count": 182,
+      "not_interested": 1,
+      "total": 9,
+      "controversy": 61.111111111111114,
+      "page_count": 216,
       "genres": [
         "fiction",
         "classics",
-        "horror",
-        "literary"
-      ],
-      "cover_image_url": "https://cdn.thestorygraph.com/16c1xk8bu7a8ayp9p7zg4wqgrqcn"
-    },
-    {
-      "title": "The Dispossessed",
-      "author": "Ursula K. Le Guin 🇺🇸",
-      "score": 75,
-      "interested": 6,
-      "not_interested": 2,
-      "total": 8,
-      "controversy": 75,
-      "page_count": 341,
-      "genres": [
-        "fiction",
-        "classics",
+        "literary",
         "science fiction",
-        "speculative fiction"
+        "emotional",
+        "reflective",
+        "sad"
       ],
-      "cover_image_url": "https://cdn.thestorygraph.com/cwreulin67ys8vx9ad201lsrg3y5"
+      "cover_image_url": "https://cdn.thestorygraph.com/h0udwhvnkuc7sb2ntkueycep8owl"
     },
     {
-      "title": "The Man in the High Castle",
-      "author": "Philip K. Dick 🇺🇸",
-      "score": 75,
+      "title": "Dungeon Crawler Carl",
+      "author": "Matt Dinniman 🇺🇸",
+      "score": 66.66666666666666,
       "interested": 6,
-      "not_interested": 2,
-      "total": 8,
-      "controversy": 75,
-      "page_count": 259,
-      "genres": [
-        "fiction",
-        "classics",
-        "dystopian",
-        "science fiction"
-      ],
-      "cover_image_url": "https://cdn.thestorygraph.com/l8jqcorqgbarku0r14ftg08rpie5"
-    },
-    {
-      "title": "Complicity",
-      "author": "Iain Banks 🏴󠁧󠁢󠁳󠁣󠁴󠁿",
-      "score": 75,
-      "interested": 6,
-      "not_interested": 2,
-      "total": 8,
-      "controversy": 75,
-      "page_count": 313,
-      "genres": [
-        "fiction",
-        "crime",
-        "mystery"
-      ],
-      "cover_image_url": "https://cdn.thestorygraph.com/ymjn1x3jr2ysqdupyu42gvbljuby"
-    },
-    {
-      "title": "This Is How You Lose the Time War",
-      "author": "Max Gladstone 🇺🇸 & Amal El-Mohtar 🇨🇦",
-      "score": 62.5,
-      "interested": 5,
       "not_interested": 3,
-      "total": 8,
-      "controversy": 87.5,
-      "page_count": 198,
+      "total": 9,
+      "controversy": 83.33333333333334,
+      "page_count": 446,
       "genres": [
         "fiction",
-        "lgbtqia+",
-        "romance",
-        "science fiction"
-      ],
-      "cover_image_url": "https://cdn.thestorygraph.com/n0oebfd0xe4fvy2d0k8yi7t7659q"
-    },
-    {
-      "title": "Roadside Picnic",
-      "author": "Boris Strugatsky 🇷🇺 & Arkady Strugatsky 🇬🇪🇷🇺",
-      "score": 62.5,
-      "interested": 5,
-      "not_interested": 3,
-      "total": 8,
-      "controversy": 87.5,
-      "page_count": 145,
-      "genres": [
-        "fiction",
+        "fantasy",
         "science fiction",
-        "classics",
-        "speculative fiction"
+        "humor"
       ],
-      "cover_image_url": "https://cdn.thestorygraph.com/3bswcj3fe1nx057w8nkblgtcpbi1"
-    },
-    {
-      "title": "Fight Club",
-      "author": "Chuck Palahniuk 🇺🇸",
-      "score": 50,
-      "interested": 4,
-      "not_interested": 4,
-      "total": 8,
-      "controversy": 100,
-      "page_count": 218,
-      "genres": [
-        "fiction",
-        "classics",
-        "thriller"
-      ],
-      "cover_image_url": "https://cdn.thestorygraph.com/7ao1dfgwza80cw6v2ff3f0qtslil"
+      "cover_image_url": "https://cdn.thestorygraph.com/vmic28apf0jq6xdm89fjqzg0dfc9"
     },
     {
       "title": "The Shadow of the Wind",
       "author": "Carlos Ruiz Zafón 🇪🇸",
-      "score": 37.5,
-      "interested": 3,
-      "not_interested": 5,
-      "total": 8,
-      "controversy": 87.5,
+      "score": 55.55555555555556,
+      "interested": 5,
+      "not_interested": 4,
+      "total": 9,
+      "controversy": 94.44444444444444,
       "page_count": 487,
       "genres": [
         "fiction",
@@ -137,21 +57,148 @@
       "cover_image_url": "https://cdn.thestorygraph.com/bsen2ebh8e1uq79uv13g69d3gygs"
     },
     {
-      "title": "Artemis Fowl",
-      "author": "Eoin Colfer 🇺🇸",
-      "score": 0,
-      "interested": 0,
-      "not_interested": 8,
-      "total": 8,
-      "controversy": 50,
-      "page_count": 279,
+      "title": "Fear and Loathing in Las Vegas",
+      "author": "Hunter S. Thompson 🇺🇸",
+      "score": 55.55555555555556,
+      "interested": 5,
+      "not_interested": 4,
+      "total": 9,
+      "controversy": 94.44444444444444,
+      "page_count": 204,
+      "genres": [
+        "fiction",
+        "classics",
+        "adventure"
+      ],
+      "cover_image_url": "https://cdn.thestorygraph.com/tf6oc8jpdij122hiozcojmu3asp4"
+    },
+    {
+      "title": "The Wedding People",
+      "author": "Alison Espach 🇺🇸",
+      "score": 55.55555555555556,
+      "interested": 5,
+      "not_interested": 4,
+      "total": 9,
+      "controversy": 94.44444444444444,
+      "page_count": 367,
+      "genres": [
+        "fiction",
+        "contemporary",
+        "literary",
+        "emotional",
+        "funny",
+        "hopeful"
+      ],
+      "cover_image_url": "https://cdn.thestorygraph.com/8zqxyy0j9nbyj3r2b0n7zcn3nxjt"
+    },
+    {
+      "title": "The Final Empire",
+      "author": "Brandon Sanderson 🇺🇸",
+      "score": 55.55555555555556,
+      "interested": 5,
+      "not_interested": 4,
+      "total": 9,
+      "controversy": 94.44444444444444,
+      "page_count": 541,
       "genres": [
         "fiction",
         "fantasy",
-        "middle grade",
-        "science fiction"
+        "adventurous",
+        "mysterious"
       ],
-      "cover_image_url": "https://cdn.thestorygraph.com/2yzq6apqj559vgkm6lem48uo8r8f"
+      "cover_image_url": "https://cdn.thestorygraph.com/s1hm0zy7tchue3u0rquctj5i2vv0"
+    },
+    {
+      "title": "The Spear Cuts Through Water",
+      "author": "Simon Jimenez 🇵🇭🇺🇸",
+      "score": 55.55555555555556,
+      "interested": 5,
+      "not_interested": 4,
+      "total": 9,
+      "controversy": 94.44444444444444,
+      "page_count": 522,
+      "genres": [
+        "fiction",
+        "fantasy",
+        "lgbtqia+",
+        "adventurous",
+        "dark",
+        "emotional"
+      ],
+      "cover_image_url": "https://cdn.thestorygraph.com/8xjfcyef7zj9rq52spm31kvr90sj"
+    },
+    {
+      "title": "The Wall",
+      "author": "Marlen Haushofer 🇦🇹",
+      "score": 55.55555555555556,
+      "interested": 5,
+      "not_interested": 4,
+      "total": 9,
+      "controversy": 94.44444444444444,
+      "page_count": 242,
+      "genres": [
+        "fiction",
+        "dystopian",
+        "literary",
+        "emotional",
+        "reflective",
+        "sad"
+      ],
+      "cover_image_url": "https://cdn.thestorygraph.com/t2trkfnezlmww2supywgwnd7tgpq"
+    },
+    {
+      "title": "The Shadow of the Gods",
+      "author": "John Gwynne 🇬🇧",
+      "score": 55.55555555555556,
+      "interested": 5,
+      "not_interested": 4,
+      "total": 9,
+      "controversy": 94.44444444444444,
+      "page_count": 480,
+      "genres": [
+        "fiction",
+        "fantasy",
+        "adventurous",
+        "dark",
+        "tense"
+      ],
+      "cover_image_url": "https://cdn.thestorygraph.com/8dkeunpshlnt97d18d7e80jnxy8l"
+    },
+    {
+      "title": "The Bridge Kingdom",
+      "author": "Danielle L. Jensen 🇺🇸",
+      "score": 44.44444444444444,
+      "interested": 4,
+      "not_interested": 5,
+      "total": 9,
+      "controversy": 94.44444444444444,
+      "page_count": 430,
+      "genres": [
+        "fiction",
+        "fantasy",
+        "romance",
+        "adventurous",
+        "tense"
+      ],
+      "cover_image_url": "https://cdn.thestorygraph.com/rf2odngizp61y62c73aosdpicw71"
+    },
+    {
+      "title": "Heart the Lover",
+      "author": "Lily King 🇺🇸",
+      "score": 44.44444444444444,
+      "interested": 4,
+      "not_interested": 5,
+      "total": 9,
+      "controversy": 94.44444444444444,
+      "page_count": 249,
+      "genres": [
+        "fiction",
+        "literary",
+        "emotional",
+        "reflective",
+        "sad"
+      ],
+      "cover_image_url": "https://cdn.thestorygraph.com/5i96wewo8fg55n4ygafwwg1239f5"
     }
   ]
 }

@@ -61,7 +61,7 @@ async function main() {
       choices: [
         { name: "📥 Import books from JSON file", value: "import" },
         { name: "📋 List current books", value: "list" },
-        { name: "🗑️  Delete all books", value: "clear" },
+        { name: "🗑️  Delete all books and votes", value: "clear" },
         { name: "❌ Exit", value: "exit" },
       ],
     },
