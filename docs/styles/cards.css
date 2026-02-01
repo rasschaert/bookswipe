@@ -65,11 +65,11 @@
 
 .card-face-front {
   z-index: 2;
-  transform: rotateY(0deg);
 }
 
 .card-face-back {
   transform: rotateY(180deg);
+  z-index: 1;
 }
 
 .book-card:active {

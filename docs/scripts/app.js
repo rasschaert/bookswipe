@@ -377,43 +377,22 @@ class BookSwipeApp {
         `;
 
     // Add click handler to flip the card
-    let clickStartX = 0;
-    let clickStartY = 0;
-    let clickStartTime = 0;
-    
     const flipContainer = card.querySelector(".card-flip-container");
+    let wasDragged = false;
     
-    const handleFlipStart = (e) => {
-      const touch = e.type.includes('touch') ? e.touches[0] : e;
-      clickStartX = touch.clientX;
-      clickStartY = touch.clientY;
-      clickStartTime = Date.now();
-    };
+    // Track if a drag occurred
+    card.addEventListener("mousedown", () => { wasDragged = false; });
+    card.addEventListener("mousemove", () => { wasDragged = true; });
+    card.addEventListener("touchstart", () => { wasDragged = false; }, { passive: true });
+    card.addEventListener("touchmove", () => { wasDragged = true; }, { passive: true });
     
-    const handleFlipEnd = (e) => {
-      const touch = e.type.includes('touch') ? (e.changedTouches?.[0] || e) : e;
-      const endX = touch.clientX;
-      const endY = touch.clientY;
-      const endTime = Date.now();
-      
-      const distance = Math.sqrt(
-        Math.pow(endX - clickStartX, 2) + Math.pow(endY - clickStartY, 2)
-      );
-      const duration = endTime - clickStartTime;
-      
-      // Only flip if it was a tap/click (not a drag)
-      // Must be less than 10px movement and less than 300ms
-      if (distance < 10 && duration < 300 && !card.classList.contains("dragging")) {
-        e.preventDefault();
-        e.stopPropagation();
-        card.classList.toggle("flipped");
-      }
-    };
-    
-    flipContainer.addEventListener("mousedown", handleFlipStart);
-    flipContainer.addEventListener("mouseup", handleFlipEnd);
-    flipContainer.addEventListener("touchstart", handleFlipStart, { passive: true });
-    flipContainer.addEventListener("touchend", handleFlipEnd);
+    // Handle click/tap to flip
+    flipContainer.addEventListener("click", (e) => {
+      // Don't flip if we were dragging or if the card is being swiped
+      if (wasDragged || card.classList.contains("dragging")) return;
+      e.stopPropagation();
+      card.classList.toggle("flipped");
+    });
 
     // Check if content overflows and add scroll indicator on back face
     setTimeout(() => {
