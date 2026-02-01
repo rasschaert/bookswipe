@@ -377,15 +377,43 @@ class BookSwipeApp {
         `;
 
     // Add click handler to flip the card
+    let clickStartX = 0;
+    let clickStartY = 0;
+    let clickStartTime = 0;
+    
     const flipContainer = card.querySelector(".card-flip-container");
-    flipContainer.addEventListener("click", (e) => {
-      // Don't flip if dragging
-      if (card.classList.contains("dragging")) return;
+    
+    const handleFlipStart = (e) => {
+      const touch = e.type.includes('touch') ? e.touches[0] : e;
+      clickStartX = touch.clientX;
+      clickStartY = touch.clientY;
+      clickStartTime = Date.now();
+    };
+    
+    const handleFlipEnd = (e) => {
+      const touch = e.type.includes('touch') ? (e.changedTouches?.[0] || e) : e;
+      const endX = touch.clientX;
+      const endY = touch.clientY;
+      const endTime = Date.now();
       
-      // Prevent flip during swipe
-      e.stopPropagation();
-      card.classList.toggle("flipped");
-    });
+      const distance = Math.sqrt(
+        Math.pow(endX - clickStartX, 2) + Math.pow(endY - clickStartY, 2)
+      );
+      const duration = endTime - clickStartTime;
+      
+      // Only flip if it was a tap/click (not a drag)
+      // Must be less than 10px movement and less than 300ms
+      if (distance < 10 && duration < 300 && !card.classList.contains("dragging")) {
+        e.preventDefault();
+        e.stopPropagation();
+        card.classList.toggle("flipped");
+      }
+    };
+    
+    flipContainer.addEventListener("mousedown", handleFlipStart);
+    flipContainer.addEventListener("mouseup", handleFlipEnd);
+    flipContainer.addEventListener("touchstart", handleFlipStart, { passive: true });
+    flipContainer.addEventListener("touchend", handleFlipEnd);
 
     // Check if content overflows and add scroll indicator on back face
     setTimeout(() => {

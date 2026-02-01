@@ -21,14 +21,12 @@
   background: var(--bg-card);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
-  overflow: hidden;
+  overflow: visible; /* Changed from hidden to allow flip animation */
   cursor: grab;
   user-select: none;
   transform-origin: center center;
   transition: transform 0.3s ease; /* Removed box-shadow transition to prevent hover effects */
   box-shadow: var(--shadow-lg) !important; /* Force static shadow */
-  display: flex;
-  flex-direction: column;
   
   /* Enable 3D perspective for flip animation */
   perspective: 1000px;
@@ -42,6 +40,10 @@
   height: 100%;
   transform-style: preserve-3d;
   transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: var(--radius-xl);
+  overflow: hidden; /* Clip content to rounded corners */
+  display: flex;
+  flex-direction: column;
 }
 
 .book-card.flipped .card-flip-container {
@@ -58,6 +60,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  background: var(--bg-card);
 }
 
 .card-face-front {
