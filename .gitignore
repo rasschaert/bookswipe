@@ -11,6 +11,7 @@ admin-tools/config.json
 # Data files (optional - you might want to version control some)
 admin-tools/data/*.json
 admin-tools/data/*.csv
+admin-tools/data/books/
 admin-tools/data/exports/
 admin-tools/data/backups/
 

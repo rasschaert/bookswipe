@@ -32,6 +32,21 @@ async function ensureCollections(pb) {
         required: true,
       },
       {
+        name: "country",
+        type: "text",
+        required: false,
+      },
+      {
+        name: "suggester",
+        type: "text",
+        required: false,
+      },
+      {
+        name: "pitch",
+        type: "text",
+        required: false,
+      },
+      {
         name: "synopsis",
         type: "editor",
         required: false,

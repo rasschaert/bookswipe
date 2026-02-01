@@ -258,66 +258,140 @@ class BookSwipeApp {
 
     // Generate genre tags HTML - handle potential null/undefined
     const genreTags = (book.genre_tags || [])
-      .slice(0, 6) // Limit to 6 tags
       .map((tag) => `<span class="genre-tag">${tag}</span>`)
       .join("");
+
+    // Get new fields with defaults
+    const country = book.country || "";
+    const suggester = book.suggester || "";
+    const pitch = book.pitch || "";
 
     card.innerHTML = `
             <div class="swipe-indicator like">LIKE</div>
             <div class="swipe-indicator pass">PASS</div>
-
-            <div class="book-header">
-                <div class="book-cover">
-                    ${
-                      book.cover_image_url
-                        ? `<img src="${book.cover_image_url}" alt="${book.title} cover" loading="lazy" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">`
-                        : `<div class="no-image">📚<br>${book.title.substring(
-                            0,
-                            20
-                          )}</div>`
-                    }
-                </div>
-
-                <div class="book-header-info">
-                    <h2 class="book-title">${book.title}</h2>
-                    <p class="book-author">by ${book.author}</p>
-
-                    <div class="book-meta">
-                        <span class="meta-item">📄 ${
-                          book.page_count || "Unknown"
-                        } pages</span>
-                        <span class="meta-separator">•</span>
-                        <span class="meta-item">📅 ${
-                          book.publication_year || "Unknown"
-                        }</span>
-                    </div>
-
-                    <div class="book-stats">
-                        <div class="rating">
-                            <span class="rating-stars">${ratingStars}</span>
-                            <span>${book.average_storygraph_rating}</span>
+            
+            <div class="card-flip-container">
+                <!-- FRONT FACE -->
+                <div class="card-face card-face-front">
+                    <div class="book-header">
+                        <div class="book-cover">
+                            ${
+                              book.cover_image_url
+                                ? `<img src="${book.cover_image_url}" alt="${book.title} cover" loading="lazy" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">`
+                                : `<div class="no-image">📚<br>${book.title.substring(
+                                    0,
+                                    20
+                                  )}</div>`
+                            }
                         </div>
-                        <div class="vote-count">${
-                          book.number_of_votes?.toLocaleString() || "0"
-                        } ratings</div>
+
+                        <div class="book-header-info">
+                            <h2 class="book-title">${book.title}</h2>
+                            <p class="book-author">by ${book.author}${
+                              country ? ` • ${country}` : ""
+                            }</p>
+
+                            <div class="book-meta">
+                                <span class="meta-item">📅 ${
+                                  book.publication_year || "Unknown"
+                                }</span>
+                                <span class="meta-separator">•</span>
+                                <span class="meta-item">📄 ${
+                                  book.page_count || "Unknown"
+                                } pages</span>
+                            </div>
+
+                            <div class="book-stats">
+                                <div class="rating">
+                                    <span class="rating-stars">${ratingStars}</span>
+                                    <span>${
+                                      book.average_storygraph_rating
+                                    }</span>
+                                </div>
+                                <div class="vote-count">${
+                                  book.number_of_votes?.toLocaleString() || "0"
+                                } ratings</div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="genre-tags">
-                        ${genreTags}
+                    <div class="card-content">
+                        ${
+                          suggester
+                            ? `
+                            <div class="book-suggester">
+                                <div class="suggester-label">💡 Suggested by:</div>
+                                <div class="suggester-name">${suggester}</div>
+                            </div>
+                        `
+                            : ""
+                        }
+                        ${
+                          pitch
+                            ? `
+                            <div class="book-pitch">
+                                <div class="pitch-label">📣 Pitch:</div>
+                                <div class="pitch-text">"${pitch}"</div>
+                            </div>
+                        `
+                            : ""
+                        }
+                        <div class="flip-hint">👆 Tap card to see more details</div>
                     </div>
                 </div>
-            </div>
 
-            <div class="card-content">
-                <div class="book-synopsis">
-                    ${synopsis}
+                <!-- BACK FACE -->
+                <div class="card-face card-face-back">
+                    <div class="book-header">
+                        <div class="book-cover">
+                            ${
+                              book.cover_image_url
+                                ? `<img src="${book.cover_image_url}" alt="${book.title} cover" loading="lazy" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">`
+                                : `<div class="no-image">📚<br>${book.title.substring(
+                                    0,
+                                    20
+                                  )}</div>`
+                            }
+                        </div>
+
+                        <div class="book-header-info">
+                            <h2 class="book-title">${book.title}</h2>
+                            <p class="book-author">by ${book.author}${
+                              country ? ` • ${country}` : ""
+                            }</p>
+                            
+                            <div class="genre-tags">
+                                ${genreTags}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-content">
+                        <div class="book-synopsis">
+                            ${synopsis}
+                        </div>
+                        <div class="flip-hint">👆 Tap to flip back</div>
+                    </div>
                 </div>
             </div>
         `;
 
-    // Check if content overflows and add scroll indicator
+    // Add click handler to flip the card
+    const flipContainer = card.querySelector(".card-flip-container");
+    flipContainer.addEventListener("click", (e) => {
+      // Don't flip if dragging
+      if (card.classList.contains("dragging")) return;
+      
+      // Prevent flip during swipe
+      e.stopPropagation();
+      card.classList.toggle("flipped");
+    });
+
+    // Check if content overflows and add scroll indicator on back face
     setTimeout(() => {
-      const cardContent = card.querySelector(".card-content");
+      const cardContent = card.querySelector(
+        ".card-face-back .card-content"
+      );
       if (cardContent && cardContent.scrollHeight > cardContent.clientHeight) {
         cardContent.classList.add("has-overflow");
         card.classList.add("has-scrollable-content");

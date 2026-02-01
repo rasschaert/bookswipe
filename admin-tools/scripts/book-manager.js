@@ -139,6 +139,9 @@ class BookManager {
    * @param {Object} bookData - Book information object
    * @param {string} bookData.title - Book title (required)
    * @param {string} bookData.author - Book author (required)
+   * @param {string} [bookData.country] - Author's country
+   * @param {string} [bookData.suggester] - Club member who suggested the book
+   * @param {string} [bookData.pitch] - Short pitch from the suggester
    * @param {string} [bookData.synopsis] - Book description
    * @param {number} [bookData.page_count] - Number of pages
    * @param {Array} [bookData.genre_tags] - Genre categories
@@ -201,7 +204,55 @@ class BookManager {
   }
 
   /**
-   * Import multiple books from a JSON file
+   * Import multiple books from individual JSON files in a folder
+   *
+   * Reads individual JSON files from the books folder and imports
+   * each one to the database. Provides progress tracking and error handling.
+   *
+   * @param {string} folderPath - Path to folder containing individual book JSON files
+   * @param {Array<string>} fileNames - Array of filenames to import
+   */
+  async importBooksFromFolder(folderPath, fileNames) {
+    try {
+      console.log(chalk.blue(`📥 Importing ${fileNames.length} books...`));
+
+      let successCount = 0;
+      let failCount = 0;
+
+      // Import each book individually to handle partial failures gracefully
+      for (const fileName of fileNames) {
+        const filePath = path.join(folderPath, fileName);
+        try {
+          const bookData = await fs.readJSON(filePath);
+          const result = await this.addBook(bookData);
+          if (result) {
+            successCount++;
+          } else {
+            failCount++;
+          }
+        } catch (error) {
+          console.error(
+            chalk.red(`❌ Failed to read ${fileName}:`, error.message),
+          );
+          failCount++;
+        }
+
+        // Small delay to avoid overwhelming the PocketBase server
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+
+      console.log(
+        chalk.green(
+          `\n🎉 Import completed: ${successCount} successful, ${failCount} failed`,
+        ),
+      );
+    } catch (error) {
+      console.error(chalk.red("❌ Failed to import books:", error.message));
+    }
+  }
+
+  /**
+   * Import multiple books from a JSON file (Legacy support)
    *
    * Reads a JSON file containing an array of book objects and imports
    * each one to the database. Provides progress tracking and error handling

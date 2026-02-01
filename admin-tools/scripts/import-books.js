@@ -87,83 +87,98 @@ async function main() {
 /**
  * Handle the book import process
  *
- * Guides the user through selecting a JSON file, previewing its contents,
- * and confirming the import operation. Supports both files in the data
- * directory and custom file paths.
+ * Guides the user through selecting books to import from the books folder.
+ * Each book is stored as an individual JSON file in admin-tools/data/books/.
  *
  * @param {BookManager} manager - BookManager instance for database operations
  */
 async function handleImport(manager) {
-  // Ensure the data directory exists
-  const dataDir = path.join(__dirname, "..", "data");
-  await fs.ensureDir(dataDir);
+  // Ensure the books directory exists
+  const booksDir = path.join(__dirname, "..", "data", "books");
+  await fs.ensureDir(booksDir);
 
-  // Scan for JSON files in the data directory
-  const files = await fs.readdir(dataDir);
+  // Scan for JSON files in the books directory
+  const files = await fs.readdir(booksDir);
   const jsonFiles = files.filter((file) => file.endsWith(".json"));
 
   // Check if any JSON files are available
   if (jsonFiles.length === 0) {
-    console.log(chalk.yellow("⚠️  No JSON files found in admin-tools/data/"));
     console.log(
-      chalk.gray("Place your book JSON files in the data/ directory first."),
+      chalk.yellow("⚠️  No book JSON files found in admin-tools/data/books/"),
+    );
+    console.log(
+      chalk.gray(
+        "Place individual book JSON files in the data/books/ directory first.",
+      ),
     );
     return;
   }
 
-  const { fileName } = await inquirer.prompt([
+  console.log(
+    chalk.blue(`\n📖 Found ${jsonFiles.length} book(s) in books folder\n`),
+  );
+
+  const { importChoice } = await inquirer.prompt([
     {
       type: "list",
-      name: "fileName",
-      message: "Select a JSON file to import:",
+      name: "importChoice",
+      message: "What would you like to import?",
       choices: [
-        ...jsonFiles.map((file) => ({ name: file, value: file })),
-        { name: "📁 Browse for file...", value: "browse" },
+        { name: "📚 Import all books", value: "all" },
+        { name: "📖 Select specific books", value: "select" },
+        { name: "❌ Cancel", value: "cancel" },
       ],
     },
   ]);
 
-  let filePath;
-
-  if (fileName === "browse") {
-    const { customPath } = await inquirer.prompt([
-      {
-        type: "input",
-        name: "customPath",
-        message: "Enter the full path to your JSON file:",
-        validate: async (input) => {
-          try {
-            await fs.access(input);
-            return true;
-          } catch {
-            return "File not found. Please enter a valid path.";
-          }
-        },
-      },
-    ]);
-    filePath = customPath;
-  } else {
-    filePath = path.join(dataDir, fileName);
+  if (importChoice === "cancel") {
+    console.log(chalk.gray("Import cancelled."));
+    return;
   }
 
-  // Preview the file content
-  try {
-    const data = await fs.readJSON(filePath);
-    const count = Array.isArray(data) ? data.length : 1;
+  let booksToImport = [];
 
-    console.log(
-      chalk.blue(
-        `\n📖 Preview: Found ${count} book(s) in ${path.basename(filePath)}`,
-      ),
-    );
+  if (importChoice === "all") {
+    booksToImport = jsonFiles;
+  } else {
+    // Let user select which books to import
+    const { selectedBooks } = await inquirer.prompt([
+      {
+        type: "checkbox",
+        name: "selectedBooks",
+        message: "Select books to import:",
+        choices: jsonFiles.map((file) => ({
+          name: file.replace(".json", ""),
+          value: file,
+        })),
+      },
+    ]);
 
-    if (Array.isArray(data) && data.length > 0) {
-      console.log(chalk.gray("First book:"));
-      console.log(chalk.gray(`- Title: ${data[0].title}`));
-      console.log(chalk.gray(`- Author: ${data[0].author}`));
+    if (selectedBooks.length === 0) {
+      console.log(chalk.yellow("No books selected."));
+      return;
     }
+
+    booksToImport = selectedBooks;
+  }
+
+  // Preview the books to be imported
+  console.log(
+    chalk.blue(`\n📖 Preview: Importing ${booksToImport.length} book(s)`),
+  );
+
+  try {
+    const firstBookPath = path.join(booksDir, booksToImport[0]);
+    const firstBook = await fs.readJSON(firstBookPath);
+    console.log(chalk.gray("First book:"));
+    console.log(chalk.gray(`- Title: ${firstBook.title}`));
+    console.log(chalk.gray(`- Author: ${firstBook.author}`));
+    console.log(chalk.gray(`- Country: ${firstBook.country || "N/A"}`));
+    console.log(chalk.gray(`- Suggester: ${firstBook.suggester || "N/A"}`));
   } catch (error) {
-    console.error(chalk.red(`❌ Invalid JSON file: ${error.message}`));
+    console.error(
+      chalk.red(`❌ Error reading first book: ${error.message}`),
+    );
     return;
   }
 
@@ -177,7 +192,7 @@ async function handleImport(manager) {
   ]);
 
   if (confirm) {
-    await manager.importBooksFromFile(filePath);
+    await manager.importBooksFromFolder(booksDir, booksToImport);
   } else {
     console.log(chalk.gray("Import cancelled."));
   }
