@@ -61,6 +61,7 @@
   flex-direction: column;
   overflow: hidden;
   background: var(--bg-card);
+  border-radius: var(--radius-xl);
 }
 
 .card-face-front {
@@ -68,8 +69,10 @@
 }
 
 .card-face-back {
-  transform: rotateY(180deg);
   z-index: 1;
+  /* Pre-rotate the back face so it's hidden initially (facing away) */
+  /* When container rotates 180deg, this face becomes visible and readable */
+  transform: rotateY(180deg);
 }
 
 .book-card:active {
