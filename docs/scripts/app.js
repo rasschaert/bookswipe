@@ -408,31 +408,6 @@ class BookSwipeApp {
     flipContainer.addEventListener("touchstart", recordStart, { passive: true });
     flipContainer.addEventListener("touchend", handleFlip);
 
-    // Check if content overflows and add scroll indicator on back face
-    setTimeout(() => {
-      const cardContent = card.querySelector(
-        ".card-face-back .card-content"
-      );
-      if (cardContent && cardContent.scrollHeight > cardContent.clientHeight) {
-        cardContent.classList.add("has-overflow");
-        card.classList.add("has-scrollable-content");
-
-        // Remove indicators after user scrolls
-        const handleScroll = () => {
-          cardContent.classList.remove("has-overflow");
-          card.classList.remove("has-scrollable-content");
-          cardContent.removeEventListener("scroll", handleScroll);
-        };
-        cardContent.addEventListener("scroll", handleScroll, { once: true });
-
-        // Auto-remove indicators after 5 seconds
-        setTimeout(() => {
-          cardContent.classList.remove("has-overflow");
-          card.classList.remove("has-scrollable-content");
-        }, 5000);
-      }
-    }, 100);
-
     return card;
   }
 
