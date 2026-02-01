@@ -16,21 +16,16 @@
 .book-card {
   position: absolute;
   width: 100%;
-  max-width: min(420px, calc(100vw - 1rem)); /* Better use of screen space */
-  height: calc(100vh - 140px); /* More height available since buttons float */
+  max-width: min(420px, calc(100vw - 1rem));
+  height: calc(100vh - 140px);
   background: var(--bg-card);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
-  overflow: visible; /* Changed from hidden to allow flip animation */
+  overflow: hidden;
   cursor: grab;
   user-select: none;
   transform-origin: center center;
-  transition: transform 0.3s ease; /* Removed box-shadow transition to prevent hover effects */
-  box-shadow: var(--shadow-lg) !important; /* Force static shadow */
-  
-  /* Enable 3D perspective for flip animation */
-  perspective: 1000px;
-  transform-style: preserve-3d;
+  transition: transform 0.3s ease;
 }
 
 /* Card flip container */
@@ -38,41 +33,44 @@
   position: relative;
   width: 100%;
   height: 100%;
-  transform-style: preserve-3d;
-  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  border-radius: var(--radius-xl);
-  overflow: hidden; /* Clip content to rounded corners */
-  display: flex;
-  flex-direction: column;
-}
-
-.book-card.flipped .card-flip-container {
-  transform: rotateY(180deg);
 }
 
 /* Card faces */
 .card-face {
   position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   background: var(--bg-card);
   border-radius: var(--radius-xl);
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .card-face-front {
   z-index: 2;
+  opacity: 1;
+  visibility: visible;
 }
 
 .card-face-back {
   z-index: 1;
-  /* Pre-rotate the back face so it's hidden initially (facing away) */
-  /* When container rotates 180deg, this face becomes visible and readable */
-  transform: rotateY(180deg);
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* When flipped, swap visibility */
+.book-card.flipped .card-face-front {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.book-card.flipped .card-face-back {
+  opacity: 1;
+  visibility: visible;
 }
 
 .book-card:active {
@@ -81,16 +79,6 @@
 
 .book-card.dragging {
   transition: none;
-}
-
-/* Explicitly disable any box-shadow transitions on cards */
-.book-card,
-.book-card *,
-.book-card::before,
-.book-card::after {
-  transition:
-    transform 0.3s ease,
-    opacity 0.3s ease !important;
 }
 
 .book-card.swiping-left {
