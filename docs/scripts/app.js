@@ -83,11 +83,11 @@ class BookSwipeApp {
         error.message.includes("Direct fetch failed")
       ) {
         this.showError(
-          'Cannot connect to PocketBase. Please check:\n\n1. PocketBase is running at https://bookswipe.modest-moray-8349.pomerium.app\n2. The "books" collection exists\n3. API rules allow public access'
+          'Cannot connect to PocketBase. Please check:\n\n1. PocketBase is running at https://bookswipe.modest-moray-8349.pomerium.app\n2. The "books" collection exists\n3. API rules allow public access',
         );
       } else {
         this.showError(
-          "Failed to load the application. Please check the console for more details."
+          "Failed to load the application. Please check the console for more details.",
         );
       }
     }
@@ -110,7 +110,7 @@ class BookSwipeApp {
     // Validation: Make sure we actually got some books to vote on
     if (this.books.length === 0) {
       throw new Error(
-        "No books available in PocketBase. Please add some books first."
+        "No books available in PocketBase. Please add some books first.",
       );
     }
   }
@@ -234,7 +234,7 @@ class BookSwipeApp {
         // Track which book index we've loaded (for performance optimization later)
         this.highestLoadedBookIndex = Math.max(
           this.highestLoadedBookIndex,
-          bookIndex
+          bookIndex,
         );
       }
     }
@@ -250,7 +250,7 @@ class BookSwipeApp {
 
     // Format rating
     const ratingStars = bookSwipeAPI.formatRating(
-      book.average_storygraph_rating
+      book.average_storygraph_rating,
     );
 
     // Use full synopsis without truncation
@@ -266,6 +266,13 @@ class BookSwipeApp {
     const suggester = book.suggester || "";
     const pitch = book.pitch || "";
 
+    // Helper function to escape HTML but preserve newlines
+    const escapeHtml = (text) => {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    };
+
     card.innerHTML = `
             <div class="swipe-indicator like">LIKE</div>
             <div class="swipe-indicator pass">PASS</div>
@@ -280,7 +287,7 @@ class BookSwipeApp {
                                 ? `<img src="${book.cover_image_url}" alt="${book.title} cover" loading="lazy" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">`
                                 : `<div class="no-image">📚<br>${book.title.substring(
                                     0,
-                                    20
+                                    20,
                                   )}</div>`
                             }
                         </div>
@@ -331,7 +338,7 @@ class BookSwipeApp {
                             ? `
                             <div class="book-pitch">
                                 <div class="pitch-label">📣 Pitch:</div>
-                                <div class="pitch-text">"${pitch}"</div>
+                                <div class="pitch-text"></div>
                             </div>
                         `
                             : ""
@@ -349,7 +356,7 @@ class BookSwipeApp {
                                 ? `<img src="${book.cover_image_url}" alt="${book.title} cover" loading="lazy" onerror="this.parentElement.classList.add('no-image'); this.style.display='none';">`
                                 : `<div class="no-image">📚<br>${book.title.substring(
                                     0,
-                                    20
+                                    20,
                                   )}</div>`
                             }
                         </div>
@@ -367,45 +374,56 @@ class BookSwipeApp {
                     </div>
 
                     <div class="card-content">
-                        <div class="book-synopsis">
-                            ${synopsis}
-                        </div>
+                        <div class="book-synopsis"></div>
                         <div class="flip-hint">👆 Tap to flip back</div>
                     </div>
                 </div>
             </div>
         `;
 
+    // Set text content to preserve newlines properly
+    const synopsisEl = card.querySelector(".book-synopsis");
+    if (synopsisEl) {
+      synopsisEl.textContent = synopsis;
+    }
+
+    const pitchTextEl = card.querySelector(".pitch-text");
+    if (pitchTextEl && pitch) {
+      pitchTextEl.textContent = `"${pitch}"`;
+    }
+
     // Add click handler to flip the card
     const flipContainer = card.querySelector(".card-flip-container");
     let startX = 0;
     let startY = 0;
-    
+
     // Track start position to detect actual drags vs clicks
     const recordStart = (e) => {
       const point = e.touches ? e.touches[0] : e;
       startX = point.clientX;
       startY = point.clientY;
     };
-    
+
     const handleFlip = (e) => {
       // Ignore if card is being swiped
       if (card.classList.contains("dragging")) return;
-      
+
       const point = e.changedTouches ? e.changedTouches[0] : e;
       const deltaX = Math.abs(point.clientX - startX);
       const deltaY = Math.abs(point.clientY - startY);
-      
+
       // Only flip if movement was minimal (a click/tap, not a drag)
       if (deltaX < 10 && deltaY < 10) {
         e.stopPropagation();
         card.classList.toggle("flipped");
       }
     };
-    
+
     flipContainer.addEventListener("mousedown", recordStart);
     flipContainer.addEventListener("mouseup", handleFlip);
-    flipContainer.addEventListener("touchstart", recordStart, { passive: true });
+    flipContainer.addEventListener("touchstart", recordStart, {
+      passive: true,
+    });
     flipContainer.addEventListener("touchend", handleFlip);
 
     return card;
@@ -427,7 +445,7 @@ class BookSwipeApp {
     console.log(
       `🔍 Debug: currentBookIndex=${this.currentBookIndex}, total books=${
         this.books.length
-      }, votes recorded=${Object.keys(this.userVotes).length}`
+      }, votes recorded=${Object.keys(this.userVotes).length}`,
     );
 
     // Load more cards if needed - check after every swipe
@@ -444,7 +462,7 @@ class BookSwipeApp {
       console.log(
         `🏁 Triggering end: voted on ${
           Object.keys(this.userVotes).length
-        } out of ${this.books.length} books`
+        } out of ${this.books.length} books`,
       );
       setTimeout(async () => {
         await this.handleAllBooksReviewed();
@@ -461,7 +479,7 @@ class BookSwipeApp {
     const remainingBooks = this.books.length - nextBookIndex;
 
     console.log(
-      `🔄 loadMoreCards: currentBookIndex=${this.currentBookIndex}, currentCards=${currentCards}, nextBookIndex=${nextBookIndex}, remainingBooks=${remainingBooks}`
+      `🔄 loadMoreCards: currentBookIndex=${this.currentBookIndex}, currentCards=${currentCards}, nextBookIndex=${nextBookIndex}, remainingBooks=${remainingBooks}`,
     );
 
     // Add more cards if we have remaining books and fewer than 3 cards visible
@@ -473,13 +491,13 @@ class BookSwipeApp {
         const bookIndex = nextBookIndex + i;
         if (bookIndex < this.books.length) {
           console.log(
-            `📖 Loading book ${bookIndex}: ${this.books[bookIndex].title}`
+            `📖 Loading book ${bookIndex}: ${this.books[bookIndex].title}`,
           );
           const card = this.createBookCard(this.books[bookIndex]);
           cardStack.appendChild(card);
           this.highestLoadedBookIndex = Math.max(
             this.highestLoadedBookIndex,
-            bookIndex
+            bookIndex,
           );
         }
       }
@@ -487,7 +505,7 @@ class BookSwipeApp {
       this.swipeHandler?.updateCardStack();
     } else {
       console.log(
-        `⏹️ Not loading cards: remainingBooks=${remainingBooks}, currentCards=${currentCards}`
+        `⏹️ Not loading cards: remainingBooks=${remainingBooks}, currentCards=${currentCards}`,
       );
     }
   }
@@ -501,14 +519,14 @@ class BookSwipeApp {
     if (button) {
       button.classList.add("pressed");
       button.classList.add(
-        direction === "right" ? "success-feedback" : "reject-feedback"
+        direction === "right" ? "success-feedback" : "reject-feedback",
       );
 
       setTimeout(() => {
         button.classList.remove(
           "pressed",
           "success-feedback",
-          "reject-feedback"
+          "reject-feedback",
         );
       }, 400);
     }
@@ -534,10 +552,10 @@ class BookSwipeApp {
 
     // Calculate stats
     const likedBooks = Object.values(this.userVotes).filter(
-      (vote) => vote === "interested"
+      (vote) => vote === "interested",
     ).length;
     const passedBooks = Object.values(this.userVotes).filter(
-      (vote) => vote === "not_interested"
+      (vote) => vote === "not_interested",
     ).length;
 
     // Update results screen
@@ -630,7 +648,7 @@ class BookSwipeApp {
       // User is authenticated - show their display name and hide input
       console.log(
         "✅ User authenticated:",
-        currentUser.displayName || currentUser.email
+        currentUser.displayName || currentUser.email,
       );
 
       // Hide the name input section
