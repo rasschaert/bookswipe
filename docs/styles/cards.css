@@ -47,7 +47,9 @@
   overflow: hidden;
   background: var(--bg-card);
   border-radius: var(--radius-xl);
-  transition: opacity 0.3s ease, visibility 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
 }
 
 .card-face-front {
@@ -374,6 +376,7 @@
   line-height: 1.5;
   color: var(--text-secondary);
   margin-bottom: 0.5rem;
+  white-space: pre-line;
 }
 
 /* Suggester Info */
@@ -397,6 +400,7 @@
   font-size: 0.95rem;
   color: var(--primary-color);
   font-weight: 600;
+  white-space: pre-line;
 }
 
 /* Pitch */
@@ -421,6 +425,7 @@
   color: var(--text-secondary);
   font-style: italic;
   line-height: 1.5;
+  white-space: pre-line;
 }
 
 /* Flip hint */
