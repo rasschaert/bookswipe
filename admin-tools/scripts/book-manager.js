@@ -81,11 +81,22 @@ class BookManager {
         chalk.red("❌ Failed to authenticate with PocketBase:", error.message),
       );
       console.error(chalk.red("\nDebug information:"));
-      console.error(chalk.yellow("  PocketBase URL:", this.config.pocketbase.url));
-      console.error(chalk.yellow("  Admin email:", this.config.pocketbase.adminEmail));
-      console.error(chalk.yellow("  Error details:", JSON.stringify(error, null, 2)));
+      console.error(
+        chalk.yellow("  PocketBase URL:", this.config.pocketbase.url),
+      );
+      console.error(
+        chalk.yellow("  Admin email:", this.config.pocketbase.adminEmail),
+      );
+      console.error(
+        chalk.yellow("  Error details:", JSON.stringify(error, null, 2)),
+      );
       if (error.data) {
-        console.error(chalk.yellow("  Server response:", JSON.stringify(error.data, null, 2)));
+        console.error(
+          chalk.yellow(
+            "  Server response:",
+            JSON.stringify(error.data, null, 2),
+          ),
+        );
       }
       if (error.status) {
         console.error(chalk.yellow("  HTTP status:", error.status));

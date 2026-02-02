@@ -176,9 +176,7 @@ async function handleImport(manager) {
     console.log(chalk.gray(`- Country: ${firstBook.country || "N/A"}`));
     console.log(chalk.gray(`- Suggester: ${firstBook.suggester || "N/A"}`));
   } catch (error) {
-    console.error(
-      chalk.red(`❌ Error reading first book: ${error.message}`),
-    );
+    console.error(chalk.red(`❌ Error reading first book: ${error.message}`));
     return;
   }
 
