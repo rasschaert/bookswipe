@@ -22,17 +22,41 @@ class BookSwipeAPI {
     // CONFIGURATION
     this.baseURL = "https://bookswipe.modest-moray-8349.pomerium.app"; // PocketBase instance
     this.initialized = false; // Connection status flag
+    this.mockMode = false; // Mock mode flag
+    this.mockData = null; // Mock data storage
   }
 
   /**
    * INITIALIZE CONNECTION
    * ====================
    * Test that we can communicate with the PocketBase server.
+   * In mock mode, loads data from mock.json instead.
    *
    * Tests PocketBase connectivity before attempting operations.
    */
   async init() {
     if (this.initialized) return; // Don't initialize twice
+
+    // Check for mock mode URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    this.mockMode = urlParams.get("mock") === "true";
+
+    if (this.mockMode) {
+      console.log("🎭 Mock mode enabled - loading from mock.json");
+      try {
+        const response = await fetch("scripts/mock.json");
+        if (!response.ok) {
+          throw new Error(`Failed to load mock.json: ${response.statusText}`);
+        }
+        this.mockData = await response.json();
+        this.initialized = true;
+        console.log("✅ Mock data loaded successfully");
+        return;
+      } catch (error) {
+        console.error("❌ Failed to load mock data:", error);
+        throw error;
+      }
+    }
 
     try {
       // Test connection with a simple health check
@@ -57,10 +81,17 @@ class BookSwipeAPI {
    * =============================
    * Retrieves books from PocketBase 'books' collection.
    * Uses direct fetch() with proper error handling and response parsing.
+   * In mock mode, returns data from mock.json.
    */
   async getBooks() {
     if (!this.initialized) {
       throw new Error("API not initialized. Call init() first.");
+    }
+
+    // Mock mode: return mock data
+    if (this.mockMode) {
+      console.log(`📚 Returning ${this.mockData.length} books from mock data`);
+      return this.mockData;
     }
 
     try {
@@ -93,11 +124,27 @@ class BookSwipeAPI {
    * SUBMIT USER VOTES TO DATABASE
    * =============================
    * This sends the user's voting data to PocketBase for storage.
+   * In mock mode, simulates successful submission.
    *
    * Sends voting data to PocketBase with session tracking.
    * Includes proper JSON formatting and error handling.
    */
   async submitVotes(votes, userName = "") {
+    // Mock mode: simulate successful submission
+    if (this.mockMode) {
+      console.log("🎭 Mock mode: Simulating vote submission", { votes, userName });
+      return {
+        success: true,
+        record: {
+          id: "mock_vote_" + Date.now(),
+          user_name: userName || "Anonymous",
+          votes: votes,
+          session_id: this.generateSessionId(),
+          submitted_at: new Date().toISOString()
+        }
+      };
+    }
+
     try {
       // Generate unique session ID for this voting session
       const sessionId = this.generateSessionId();
@@ -151,9 +198,9 @@ class BookSwipeAPI {
     // Date.now() = milliseconds since 1970 (always unique)
     // Math.random() = decimal between 0 and 1
     // .toString(36) = convert to base-36 (uses letters + numbers)
-    // .substr(2, 9) = take 9 characters starting from position 2
+    // .substring(2, 11) = take 9 characters starting from position 2
     return (
-      "session_" + Date.now() + "_" + Math.random().toString(36).substr(2, 9)
+      "session_" + Date.now() + "_" + Math.random().toString(36).substring(2, 11)
     );
   }
 
@@ -162,8 +209,15 @@ class BookSwipeAPI {
    * =========================
    * Check if user is authenticated via Pomerium and return their info.
    * Returns null if not authenticated, or user object if authenticated.
+   * In mock mode, returns null (no authentication).
    */
   async getCurrentUser() {
+    // Mock mode: no authentication
+    if (this.mockMode) {
+      console.log("🎭 Mock mode: No authentication");
+      return null;
+    }
+
     try {
       // Check authentication using Pomerium's /me endpoint
       const response = await fetch(`${this.baseURL}/api/pomerium/me`, {
@@ -203,8 +257,15 @@ class BookSwipeAPI {
    * TEST API CONNECTION
    * ==================
    * Simple health check to verify the server is responding.
+   * In mock mode, simulates successful connection.
    */
   async testConnection() {
+    // Mock mode: simulate successful connection
+    if (this.mockMode) {
+      console.log("🎭 Mock mode: Simulating connection test");
+      return true;
+    }
+
     const response = await fetch(`${this.baseURL}/api/health`);
     if (!response.ok) {
       throw new Error(`Connection test failed: ${response.status}`);

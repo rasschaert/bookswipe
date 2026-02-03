@@ -74,20 +74,34 @@ class BookSwipeApp {
       console.error("❌ Error message:", error.message);
       console.error("❌ Error stack:", error.stack);
 
+      // Check if we're in mock mode
+      const urlParams = new URLSearchParams(window.location.search);
+      const isMockMode = urlParams.get("mock") === "true";
+
       // Different error messages for different problems
       if (error.message.includes("No books available")) {
         this.showError("No books available to vote on.");
+      } else if (isMockMode && error.message.includes("mock.json")) {
+        this.showError(
+          'Failed to load mock data.\n\nPlease check:\n1. mock.json exists at scripts/mock.json\n2. The file is valid JSON\n3. You are using a web server (not file:// protocol)\n\nActual error: ' + error.message
+        );
       } else if (
         error.message.includes("Failed to fetch") ||
         error.message.includes("404") ||
         error.message.includes("Direct fetch failed")
       ) {
-        this.showError(
-          'Cannot connect to PocketBase. Please check:\n\n1. PocketBase is running at https://bookswipe.modest-moray-8349.pomerium.app\n2. The "books" collection exists\n3. API rules allow public access',
-        );
+        if (isMockMode) {
+          this.showError(
+            'Mock mode is enabled but failed to load data.\n\nPlease check:\n1. The web server is running\n2. mock.json is accessible at scripts/mock.json\n\nActual error: ' + error.message
+          );
+        } else {
+          this.showError(
+            'Cannot connect to PocketBase. Please check:\n\n1. PocketBase is running at https://bookswipe.modest-moray-8349.pomerium.app\n2. The "books" collection exists\n3. API rules allow public access'
+          );
+        }
       } else {
         this.showError(
-          "Failed to load the application. Please check the console for more details.",
+          "Failed to load the application. Please check the console for more details.\n\nError: " + error.message
         );
       }
     }
@@ -392,76 +406,8 @@ class BookSwipeApp {
       pitchTextEl.textContent = `"${pitch}"`;
     }
 
-    // Add click handler to flip the card
-    const flipContainer = card.querySelector(".card-flip-container");
-    let startX = 0;
-    let startY = 0;
-    let activePointerId = null;
-
-    const recordStart = (event) => {
-      const point = event.touches ? event.touches[0] : event;
-      startX = point.clientX;
-      startY = point.clientY;
-    };
-
-    const shouldFlip = (event) => {
-      const point = event.changedTouches ? event.changedTouches[0] : event;
-      const deltaX = Math.abs(point.clientX - startX);
-      const deltaY = Math.abs(point.clientY - startY);
-      return deltaX < 10 && deltaY < 10;
-    };
-
-    const handleFlip = (event) => {
-      if (card.classList.contains("dragging")) return;
-      if (!shouldFlip(event)) return;
-
-      event.stopPropagation();
-      card.classList.toggle("flipped");
-    };
-
-    if (window.PointerEvent) {
-      flipContainer.addEventListener("pointerdown", (event) => {
-        if (event.pointerType === "mouse" && event.button !== 0) {
-          return; // Ignore non-primary mouse buttons
-        }
-
-        if (activePointerId !== null && event.pointerId !== activePointerId) {
-          return; // Ignore secondary pointers until the first one finishes
-        }
-
-        activePointerId = event.pointerId;
-        flipContainer.setPointerCapture?.(activePointerId);
-        recordStart(event);
-      });
-
-      flipContainer.addEventListener("pointerup", (event) => {
-        if (activePointerId !== null && event.pointerId !== activePointerId) {
-          return;
-        }
-
-        flipContainer.releasePointerCapture?.(event.pointerId);
-        activePointerId = null;
-        handleFlip(event);
-      });
-
-      flipContainer.addEventListener("pointercancel", (event) => {
-        if (activePointerId !== null && event.pointerId !== activePointerId) {
-          return;
-        }
-
-        if (activePointerId !== null) {
-          flipContainer.releasePointerCapture?.(activePointerId);
-        }
-        activePointerId = null;
-      });
-    } else {
-      flipContainer.addEventListener("mousedown", recordStart);
-      flipContainer.addEventListener("mouseup", handleFlip);
-      flipContainer.addEventListener("touchstart", recordStart, {
-        passive: true,
-      });
-      flipContainer.addEventListener("touchend", handleFlip);
-    }
+    // Note: Card flipping is now handled by SwipeHandler
+    // No need for separate flip logic here
 
     return card;
   }

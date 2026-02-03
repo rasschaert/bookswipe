@@ -3,46 +3,53 @@
  * SWIPE HANDLER - GESTURE RECOGNITION ENGINE
  * ========================================
  *
- * Advanced gesture detection with:
+ * Completely refactored gesture system with:
+ * - Unified Pointer Events API for touch/mouse/pen
+ * - Clear interaction priorities: tap → scroll → swipe
  * - Velocity-based swipe recognition
- * - Scroll conflict resolution using touch-action
- * - Real-time transform updates via CSS custom properties
- * - Momentum calculation with 60fps smoothness
- * - Fallback patterns for mouse/keyboard accessibility
+ * - Pointer capture for reliable tracking
+ * - Touch-action CSS coordination
+ * - Intent detection with proper thresholds
  *
- * TECHNICAL DETAILS:
- * - Distinguishes intentional swipes from scroll gestures
- * - Uses coordinate mathematics for natural card rotation
- * - Implements state machine for drag/scroll/idle modes
- * - Optimizes performance with RAF throttling
- * - Provides callback interface for loose coupling
+ * INTERACTION MODEL:
+ * 1. Tap/click (< 10px movement) → Flip card
+ * 2. Vertical swipe in content → Scroll to read
+ * 3. Horizontal swipe on card → Vote (swipe left/right)
+ *
+ * EVENT PROCESSING ORDER:
+ * - pointerdown: Record start position, capture pointer
+ * - pointermove: Detect intent (tap vs scroll vs swipe)
+ * - pointerup: Complete action based on detected intent
+ * - pointercancel: Clean up if browser takes over
  */
 
-// Swipe Handler for BookSwipe Cards
 class SwipeHandler {
   constructor(cardStack, callbacks = {}) {
     // DOM REFERENCES
-    this.cardStack = cardStack; // Card container element
-    this.callbacks = callbacks; // Event callbacks: {onSwipe, onEmpty}
-    this.currentCard = null; // Active card being manipulated
+    this.cardStack = cardStack;
+    this.callbacks = callbacks; // {onSwipe, onEmpty}
+    this.currentCard = null;
 
-    // GESTURE STATE - Tracks interaction physics
-    this.isDragging = false; // Currently in drag mode
-    this.startX = 0; // Initial touch/click X coordinate
-    this.startY = 0; // Where the drag started (Y coordinate)
-    this.currentX = 0; // Current drag offset from start (X)
-    this.currentY = 0; // Current drag offset from start (Y)
+    // POINTER STATE
+    this.activePointerId = null; // Track active pointer
+    this.pointerStartX = 0;
+    this.pointerStartY = 0;
+    this.pointerCurrentX = 0;
+    this.pointerCurrentY = 0;
+    this.pointerStartTime = 0;
 
-    // BEHAVIOR CONFIGURATION
-    this.threshold = 80; // How far user must drag to trigger a swipe
-    this.rotationFactor = 0.1; // How much the card rotates while dragging (visual effect)
+    // GESTURE INTENT STATE
+    this.gestureIntent = null; // null | 'tap' | 'scroll' | 'swipe'
+    this.isDragging = false;
 
-    // SCROLL DETECTION - These help distinguish between scrolling and swiping
-    this.allowScrolling = false; // Is user trying to scroll the content?
-    this.scrollStartTime = 0; // When did potential scrolling start?
-    this.movementThreshold = 15; // Minimum movement to determine user intent
+    // CONFIGURATION
+    this.tapThreshold = 10; // Max movement for tap
+    this.intentThreshold = 15; // Movement needed to detect intent
+    this.swipeThreshold = 80; // Distance needed to complete swipe
+    this.velocityThreshold = 0.5; // Pixels per millisecond for flick
+    this.rotationFactor = 0.1; // Card rotation during drag
 
-    // DEBUG MODE - Set to true to see detailed logging in console
+    // DEBUG
     this.debug = false;
 
     // INITIALIZATION
@@ -52,50 +59,54 @@ class SwipeHandler {
   /**
    * INITIALIZATION
    * ==============
-   * Set up all the event listeners and keyboard controls.
+   * Set up unified pointer event listeners and keyboard controls.
    */
   init() {
     this.bindEvents();
     this.setupKeyboardControls();
 
     if (this.debug) {
-      console.log("🎮 SwipeHandler initialized with debug mode enabled");
+      console.log("🎮 SwipeHandler initialized with Pointer Events API");
     }
   }
 
   /**
-   * BIND EVENT LISTENERS
-   * ====================
-   * Registers touch and mouse event handlers for cross-platform gesture support.
-   * Uses passive: false to enable preventDefault() for gesture conflicts.
+   * BIND POINTER EVENT LISTENERS
+   * ============================
+   * Uses modern Pointer Events API for unified touch/mouse/pen handling.
+   * Pointer capture ensures we track the pointer even outside the element.
    */
   bindEvents() {
-    // TOUCH EVENTS FOR MOBILE
-    // These fire when user touches the screen
-    this.cardStack.addEventListener("touchstart", this.handleStart.bind(this), {
-      passive: false, // Allows us to prevent scrolling when needed
-    });
-    this.cardStack.addEventListener("touchmove", this.handleMove.bind(this), {
-      passive: false,
-    });
-    this.cardStack.addEventListener("touchend", this.handleEnd.bind(this), {
-      passive: false,
-    });
+    // Use pointer events for unified handling
+    this.cardStack.addEventListener(
+      "pointerdown",
+      this.handlePointerDown.bind(this)
+    );
+    this.cardStack.addEventListener(
+      "pointermove",
+      this.handlePointerMove.bind(this)
+    );
+    this.cardStack.addEventListener(
+      "pointerup",
+      this.handlePointerUp.bind(this)
+    );
+    this.cardStack.addEventListener(
+      "pointercancel",
+      this.handlePointerCancel.bind(this)
+    );
 
-    // MOUSE EVENTS FOR DESKTOP
-    // Note: mousemove and mouseup are on document, not just cardStack
-    // This ensures we track the mouse even if it goes outside the card area
-    this.cardStack.addEventListener("mousedown", this.handleStart.bind(this));
-    document.addEventListener("mousemove", this.handleMove.bind(this));
-    document.addEventListener("mouseup", this.handleEnd.bind(this));
-
-    // Prevent context menu on long press (that right-click menu)
+    // Prevent context menu on long press
     this.cardStack.addEventListener("contextmenu", (e) => e.preventDefault());
   }
 
+  /**
+   * KEYBOARD CONTROLS
+   * =================
+   * Accessibility fallback for keyboard navigation.
+   */
   setupKeyboardControls() {
     document.addEventListener("keydown", (e) => {
-      if (!this.currentCard) return;
+      if (!this.getTopCard()) return;
 
       switch (e.key) {
         case "ArrowLeft":
@@ -117,219 +128,249 @@ class SwipeHandler {
       }
     });
   }
-  handleStart(e) {
+
+  /**
+   * POINTER DOWN - START OF INTERACTION
+   * ===================================
+   * Record starting position and capture the pointer for reliable tracking.
+   */
+  handlePointerDown(e) {
+    // Find the card being interacted with
     const card = e.target.closest(".book-card");
     if (!card || !this.isTopCard(card)) return;
 
-    // Different behavior for touch vs mouse
-    const isTouch = e.type === "touchstart";
+    // Ignore non-primary buttons
+    if (e.button !== 0) return;
 
-    if (this.debug) {
-      console.log(
-        `🎮 handleStart: ${isTouch ? "touch" : "mouse"} event on card ${
-          card.dataset.bookId
-        }`,
-      );
-    }
+    // If already tracking a pointer, ignore additional ones
+    if (this.activePointerId !== null) return;
 
-    if (isTouch) {
-      // Touch: Check if we're starting in a scrollable content area
-      const cardContent = e.target.closest(".card-content");
-      const isInContent = cardContent && cardContent.contains(e.target);
+    // Check if the pointer is on the flip container (for flip functionality)
+    const flipContainer = e.target.closest(".card-flip-container");
+    if (!flipContainer) return;
 
-      // If we're in the content area and it's scrollable, be more permissive
-      if (isInContent && cardContent.scrollHeight > cardContent.clientHeight) {
-        this.allowScrolling = true;
-        this.scrollStartTime = Date.now();
-      } else {
-        this.allowScrolling = false;
-      }
-
-      this.currentCard = card;
-      this.isDragging = false; // Don't start dragging immediately on touch
-
-      const point = e.touches[0];
-      this.startX = point.clientX;
-      this.startY = point.clientY;
-
-      // Don't prevent default immediately - let scroll happen if needed
-      if (!this.allowScrolling) {
-        e.preventDefault();
-      }
-    } else {
-      // Mouse: Don't start dragging immediately - wait for movement
-      // This allows click-to-flip to work properly
-      this.allowScrolling = false;
-      this.currentCard = card;
-      this.isDragging = false; // Start as false, set true on movement
-
-      this.startX = e.clientX;
-      this.startY = e.clientY;
-
-      // Don't add dragging class yet - wait for actual movement
-      card.style.cursor = "grabbing";
-
+    // Capture this pointer
+    this.activePointerId = e.pointerId;
+    try {
+      this.cardStack.setPointerCapture(e.pointerId);
+    } catch (err) {
+      // setPointerCapture can fail, handle gracefully
       if (this.debug) {
-        console.log(
-          `🖱️ Mouse down at (${this.startX}, ${this.startY}) - waiting for movement`,
-        );
+        console.warn("Failed to capture pointer:", err);
       }
-
-      // Don't prevent default - allow click events to propagate
     }
+
+    // Record initial state
+    this.currentCard = card;
+    this.pointerStartX = e.clientX;
+    this.pointerStartY = e.clientY;
+    this.pointerCurrentX = e.clientX;
+    this.pointerCurrentY = e.clientY;
+    this.pointerStartTime = Date.now();
+    this.gestureIntent = null;
+    this.isDragging = false;
 
     if (this.debug) {
-      console.log(
-        `🟢 handleStart: ${isTouch ? "Touch" : "Mouse"} drag started`,
-        {
-          card,
-          allowScrolling: this.allowScrolling,
-          startX: this.startX,
-          startY: this.startY,
-        },
-      );
-    }
-  }
-
-  handleMove(e) {
-    if (!this.currentCard) return;
-
-    const isTouch = e.type === "touchmove";
-
-    const point = isTouch ? e.touches[0] : e;
-    const deltaX = point.clientX - this.startX;
-    const deltaY = point.clientY - this.startY;
-
-    // For both touch and mouse: Use smart detection for scroll vs swipe
-    if (!this.isDragging) {
-      const horizontalMovement = Math.abs(deltaX);
-      const verticalMovement = Math.abs(deltaY);
-
-      if (isTouch) {
-        // Touch: If we're in scroll mode and vertical movement is dominant, allow scrolling
-        if (
-          this.allowScrolling &&
-          verticalMovement > horizontalMovement &&
-          verticalMovement > this.movementThreshold
-        ) {
-          return; // Let browser handle scrolling
-        }
-      }
-
-      // If horizontal movement is dominant, start swiping
-      if (
-        horizontalMovement > this.movementThreshold &&
-        horizontalMovement > verticalMovement
-      ) {
-        this.isDragging = true;
-        this.currentCard.classList.add("dragging");
-        this.currentCard.style.cursor = "grabbing";
-        e.preventDefault();
-      } else if (
-        verticalMovement < this.movementThreshold &&
-        horizontalMovement < this.movementThreshold
-      ) {
-        return; // Not enough movement to determine intent
-      }
-    }
-
-    // Both touch (after intent determined) and mouse: Handle dragging
-    if (!this.isDragging) return;
-
-    this.currentX = deltaX;
-    this.currentY = deltaY;
-
-    const rotation = this.currentX * this.rotationFactor;
-    const opacity = Math.max(0.7, 1 - Math.abs(this.currentX) / 300);
-
-    // Apply transform
-    this.currentCard.style.transform = `translate(${this.currentX}px, ${this.currentY}px) rotate(${rotation}deg)`;
-    this.currentCard.style.opacity = opacity;
-
-    // Show swipe indicators
-    this.updateSwipeIndicators();
-
-    e.preventDefault();
-
-    if (this.debug) {
-      console.log("🔄 handleMove: Dragging in progress", {
-        currentX: this.currentX,
-        currentY: this.currentY,
-        rotation,
-        opacity,
+      console.log("🟢 Pointer down:", {
+        pointerId: e.pointerId,
+        pointerType: e.pointerType,
+        x: e.clientX,
+        y: e.clientY
       });
     }
   }
 
-  handleEnd(e) {
-    if (!this.currentCard) return;
+  /**
+   * POINTER MOVE - DETECT INTENT AND HANDLE DRAGGING
+   * ================================================
+   * Determines user intent (tap vs scroll vs swipe) and handles card dragging.
+   */
+  handlePointerMove(e) {
+    // Only process move events for our active pointer
+    if (e.pointerId !== this.activePointerId || !this.currentCard) return;
 
-    const isTouch = e.type === "touchend";
+    this.pointerCurrentX = e.clientX;
+    this.pointerCurrentY = e.clientY;
 
-    // Reset scroll state
-    this.allowScrolling = false;
-    this.scrollStartTime = 0;
+    const deltaX = this.pointerCurrentX - this.pointerStartX;
+    const deltaY = this.pointerCurrentY - this.pointerStartY;
+    const absDeltaX = Math.abs(deltaX);
+    const absDeltaY = Math.abs(deltaY);
 
-    if (!this.isDragging) {
-      // If we never started dragging (it was just a click/tap), reset and exit
-      // This allows click-to-flip to work
-      this.currentCard.style.cursor = "grab";
-      this.currentCard = null;
-      return;
+    // INTENT DETECTION - Determine what the user is trying to do
+    if (this.gestureIntent === null) {
+      // Check if we've moved enough to determine intent
+      if (absDeltaX < this.intentThreshold && absDeltaY < this.intentThreshold) {
+        // Not enough movement yet, still could be a tap
+        return;
+      }
+
+      // Check if pointer started in scrollable content area
+      const target = e.target;
+      const cardContent = target.closest(".card-content");
+      const isInScrollableArea = cardContent && cardContent.scrollHeight > cardContent.clientHeight;
+
+      // Determine intent based on movement direction
+      if (absDeltaY > absDeltaX && isInScrollableArea) {
+        // Vertical movement in scrollable area → Allow scrolling
+        this.gestureIntent = "scroll";
+        this.releasePointer();
+
+        if (this.debug) {
+          console.log("📜 Intent: scroll (vertical in scrollable area)");
+        }
+        return;
+      } else if (absDeltaX > absDeltaY && absDeltaX > this.intentThreshold) {
+        // Horizontal movement → Start swiping
+        this.gestureIntent = "swipe";
+        this.isDragging = true;
+        this.currentCard.classList.add("dragging");
+
+        if (this.debug) {
+          console.log("↔️ Intent: swipe (horizontal movement)");
+        }
+      } else {
+        // Ambiguous or minimal movement → Might be a tap
+        this.gestureIntent = "tap";
+        return;
+      }
     }
 
-    this.isDragging = false;
-    const card = this.currentCard;
+    // HANDLE SWIPE DRAGGING
+    if (this.gestureIntent === "swipe" && this.isDragging) {
+      e.preventDefault(); // Prevent any default behavior during swipe
 
-    card.classList.remove("dragging");
-    card.style.cursor = "grab";
+      // Calculate visual feedback
+      const rotation = deltaX * this.rotationFactor;
+      const opacity = Math.max(0.7, 1 - absDeltaX / 300);
 
-    // Determine if swipe threshold was met
-    const distance = Math.abs(this.currentX);
-    const direction = this.currentX > 0 ? "right" : "left";
+      // Apply transform to card
+      this.currentCard.style.transform = `translate(${deltaX}px, ${deltaY}px) rotate(${rotation}deg)`;
+      this.currentCard.style.opacity = opacity;
 
-    if (distance > this.threshold) {
-      this.completeSwipe(direction);
-    } else {
+      // Show swipe indicators
+      this.updateSwipeIndicators(deltaX, absDeltaX);
+
+      if (this.debug && absDeltaX % 20 === 0) {
+        console.log("🔄 Dragging:", { deltaX, deltaY, rotation });
+      }
+    }
+  }
+
+  /**
+   * POINTER UP - COMPLETE THE GESTURE
+   * =================================
+   * Determines final action based on detected intent and movement.
+   */
+  handlePointerUp(e) {
+    // Only process events for our active pointer
+    if (e.pointerId !== this.activePointerId || !this.currentCard) return;
+
+    const deltaX = this.pointerCurrentX - this.pointerStartX;
+    const deltaY = this.pointerCurrentY - this.pointerStartY;
+    const absDeltaX = Math.abs(deltaX);
+    const absDeltaY = Math.abs(deltaY);
+    const totalMovement = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+    // Calculate velocity for flick detection
+    const duration = Date.now() - this.pointerStartTime;
+    const velocity = duration > 0 ? absDeltaX / duration : 0;
+
+    if (this.debug) {
+      console.log("🏁 Pointer up:", {
+        intent: this.gestureIntent,
+        totalMovement,
+        velocity,
+        deltaX,
+        deltaY
+      });
+    }
+
+    // PROCESS BASED ON INTENT
+    if (this.gestureIntent === "swipe" && this.isDragging) {
+      // Check if swipe threshold was met (either distance or velocity)
+      const distanceMet = absDeltaX > this.swipeThreshold;
+      const velocityMet = velocity > this.velocityThreshold;
+
+      if (distanceMet || velocityMet) {
+        // Complete the swipe
+        const direction = deltaX > 0 ? "right" : "left";
+        this.completeSwipe(direction);
+      } else {
+        // Swipe canceled - return card to center
+        this.resetCard();
+      }
+    } else if (totalMovement < this.tapThreshold) {
+      // It's a tap/click - trigger flip
+      this.handleTap(e);
+    }
+
+    // Clean up
+    this.hideSwipeIndicators();
+    this.releasePointer();
+    this.resetState();
+  }
+
+  /**
+   * POINTER CANCEL - HANDLE BROWSER TAKEOVER
+   * ========================================
+   * Called when browser takes over (e.g., for scrolling or zoom).
+   */
+  handlePointerCancel(e) {
+    if (e.pointerId !== this.activePointerId) return;
+
+    if (this.debug) {
+      console.log("❌ Pointer canceled by browser");
+    }
+
+    // Clean up without completing any action
+    if (this.currentCard && this.isDragging) {
       this.resetCard();
     }
 
-    // Hide swipe indicators
     this.hideSwipeIndicators();
+    this.releasePointer();
+    this.resetState();
+  }
 
-    this.currentCard = null;
-    this.currentX = 0;
-    this.currentY = 0;
+  /**
+   * HANDLE TAP/CLICK - FLIP THE CARD
+   * ================================
+   * Toggles the card flip state for reading more details.
+   */
+  handleTap(e) {
+    if (!this.currentCard) return;
+
+    // Don't flip if we're dragging
+    if (this.isDragging) return;
+
+    // Toggle flip state
+    this.currentCard.classList.toggle("flipped");
 
     if (this.debug) {
-      console.log("🏁 handleEnd: Dragging ended", {
-        distance,
-        direction,
-        threshold: this.threshold,
-      });
+      console.log("👆 Card flipped");
     }
   }
 
-  updateSwipeIndicators() {
+  /**
+   * UPDATE SWIPE INDICATORS
+   * =======================
+   * Shows LIKE/PASS overlays based on swipe direction and distance.
+   */
+  updateSwipeIndicators(deltaX, distance) {
     if (!this.currentCard) return;
 
-    const distance = Math.abs(this.currentX);
-    const direction = this.currentX > 0 ? "right" : "left";
-
-    const likeIndicator = this.currentCard.querySelector(
-      ".swipe-indicator.like",
-    );
-    const passIndicator = this.currentCard.querySelector(
-      ".swipe-indicator.pass",
-    );
+    const likeIndicator = this.currentCard.querySelector(".swipe-indicator.like");
+    const passIndicator = this.currentCard.querySelector(".swipe-indicator.pass");
 
     if (distance > 30) {
-      // Show indicator when dragging starts
-      if (direction === "right" && likeIndicator) {
-        likeIndicator.classList.add("show");
+      if (deltaX > 0) {
+        // Swiping right → LIKE
+        likeIndicator?.classList.add("show");
         passIndicator?.classList.remove("show");
-      } else if (direction === "left" && passIndicator) {
-        passIndicator.classList.add("show");
+      } else {
+        // Swiping left → PASS
+        passIndicator?.classList.add("show");
         likeIndicator?.classList.remove("show");
       }
     } else {
@@ -338,6 +379,11 @@ class SwipeHandler {
     }
   }
 
+  /**
+   * HIDE SWIPE INDICATORS
+   * =====================
+   * Removes all indicator overlays.
+   */
   hideSwipeIndicators() {
     if (!this.currentCard) return;
 
@@ -345,23 +391,28 @@ class SwipeHandler {
     indicators.forEach((indicator) => indicator.classList.remove("show"));
   }
 
+  /**
+   * COMPLETE SWIPE
+   * ==============
+   * Animates card off screen and triggers vote callback.
+   */
   completeSwipe(direction) {
     if (!this.currentCard) return;
 
     const card = this.currentCard;
     const bookId = card.dataset.bookId;
 
-    // Add animation class
+    // Add exit animation
     card.classList.add(
-      direction === "right" ? "animate-swipe-right" : "animate-swipe-left",
+      direction === "right" ? "animate-swipe-right" : "animate-swipe-left"
     );
 
-    // Call callback
+    // Trigger vote callback
     if (this.callbacks.onSwipe) {
       this.callbacks.onSwipe(
         bookId,
         direction === "right" ? "interested" : "not_interested",
-        direction,
+        direction
       );
     }
 
@@ -374,20 +425,23 @@ class SwipeHandler {
     }, 300);
 
     if (this.debug) {
-      console.log(`✅ completeSwipe: Card swiped ${direction}`, { bookId });
+      console.log(`✅ Swipe complete: ${direction}`, { bookId });
     }
   }
 
+  /**
+   * RESET CARD
+   * ==========
+   * Returns card to center position with smooth animation.
+   */
   resetCard() {
     if (!this.currentCard) return;
 
-    // Reset transform with smooth transition
-    this.currentCard.style.transition =
-      "transform 0.3s ease, opacity 0.3s ease";
+    this.currentCard.classList.remove("dragging");
+    this.currentCard.style.transition = "transform 0.3s ease, opacity 0.3s ease";
     this.currentCard.style.transform = "translate(0px, 0px) rotate(0deg)";
     this.currentCard.style.opacity = "1";
 
-    // Remove transition after animation
     setTimeout(() => {
       if (this.currentCard) {
         this.currentCard.style.transition = "";
@@ -395,10 +449,15 @@ class SwipeHandler {
     }, 300);
 
     if (this.debug) {
-      console.log("🔄 resetCard: Card position reset");
+      console.log("🔄 Card reset to center");
     }
   }
 
+  /**
+   * TRIGGER SWIPE PROGRAMMATICALLY
+   * ==============================
+   * Used by buttons and keyboard controls.
+   */
   triggerSwipe(direction) {
     const topCard = this.getTopCard();
     if (!topCard) return;
@@ -407,9 +466,48 @@ class SwipeHandler {
     this.completeSwipe(direction);
 
     if (this.debug) {
-      console.log(`➡️ triggerSwipe: Swipe triggered ${direction} on top card`);
+      console.log(`➡️ Programmatic swipe: ${direction}`);
     }
   }
+
+  /**
+   * RELEASE POINTER
+   * ===============
+   * Release pointer capture and clear active pointer.
+   */
+  releasePointer() {
+    if (this.activePointerId !== null) {
+      try {
+        this.cardStack.releasePointerCapture(this.activePointerId);
+      } catch (err) {
+        // Can fail if already released, that's okay
+      }
+      this.activePointerId = null;
+    }
+  }
+
+  /**
+   * RESET STATE
+   * ===========
+   * Clear all interaction state variables.
+   */
+  resetState() {
+    this.currentCard?.classList.remove("dragging");
+    this.currentCard = null;
+    this.gestureIntent = null;
+    this.isDragging = false;
+    this.pointerStartX = 0;
+    this.pointerStartY = 0;
+    this.pointerCurrentX = 0;
+    this.pointerCurrentY = 0;
+    this.pointerStartTime = 0;
+  }
+
+  /**
+   * CARD STACK MANAGEMENT
+   * =====================
+   * Helper methods for managing the card stack.
+   */
 
   isTopCard(card) {
     const cards = Array.from(this.cardStack.querySelectorAll(".book-card"));
@@ -425,10 +523,7 @@ class SwipeHandler {
     const cards = Array.from(this.cardStack.querySelectorAll(".book-card"));
 
     cards.forEach((card, index) => {
-      // Remove old positioning classes
-      card.classList.remove("animate-stack");
-
-      // Apply new stacking styles
+      // Apply stacking styles
       if (index === 0) {
         card.style.zIndex = 10;
         card.style.transform = "scale(1) translateY(0)";
@@ -448,66 +543,47 @@ class SwipeHandler {
       }
     });
 
-    // Update the top card reference
-    this.currentCard = this.getTopCard();
-
-    // Call callback if no more cards
+    // Call empty callback if no more cards
     if (cards.length === 0 && this.callbacks.onEmpty) {
       this.callbacks.onEmpty();
     }
 
     if (this.debug) {
-      console.log("🔄 updateCardStack: Card stack updated", {
-        cardCount: cards.length,
-        topCard: this.currentCard ? this.currentCard.dataset.bookId : null,
-      });
+      console.log("📚 Card stack updated:", { cardCount: cards.length });
     }
   }
 
-  // Public method to add a new card
-  addCard(cardElement) {
-    this.cardStack.appendChild(cardElement);
-    this.updateCardStack();
+  /**
+   * PUBLIC METHODS
+   * ==============
+   * Methods exposed for external control.
+   */
 
-    if (this.debug) {
-      console.log("➕ addCard: New card added", {
-        cardId: cardElement.dataset.bookId,
-        remainingCount: this.getRemainingCount(),
-      });
-    }
-  }
-
-  // Public method to get remaining card count
   getRemainingCount() {
     return this.cardStack.querySelectorAll(".book-card").length;
   }
 
-  // Public method to reset the handler
   reset() {
-    this.currentCard = null;
-    this.isDragging = false;
-    this.currentX = 0;
-    this.currentY = 0;
-    this.allowScrolling = false;
-    this.scrollStartTime = 0;
+    this.releasePointer();
+    this.resetState();
 
     if (this.debug) {
-      console.log("🔄 reset: Handler state reset");
+      console.log("🔄 Handler reset");
     }
   }
 
-  // Destroy the handler (cleanup)
   destroy() {
-    // Remove event listeners
-    this.cardStack.removeEventListener("touchstart", this.handleStart);
-    this.cardStack.removeEventListener("touchmove", this.handleMove);
-    this.cardStack.removeEventListener("touchend", this.handleEnd);
-    this.cardStack.removeEventListener("mousedown", this.handleStart);
-    document.removeEventListener("mousemove", this.handleMove);
-    document.removeEventListener("mouseup", this.handleEnd);
+    // Clean up event listeners
+    this.cardStack.removeEventListener("pointerdown", this.handlePointerDown);
+    this.cardStack.removeEventListener("pointermove", this.handlePointerMove);
+    this.cardStack.removeEventListener("pointerup", this.handlePointerUp);
+    this.cardStack.removeEventListener("pointercancel", this.handlePointerCancel);
+
+    this.releasePointer();
+    this.resetState();
 
     if (this.debug) {
-      console.log("🛠️ destroy: Handler destroyed and event listeners removed");
+      console.log("🛠️ Handler destroyed");
     }
   }
 }

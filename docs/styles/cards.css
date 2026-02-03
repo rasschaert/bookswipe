@@ -33,6 +33,8 @@
   position: relative;
   width: 100%;
   height: 100%;
+  /* Allow custom gesture handling - prevent browser default touch actions */
+  touch-action: none;
 }
 
 /* Card faces */
@@ -123,6 +125,8 @@
   gap: 0.75rem;
   padding: 0.75rem;
   border-bottom: 1px solid var(--border-color);
+  /* Allow custom gesture handling in header area */
+  touch-action: none;
 }
 
 .book-cover {
@@ -174,6 +178,9 @@
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
   scroll-behavior: smooth;
+
+  /* Allow vertical scrolling only - prevents horizontal pan from interfering with swipe */
+  touch-action: pan-y;
 
   /* Always show scrollbar when content overflows */
   scrollbar-width: thin;

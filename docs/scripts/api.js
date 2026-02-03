@@ -4,11 +4,34 @@ class BookSwipeAPI {
     this.baseURL = "https://bookswipe.modest-moray-8349.pomerium.app";
     this.pb = null;
     this.initialized = false;
+    this.mockMode = false;
+    this.mockData = null;
     // Don't call init() in constructor - it's async and should be called explicitly
   }
 
   async init() {
     if (this.initialized) return;
+
+    // Check for mock mode URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    this.mockMode = urlParams.get("mock") === "true";
+
+    if (this.mockMode) {
+      console.log("🎭 Mock mode enabled - loading from mock.json");
+      try {
+        const response = await fetch("scripts/mock.json");
+        if (!response.ok) {
+          throw new Error(`Failed to load mock.json: ${response.statusText}`);
+        }
+        this.mockData = await response.json();
+        this.initialized = true;
+        console.log("✅ Mock data loaded successfully");
+        return;
+      } catch (error) {
+        console.error("❌ Failed to load mock data:", error);
+        throw error;
+      }
+    }
 
     try {
       // Import PocketBase SDK dynamically
@@ -43,8 +66,19 @@ class BookSwipeAPI {
 
   // Fetch all books from the database
   async getBooks() {
-    if (!this.initialized || !this.pb) {
-      throw new Error("PocketBase API not initialized. Call init() first.");
+    if (!this.initialized) {
+      throw new Error("API not initialized. Call init() first.");
+    }
+
+    // Mock mode: return mock data
+    if (this.mockMode) {
+      console.log(`📚 Returning ${this.mockData.length} books from mock data`);
+      return this.mockData;
+    }
+
+    // Real mode: fetch from PocketBase
+    if (!this.pb) {
+      throw new Error("PocketBase not initialized.");
     }
 
     try {
@@ -61,6 +95,21 @@ class BookSwipeAPI {
 
   // Submit user votes
   async submitVotes(votes, userName = "") {
+    // Mock mode: simulate successful submission
+    if (this.mockMode) {
+      console.log("🎭 Mock mode: Simulating vote submission", { votes, userName });
+      return {
+        success: true,
+        record: {
+          id: "mock_vote_" + Date.now(),
+          user_name: userName || "Anonymous",
+          votes: votes,
+          session_id: this.generateSessionId(),
+          submitted_at: new Date().toISOString()
+        }
+      };
+    }
+
     try {
       const sessionId = this.generateSessionId();
       const data = {
@@ -81,12 +130,18 @@ class BookSwipeAPI {
   // Generate a unique session ID
   generateSessionId() {
     return (
-      "session_" + Date.now() + "_" + Math.random().toString(36).substr(2, 9)
+      "session_" + Date.now() + "_" + Math.random().toString(36).substring(2, 11)
     );
   }
 
   // Check if PocketBase is accessible
   async testConnection() {
+    // Mock mode: simulate successful connection
+    if (this.mockMode) {
+      console.log("🎭 Mock mode: Simulating connection test");
+      return true;
+    }
+
     try {
       console.log("🔍 Testing PocketBase health endpoint...");
       const health = await this.pb.health.check();
