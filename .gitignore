@@ -15,7 +15,7 @@ admin-tools/data/books/
 admin-tools/data/exports/
 admin-tools/data/backups/
 
-# Debug and test files
+# Files for debugging and testing
 docs/debug-tools/
 
 # IDE files
