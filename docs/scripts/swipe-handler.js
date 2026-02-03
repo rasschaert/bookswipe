@@ -157,24 +157,25 @@ class SwipeHandler {
         e.preventDefault();
       }
     } else {
-      // Mouse: Start dragging immediately (desktop behavior)
+      // Mouse: Don't start dragging immediately - wait for movement
+      // This allows click-to-flip to work properly
       this.allowScrolling = false;
       this.currentCard = card;
-      this.isDragging = true;
+      this.isDragging = false; // Start as false, set true on movement
 
       this.startX = e.clientX;
       this.startY = e.clientY;
 
-      card.classList.add("dragging");
+      // Don't add dragging class yet - wait for actual movement
       card.style.cursor = "grabbing";
 
       if (this.debug) {
         console.log(
-          `🖱️ Mouse drag started at (${this.startX}, ${this.startY})`,
+          `🖱️ Mouse down at (${this.startX}, ${this.startY}) - waiting for movement`,
         );
       }
 
-      e.preventDefault();
+      // Don't prevent default - allow click events to propagate
     }
 
     if (this.debug) {
@@ -195,20 +196,17 @@ class SwipeHandler {
 
     const isTouch = e.type === "touchmove";
 
-    // For mouse events, only process if we're actually dragging
-    if (!isTouch && !this.isDragging) return;
-
     const point = isTouch ? e.touches[0] : e;
     const deltaX = point.clientX - this.startX;
     const deltaY = point.clientY - this.startY;
 
-    if (isTouch) {
-      // Touch: Use smart detection for scroll vs swipe
-      if (!this.isDragging) {
-        const horizontalMovement = Math.abs(deltaX);
-        const verticalMovement = Math.abs(deltaY);
+    // For both touch and mouse: Use smart detection for scroll vs swipe
+    if (!this.isDragging) {
+      const horizontalMovement = Math.abs(deltaX);
+      const verticalMovement = Math.abs(deltaY);
 
-        // If we're in scroll mode and vertical movement is dominant, allow scrolling
+      if (isTouch) {
+        // Touch: If we're in scroll mode and vertical movement is dominant, allow scrolling
         if (
           this.allowScrolling &&
           verticalMovement > horizontalMovement &&
@@ -216,22 +214,22 @@ class SwipeHandler {
         ) {
           return; // Let browser handle scrolling
         }
+      }
 
-        // If horizontal movement is dominant, start swiping
-        if (
-          horizontalMovement > this.movementThreshold &&
-          horizontalMovement > verticalMovement
-        ) {
-          this.isDragging = true;
-          this.currentCard.classList.add("dragging");
-          this.currentCard.style.cursor = "grabbing";
-          e.preventDefault();
-        } else if (
-          verticalMovement < this.movementThreshold &&
-          horizontalMovement < this.movementThreshold
-        ) {
-          return; // Not enough movement to determine intent
-        }
+      // If horizontal movement is dominant, start swiping
+      if (
+        horizontalMovement > this.movementThreshold &&
+        horizontalMovement > verticalMovement
+      ) {
+        this.isDragging = true;
+        this.currentCard.classList.add("dragging");
+        this.currentCard.style.cursor = "grabbing";
+        e.preventDefault();
+      } else if (
+        verticalMovement < this.movementThreshold &&
+        horizontalMovement < this.movementThreshold
+      ) {
+        return; // Not enough movement to determine intent
       }
     }
 
@@ -268,15 +266,14 @@ class SwipeHandler {
 
     const isTouch = e.type === "touchend";
 
-    // For mouse events, only process if we were actually dragging
-    if (!isTouch && !this.isDragging) return;
-
     // Reset scroll state
     this.allowScrolling = false;
     this.scrollStartTime = 0;
 
     if (!this.isDragging) {
-      // If we never started dragging, reset and exit
+      // If we never started dragging (it was just a click/tap), reset and exit
+      // This allows click-to-flip to work
+      this.currentCard.style.cursor = "grab";
       this.currentCard = null;
       return;
     }
