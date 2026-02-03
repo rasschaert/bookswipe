@@ -276,7 +276,7 @@ class BookSwipeApp {
     card.innerHTML = `
             <div class="swipe-indicator like">LIKE</div>
             <div class="swipe-indicator pass">PASS</div>
-            
+
             <div class="card-flip-container">
                 <!-- FRONT FACE -->
                 <div class="card-face card-face-front">
@@ -366,7 +366,7 @@ class BookSwipeApp {
                             <p class="book-author">by ${book.author}${
                               country ? ` • ${country}` : ""
                             }</p>
-                            
+
                             <div class="genre-tags">
                                 ${genreTags}
                             </div>
@@ -396,35 +396,72 @@ class BookSwipeApp {
     const flipContainer = card.querySelector(".card-flip-container");
     let startX = 0;
     let startY = 0;
+    let activePointerId = null;
 
-    // Track start position to detect actual drags vs clicks
-    const recordStart = (e) => {
-      const point = e.touches ? e.touches[0] : e;
+    const recordStart = (event) => {
+      const point = event.touches ? event.touches[0] : event;
       startX = point.clientX;
       startY = point.clientY;
     };
 
-    const handleFlip = (e) => {
-      // Ignore if card is being swiped
-      if (card.classList.contains("dragging")) return;
-
-      const point = e.changedTouches ? e.changedTouches[0] : e;
+    const shouldFlip = (event) => {
+      const point = event.changedTouches ? event.changedTouches[0] : event;
       const deltaX = Math.abs(point.clientX - startX);
       const deltaY = Math.abs(point.clientY - startY);
-
-      // Only flip if movement was minimal (a click/tap, not a drag)
-      if (deltaX < 10 && deltaY < 10) {
-        e.stopPropagation();
-        card.classList.toggle("flipped");
-      }
+      return deltaX < 10 && deltaY < 10;
     };
 
-    flipContainer.addEventListener("mousedown", recordStart);
-    flipContainer.addEventListener("mouseup", handleFlip);
-    flipContainer.addEventListener("touchstart", recordStart, {
-      passive: true,
-    });
-    flipContainer.addEventListener("touchend", handleFlip);
+    const handleFlip = (event) => {
+      if (card.classList.contains("dragging")) return;
+      if (!shouldFlip(event)) return;
+
+      event.stopPropagation();
+      card.classList.toggle("flipped");
+    };
+
+    if (window.PointerEvent) {
+      flipContainer.addEventListener("pointerdown", (event) => {
+        if (event.pointerType === "mouse" && event.button !== 0) {
+          return; // Ignore non-primary mouse buttons
+        }
+
+        if (activePointerId !== null && event.pointerId !== activePointerId) {
+          return; // Ignore secondary pointers until the first one finishes
+        }
+
+        activePointerId = event.pointerId;
+        flipContainer.setPointerCapture?.(activePointerId);
+        recordStart(event);
+      });
+
+      flipContainer.addEventListener("pointerup", (event) => {
+        if (activePointerId !== null && event.pointerId !== activePointerId) {
+          return;
+        }
+
+        flipContainer.releasePointerCapture?.(event.pointerId);
+        activePointerId = null;
+        handleFlip(event);
+      });
+
+      flipContainer.addEventListener("pointercancel", (event) => {
+        if (activePointerId !== null && event.pointerId !== activePointerId) {
+          return;
+        }
+
+        if (activePointerId !== null) {
+          flipContainer.releasePointerCapture?.(activePointerId);
+        }
+        activePointerId = null;
+      });
+    } else {
+      flipContainer.addEventListener("mousedown", recordStart);
+      flipContainer.addEventListener("mouseup", handleFlip);
+      flipContainer.addEventListener("touchstart", recordStart, {
+        passive: true,
+      });
+      flipContainer.addEventListener("touchend", handleFlip);
+    }
 
     return card;
   }
