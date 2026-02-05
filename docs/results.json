@@ -1,15 +1,34 @@
 {
-  "timestamp": "2026-02-01T18:56:27.441Z",
-  "total_sessions": 1,
+  "timestamp": "2026-02-05T12:53:12.866Z",
+  "total_sessions": 8,
   "books": [
+    {
+      "title": "Tomorrow, and Tomorrow, and Tomorrow",
+      "author": "Gabrielle Zevin",
+      "score": 100,
+      "interested": 8,
+      "not_interested": 0,
+      "total": 8,
+      "controversy": 50,
+      "page_count": 401,
+      "genres": [
+        "fiction",
+        "contemporary",
+        "literary",
+        "emotional",
+        "reflective",
+        "sad"
+      ],
+      "cover_image_url": "https://cdn.thestorygraph.com/wayoh6706s8ne2jo2swn5rlhpfl9"
+    },
     {
       "title": "Big Fish",
       "author": "Daniel Wallace",
-      "score": 100,
-      "interested": 1,
-      "not_interested": 0,
-      "total": 1,
-      "controversy": 50,
+      "score": 87.5,
+      "interested": 7,
+      "not_interested": 1,
+      "total": 8,
+      "controversy": 62.5,
       "page_count": 192,
       "genres": [
         "fiction",
@@ -22,32 +41,30 @@
       "cover_image_url": "https://cdn.thestorygraph.com/oi09mbioi2sdhyo5o93rwq7ks7fc"
     },
     {
-      "title": "Hamnet",
-      "author": "Maggie O'Farrell",
-      "score": 100,
-      "interested": 1,
-      "not_interested": 0,
-      "total": 1,
-      "controversy": 50,
-      "page_count": 372,
+      "title": "Dungeon Crawler Carl",
+      "author": "Matt Dinniman",
+      "score": 75,
+      "interested": 6,
+      "not_interested": 2,
+      "total": 8,
+      "controversy": 75,
+      "page_count": 446,
       "genres": [
         "fiction",
-        "historical",
-        "literary",
-        "emotional",
-        "reflective",
-        "sad"
+        "fantasy",
+        "science fiction",
+        "humor"
       ],
-      "cover_image_url": "https://cdn.thestorygraph.com/zetevl0901mle7jn2dfqop224e2o"
+      "cover_image_url": "https://cdn.thestorygraph.com/vmic28apf0jq6xdm89fjqzg0dfc9"
     },
     {
       "title": "Headhunters",
       "author": "Jo Nesbø",
-      "score": 100,
-      "interested": 1,
-      "not_interested": 0,
-      "total": 1,
-      "controversy": 50,
+      "score": 75,
+      "interested": 6,
+      "not_interested": 2,
+      "total": 8,
+      "controversy": 75,
       "page_count": 265,
       "genres": [
         "fiction",
@@ -60,31 +77,87 @@
       "cover_image_url": "https://cdn.thestorygraph.com/0w561vmczx0yvpu4d3e89a34hfsb"
     },
     {
-      "title": "Heart the Lover",
-      "author": "Lily King",
-      "score": 100,
-      "interested": 1,
-      "not_interested": 0,
-      "total": 1,
-      "controversy": 50,
-      "page_count": 249,
+      "title": "My Year of Rest and Relaxation",
+      "author": "Ottessa Moshfegh",
+      "score": 75,
+      "interested": 6,
+      "not_interested": 2,
+      "total": 8,
+      "controversy": 75,
+      "page_count": 289,
       "genres": [
         "fiction",
+        "contemporary",
+        "literary",
+        "dark",
+        "reflective"
+      ],
+      "cover_image_url": "https://cdn.thestorygraph.com/6kkcvyccs3qc73qbrt26n5ycmto0"
+    },
+    {
+      "title": "Piranesi",
+      "author": "Susanna Clarke",
+      "score": 75,
+      "interested": 6,
+      "not_interested": 2,
+      "total": 8,
+      "controversy": 75,
+      "page_count": 245,
+      "genres": [
+        "fiction",
+        "fantasy",
+        "literary",
+        "speculative fiction",
+        "adventurous",
+        "mysterious",
+        "reflective"
+      ],
+      "cover_image_url": "https://cdn.thestorygraph.com/tz55yenrtmknvxuotg8dlcpdv75k"
+    },
+    {
+      "title": "Hamnet",
+      "author": "Maggie O'Farrell",
+      "score": 62.5,
+      "interested": 5,
+      "not_interested": 3,
+      "total": 8,
+      "controversy": 87.5,
+      "page_count": 372,
+      "genres": [
+        "fiction",
+        "historical",
         "literary",
         "emotional",
         "reflective",
         "sad"
       ],
-      "cover_image_url": "https://cdn.thestorygraph.com/5i96wewo8fg55n4ygafwwg1239f5"
+      "cover_image_url": "https://cdn.thestorygraph.com/zetevl0901mle7jn2dfqop224e2o"
+    },
+    {
+      "title": "The Final Empire",
+      "author": "Brandon Sanderson",
+      "score": 62.5,
+      "interested": 5,
+      "not_interested": 3,
+      "total": 8,
+      "controversy": 87.5,
+      "page_count": 541,
+      "genres": [
+        "fiction",
+        "fantasy",
+        "adventurous",
+        "mysterious"
+      ],
+      "cover_image_url": "https://cdn.thestorygraph.com/s1hm0zy7tchue3u0rquctj5i2vv0"
     },
     {
       "title": "The Shadow of the Wind",
       "author": "Carlos Ruiz Zafón",
-      "score": 100,
-      "interested": 1,
-      "not_interested": 0,
-      "total": 1,
-      "controversy": 50,
+      "score": 62.5,
+      "interested": 5,
+      "not_interested": 3,
+      "total": 8,
+      "controversy": 87.5,
       "page_count": 487,
       "genres": [
         "fiction",
@@ -95,31 +168,13 @@
       "cover_image_url": "https://cdn.thestorygraph.com/bsen2ebh8e1uq79uv13g69d3gygs"
     },
     {
-      "title": "The Bridge Kingdom",
-      "author": "Danielle L. Jensen",
-      "score": 100,
-      "interested": 1,
-      "not_interested": 0,
-      "total": 1,
-      "controversy": 50,
-      "page_count": 430,
-      "genres": [
-        "fiction",
-        "fantasy",
-        "romance",
-        "adventurous",
-        "tense"
-      ],
-      "cover_image_url": "https://cdn.thestorygraph.com/rf2odngizp61y62c73aosdpicw71"
-    },
-    {
       "title": "The Shadow of the Gods",
       "author": "John Gwynne",
-      "score": 100,
-      "interested": 1,
-      "not_interested": 0,
-      "total": 1,
-      "controversy": 50,
+      "score": 62.5,
+      "interested": 5,
+      "not_interested": 3,
+      "total": 8,
+      "controversy": 87.5,
       "page_count": 480,
       "genres": [
         "fiction",
@@ -133,11 +188,11 @@
     {
       "title": "The Spear Cuts Through Water",
       "author": "Simon Jimenez",
-      "score": 100,
-      "interested": 1,
-      "not_interested": 0,
-      "total": 1,
-      "controversy": 50,
+      "score": 62.5,
+      "interested": 5,
+      "not_interested": 3,
+      "total": 8,
+      "controversy": 87.5,
       "page_count": 522,
       "genres": [
         "fiction",
@@ -152,11 +207,11 @@
     {
       "title": "The Wedding People",
       "author": "Alison Espach",
-      "score": 100,
-      "interested": 1,
-      "not_interested": 0,
-      "total": 1,
-      "controversy": 50,
+      "score": 50,
+      "interested": 4,
+      "not_interested": 4,
+      "total": 8,
+      "controversy": 100,
       "page_count": 367,
       "genres": [
         "fiction",
@@ -169,95 +224,22 @@
       "cover_image_url": "https://cdn.thestorygraph.com/8zqxyy0j9nbyj3r2b0n7zcn3nxjt"
     },
     {
-      "title": "Tomorrow, and Tomorrow, and Tomorrow",
-      "author": "Gabrielle Zevin",
-      "score": 100,
-      "interested": 1,
-      "not_interested": 0,
-      "total": 1,
-      "controversy": 50,
-      "page_count": 401,
+      "title": "Heart the Lover",
+      "author": "Lily King",
+      "score": 25,
+      "interested": 2,
+      "not_interested": 6,
+      "total": 8,
+      "controversy": 75,
+      "page_count": 249,
       "genres": [
         "fiction",
-        "contemporary",
         "literary",
         "emotional",
         "reflective",
         "sad"
       ],
-      "cover_image_url": "https://cdn.thestorygraph.com/wayoh6706s8ne2jo2swn5rlhpfl9"
-    },
-    {
-      "title": "Dungeon Crawler Carl",
-      "author": "Matt Dinniman",
-      "score": 0,
-      "interested": 0,
-      "not_interested": 1,
-      "total": 1,
-      "controversy": 50,
-      "page_count": 446,
-      "genres": [
-        "fiction",
-        "fantasy",
-        "science fiction",
-        "humor"
-      ],
-      "cover_image_url": "https://cdn.thestorygraph.com/vmic28apf0jq6xdm89fjqzg0dfc9"
-    },
-    {
-      "title": "The Final Empire",
-      "author": "Brandon Sanderson",
-      "score": 0,
-      "interested": 0,
-      "not_interested": 1,
-      "total": 1,
-      "controversy": 50,
-      "page_count": 541,
-      "genres": [
-        "fiction",
-        "fantasy",
-        "adventurous",
-        "mysterious"
-      ],
-      "cover_image_url": "https://cdn.thestorygraph.com/s1hm0zy7tchue3u0rquctj5i2vv0"
-    },
-    {
-      "title": "My Year of Rest and Relaxation",
-      "author": "Ottessa Moshfegh",
-      "score": 0,
-      "interested": 0,
-      "not_interested": 1,
-      "total": 1,
-      "controversy": 50,
-      "page_count": 289,
-      "genres": [
-        "fiction",
-        "contemporary",
-        "literary",
-        "dark",
-        "reflective"
-      ],
-      "cover_image_url": "https://cdn.thestorygraph.com/6kkcvyccs3qc73qbrt26n5ycmto0"
-    },
-    {
-      "title": "Piranesi",
-      "author": "Susanna Clarke",
-      "score": 0,
-      "interested": 0,
-      "not_interested": 1,
-      "total": 1,
-      "controversy": 50,
-      "page_count": 245,
-      "genres": [
-        "fiction",
-        "fantasy",
-        "literary",
-        "speculative fiction",
-        "adventurous",
-        "mysterious",
-        "reflective"
-      ],
-      "cover_image_url": "https://cdn.thestorygraph.com/tz55yenrtmknvxuotg8dlcpdv75k"
+      "cover_image_url": "https://cdn.thestorygraph.com/5i96wewo8fg55n4ygafwwg1239f5"
     }
   ]
 }
