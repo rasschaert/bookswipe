@@ -61,7 +61,6 @@ async function main() {
       choices: [
         { name: "📥 Import books from JSON file", value: "import" },
         { name: "📋 List current books", value: "list" },
-        { name: "🗑️  Delete all books and votes", value: "clear" },
         { name: "❌ Exit", value: "exit" },
       ],
     },
@@ -74,9 +73,6 @@ async function main() {
       break;
     case "list":
       await manager.listBooks();
-      break;
-    case "clear":
-      await handleClear(manager);
       break;
     case "exit":
       console.log(chalk.gray("👋 Goodbye!"));
@@ -193,53 +189,6 @@ async function handleImport(manager) {
     await manager.importBooksFromFolder(booksDir, booksToImport);
   } else {
     console.log(chalk.gray("Import cancelled."));
-  }
-}
-
-/**
- * Handle the bulk delete operation
- *
- * Lists all current books and provides a confirmation prompt before
- * permanently deleting all books from the database. Includes progress
- * tracking and safety confirmations.
- *
- * @param {BookManager} manager - BookManager instance for database operations
- */
-async function handleClear(manager) {
-  // Get current books to show user what will be deleted
-  const books = await manager.listBooks();
-
-  // Early exit if no books exist
-  if (books.length === 0) {
-    console.log(chalk.yellow("No books to delete."));
-    return;
-  }
-
-  // Safety confirmation with clear warning
-  const { confirm } = await inquirer.prompt([
-    {
-      type: "confirm",
-      name: "confirm",
-      message: chalk.red(
-        `⚠️  Delete ALL ${books.length} books? This cannot be undone!`,
-      ),
-      default: false, // Default to 'No' for safety
-    },
-  ]);
-
-  if (confirm) {
-    console.log(chalk.blue("🗑️  Deleting books..."));
-
-    // Delete each book individually and track success/failure
-    let deleted = 0;
-    for (const book of books) {
-      const success = await manager.deleteBook(book.id);
-      if (success) deleted++;
-    }
-
-    console.log(chalk.green(`✅ Deleted ${deleted} books`));
-  } else {
-    console.log(chalk.gray("Delete cancelled."));
   }
 }
 

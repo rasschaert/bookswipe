@@ -110,6 +110,7 @@ class VoteAnalyzer {
         id: book.id,
         title: book.title,
         author: book.author,
+        country: book.country || "",
         genre_tags: book.genre_tags || [],
         page_count: book.page_count,
         cover_image_url: book.cover_image_url,
@@ -366,6 +367,7 @@ class VoteAnalyzer {
         books: sortedResults.map((book) => ({
           title: book.title,
           author: book.author,
+          country: book.country || "",
           score: book.score,
           interested: book.interested,
           not_interested: book.not_interested,

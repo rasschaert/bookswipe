@@ -383,7 +383,7 @@
                     <div class="winner-content">
                         <div style="font-size: 3rem; margin-bottom: 0.5rem;">🏆</div>
                         <h2 style="margin-bottom: 0.3rem;">${winner.title}</h2>
-                        <p class="author" style="margin-bottom: 1rem;">by ${winner.author}</p>
+                        <p class="author" style="margin-bottom: 1rem;">by ${winner.author}${winner.country ? ` ${winner.country}` : ""}</p>
                         
                         <div style="font-size: 1.4rem; font-weight: bold; margin: 0.8rem 0;">${winner.interested}👍 ${winner.not_interested}👎</div>
                         <div style="font-size: 1rem; margin-bottom: 0.8rem;">${winner.score.toFixed(1)}% liked</div>
@@ -414,7 +414,7 @@
             </div>
             
             <h3 style="font-size: 1.8rem; margin-bottom: 0.5rem;">${winner.title}</h3>
-            <p style="font-size: 1.2rem; opacity: 0.9; margin-bottom: 1rem;">by ${winner.author}</p>
+            <p style="font-size: 1.2rem; opacity: 0.9; margin-bottom: 1rem;">by ${winner.author}${winner.country ? ` ${winner.country}` : ""}</p>
             
             <div style="font-size: 1.2rem; font-weight: bold; margin: 0.5rem 0;">${winner.interested}👍 ${winner.not_interested}👎</div>
             <div style="font-size: 0.9rem; margin-bottom: 1rem;">${winner.score.toFixed(1)}% liked</div>
@@ -469,7 +469,7 @@
                         </div>
 
                         <h3>${book.title}</h3>
-                        <p class="author">by ${book.author}</p>
+                        <p class="author">by ${book.author}${book.country ? ` ${book.country}` : ""}</p>
 
                         <div class="vote-details">
                             ${book.interested}👍 ${book.not_interested}👎

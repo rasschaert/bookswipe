@@ -309,7 +309,7 @@ class BookSwipeApp {
                         <div class="book-header-info">
                             <h2 class="book-title">${book.title}</h2>
                             <p class="book-author">by ${book.author}${
-                              country ? ` • ${country}` : ""
+                              country ? ` ${country}` : ""
                             }</p>
 
                             <div class="book-meta">
@@ -378,7 +378,7 @@ class BookSwipeApp {
                         <div class="book-header-info">
                             <h2 class="book-title">${book.title}</h2>
                             <p class="book-author">by ${book.author}${
-                              country ? ` • ${country}` : ""
+                              country ? ` ${country}` : ""
                             }</p>
 
                             <div class="genre-tags">

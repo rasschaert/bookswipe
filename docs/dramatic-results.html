@@ -638,7 +638,7 @@
               <div class="book-header">
                 <div class="book-info">
                   <div class="book-title">${book.title}</div>
-                  <div class="book-author">by ${book.author}</div>
+                  <div class="book-author">by ${book.author}${book.country ? ` ${book.country}` : ""}</div>
                   <div class="book-details">
                     📄 ${pages} pages • 🏷️ ${tags}
                   </div>

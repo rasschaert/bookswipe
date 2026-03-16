@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "import-books": "node scripts/import-books.js",
+    "clear-data": "node scripts/clear-data.js",
     "analyze-votes": "node scripts/analyze-votes.js",
     "setup": "node scripts/setup.js"
   },
