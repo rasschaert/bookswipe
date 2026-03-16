@@ -1,51 +1,102 @@
 # BookSwipe 📚
 
-A "Tinder for Books" voting application for book clubs. Users swipe through book suggestions to indicate their reading preferences.
+A "Tinder for Books" voting application for book clubs. Users swipe through book suggestions to indicate their reading preferences using intuitive touch gestures.
 
-## Demo
+## Features
 
-![BookSwipe Demo](bookswipe-demo.gif)
+### 🎯 Core Functionality
+- **Intuitive Card Interactions** - Modern gesture-based interface with:
+  - 👆 **Tap/Click to Flip** - View detailed synopsis and genre tags
+  - 📜 **Vertical Scroll** - Read long descriptions within cards
+  - 👈👉 **Swipe/Drag to Vote** - Swipe left to pass, right to like
+- **Smart Gesture Detection** - Uses modern Pointer Events API for unified touch/mouse/pen support
+- **Responsive Design** - Works seamlessly on phones, tablets, and desktops
+- **Keyboard Support** - Arrow keys and shortcuts for accessibility
+- **Progress Tracking** - Real-time voting progress display
 
-\_Swipe through book sugges**🌐 Web Results Features**
+### 🎭 Mock Mode for Testing
+- **Quick Testing** - No PocketBase required for development
+- **URL Parameter** - Add `?mock=true` to use local mock data
+- **Sample Data** - Pre-loaded with 8 diverse book examples
+- **Full Feature Set** - All interactions work in mock mode
 
-- Responsive design that works on all devices
-- Interactive results presentation
-- Dramatic winner reveal with confetti animation
-- Vote visualizations with progress bars
-- Proper tie detection and ranking (tied books share the same rank)
-- Real-time data updatesst like Tinder! Swipe right to like, left to pass.\_
+### 🔐 Authentication (Optional)
+- **Automatic User Identification** - Via Pomerium JWT authentication
+- **Graceful Fallback** - Manual name entry when not authenticated
+- **Enhanced Privacy** - Uses email for attribution, shows display name
+
+### 📊 Admin Tools
+- **Book Management** - Import and manage book collections
+- **Vote Analysis** - Detailed reports and visualizations
+- **Web Results** - Beautiful, shareable voting results
+- **CSV Export** - Data export for further analysis
+
+## Quick Start
+
+### Option 1: Mock Mode (No Setup Required)
+
+Perfect for testing or demos without a backend:
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/yourusername/bookswipe.git
+   cd bookswipe
+   ```
+
+2. **Start a local server:**
+   ```bash
+   cd docs
+   python3 -m http.server 8000
+   ```
+
+3. **Open in browser with mock mode:**
+   ```
+   http://localhost:8000/?mock=true
+   ```
+
+That's it! The app will load with 8 sample books from `docs/scripts/mock.json`.
+
+### Option 2: Full Setup with PocketBase
+
+For production use with data persistence:
+
+See [Complete Setup Guide](#complete-setup-guide) below.
 
 ## Project Structure
 
 ```
 bookswipe/
-├── docs/                     # 🌐 Deployable web application
-│   ├3. Go to Settings → Pages
-4. Set source to "Deploy from a folder"
-5. Select `/docs` as the folder
-6. Your app will be available at `username.github.io/bookswipe`ndex.html            # Main application
-│   ├── styles/               # CSS files
-│   └── scripts/              # JavaScript files
+├── docs/                        # 🌐 Deployable web application
+│   ├── index.html               # Main application
+│   ├── styles/                  # CSS files
+│   │   ├── main.css            # Core styles
+│   │   ├── cards.css           # Card and interaction styles
+│   │   └── animations.css      # Animation effects
+│   └── scripts/                 # JavaScript files
+│       ├── app.js              # Main application controller
+│       ├── swipe-handler.js    # Gesture recognition engine
+│       ├── api-fetch.js        # PocketBase API integration
+│       └── mock.json           # Sample data for mock mode
 │
-├── admin-tools/              # 🛠️ Admin utilities (local only)
-│   ├── package.json          # Node.js dependencies
-│   ├── config.example.json   # Configuration template
-│   ├── scripts/              # Admin tools
-│   │   ├── setup.js          # Initial setup
-│   │   ├── import-books.js   # Book import tool
-│   │   ├── analyze-votes.js  # Vote analysis
-│   │   └── book-manager.js   # Core utilities
-│   └── data/                 # JSON files and exports
+├── admin-tools/                 # 🛠️ Admin utilities (local only)
+│   ├── package.json            # Node.js dependencies
+│   ├── config.example.json     # Configuration template
+│   ├── scripts/                # Admin tools
+│   │   ├── setup.js           # Initial setup
+│   │   ├── import-books.js    # Book import tool
+│   │   ├── analyze-votes.js   # Vote analysis
+│   │   └── book-manager.js    # Core utilities
+│   └── data/                   # JSON files and exports
 │       ├── sample-classics.json
-│       ├── exports/          # Generated reports
-│       └── backups/          # Data backups
+│       ├── exports/           # Generated reports
+│       └── backups/           # Data backups
 │
-└── secrets.env              # PocketBase credentials (gitignored)
+└── secrets.env                 # PocketBase credentials (gitignored)
 ```
 
 ## Prerequisites
 
-Before you start, you need:
+Before you start with full setup, you need:
 
 1. **Node.js** (v16 or higher) - [Download here](https://nodejs.org/)
 2. **A running PocketBase instance** with admin access
@@ -124,7 +175,7 @@ Select "Sample classics" when prompted.
 
 **Option B: Import your own books:**
 
-1. Create a JSON file in `admin-tools/data/` (see [Book Data Format](#book-data-format) below)
+1. Create a JSON file in `admin-tools/data/books/` (see [Book Data Format](#book-data-format) below)
 2. Run `npm run import-books`
 3. Select your file when prompted
 
@@ -141,11 +192,15 @@ Select "Sample classics" when prompted.
 
    ```bash
    cd docs
-   python -m http.server 8000
+   python3 -m http.server 8000
    # Visit http://localhost:8000
    ```
 
 3. **Try voting on some books** to make sure everything works!
+
+4. **Test mock mode (optional):**
+
+   Visit `http://localhost:8000/?mock=true` to test without PocketBase connection.
 
 ### Step 5: Analyze Voting Results (After People Vote)
 
@@ -160,38 +215,83 @@ This generates:
 
 - Console report with rankings
 - CSV export in `data/exports/`
+- Web-based results at `docs/results.html`
+- Dramatic results page at `docs/dramatic-results.html`
 - Raw vote data for further analysis
 
-![Vote Analysis Report](vote_analysis_report.png)
+## Interaction System
 
-_Example of the detailed voting analysis report showing book rankings, participation stats, and controversial picks._
+### Modern Gesture Recognition
+
+BookSwipe uses the **Pointer Events API** for unified cross-platform gesture handling:
+
+- **Single Event Model** - One handler for touch, mouse, and pen input
+- **Pointer Capture** - Reliable tracking even when pointer leaves element
+- **Intent Detection** - Smart distinction between tap, scroll, and swipe gestures
+- **Touch-action CSS** - Prevents browser gesture conflicts
+
+### Event Processing Order
+
+The system prioritizes interactions in this order:
+
+1. **Tap Detection** (< 10px movement) → Flip card
+2. **Scroll Detection** (vertical in scrollable area) → Allow native scroll
+3. **Swipe Detection** (horizontal movement) → Vote on book
+
+### Gesture Thresholds
+
+- **Tap Threshold:** 10px - Maximum movement for tap
+- **Intent Threshold:** 15px - Movement needed to detect gesture intent
+- **Swipe Threshold:** 80px - Distance needed to complete swipe
+- **Velocity Threshold:** 0.5px/ms - Speed for "flick" gestures
+
+### CSS Touch Actions
+
+Strategic use of `touch-action` property:
+
+```css
+.card-flip-container {
+  touch-action: none; /* Full custom control */
+}
+
+.card-content {
+  touch-action: pan-y; /* Vertical scroll only */
+}
+
+.book-header {
+  touch-action: none; /* Allow card drag from header */
+}
+```
 
 ## Admin Tools Usage
 
 ### Available Commands
 
 ```bash
-npm run setup          # Initial configuration
+npm run setup           # Initial configuration
 npm run import-books    # Interactive book importer
 npm run analyze-votes   # Generate voting reports and web results
 ```
 
 ### Book Data Format
 
-Create JSON files in `admin-tools/data/` with this structure:
+Create JSON files in `admin-tools/data/books/` with this structure:
 
 ```json
 [
   {
     "title": "Book Title",
     "author": "Author Name",
+    "country": "Country (optional)",
     "synopsis": "Book description...",
     "page_count": 250,
     "publication_year": 2023,
     "genre_tags": ["fiction", "mystery", "thriller"],
     "cover_image_url": "https://example.com/cover.jpg",
     "average_storygraph_rating": 4.2,
-    "number_of_votes": 1234
+    "number_of_votes": 1234,
+    "suggester": "Person who suggested this book (optional)",
+    "pitch": "Why you should read this (optional)"
   }
 ]
 ```
@@ -204,31 +304,26 @@ Create JSON files in `admin-tools/data/` with this structure:
 The analysis tool provides:
 
 **📊 Summary Statistics**
-
 - Total voting sessions
 - Participation rates
 - Average votes per book
 
 **🏆 Top Picks**
-
 - Ranked by percentage of "interested" votes
 - Minimum vote threshold filtering
 - Medal rankings for top 3
 
 **🔥 Controversial Books**
-
 - Books with most divided opinions
 - Controversy scoring algorithm
 - Helps identify discussion-worthy picks
 
 **👥 Participation Tracking**
-
 - Named vs anonymous voters
 - Individual voting patterns
 - Engagement metrics
 
 **📈 Export Options**
-
 - Detailed CSV reports
 - Raw JSON vote data
 - Timestamped exports
@@ -237,8 +332,7 @@ The analysis tool provides:
 
 Beautiful web-based presentation of voting results:
 
-**� Web Results Features**
-
+**🌐 Web Results Features**
 - Responsive design that works on all devices
 - Interactive results presentation
 - Dramatic winner reveal with confetti animation
@@ -247,7 +341,6 @@ Beautiful web-based presentation of voting results:
 - Real-time data updates
 
 **📊 Accessible Results Sharing**
-
 - Shareable web link for all participants
 - No additional software needed - just a web browser!
 - Works on phones, tablets, and computers
@@ -255,7 +348,6 @@ Beautiful web-based presentation of voting results:
 - Automatic generation with every vote analysis
 
 **🎯 Auto-Generated Content**
-
 - Results automatically published to `docs/results.html`
 - Dramatic reveal version available at `docs/dramatic-results.html`
 - Data updates with every `npm run analyze-votes` command
@@ -263,27 +355,24 @@ Beautiful web-based presentation of voting results:
 - JSON data source for easy customization
 
 **🎭 Dramatic Results Page**
-
 - Scroll-triggered reveal of results in reverse order (worst to best)
 - Books grouped into dramatic tiers: "Struggling Tales" → "Underdogs" → "Rising Stars" → "The Champion(s)"
 - Winner gets confetti celebration and special styling
 - Perfect for building suspense during book club meetings
 
-**🔧 CSV Conversion Tool**
-
-- Convert historical CSV exports back to web format
-- Usage: `node scripts/csv-to-json.js data/exports/vote-analysis-YYYY-MM-DD.csv`
-- Useful for testing different data sets or recreating past results
-
 ## Frontend Features
 
 - **📱 Mobile-First Design** - Works great on phones and tablets
-- **👆 Intuitive Swipe Interface** - Natural Tinder-like gestures
+- **👆 Modern Gesture System** - Pointer Events API for unified input handling
+- **🎯 Smart Intent Detection** - Distinguishes tap, scroll, and swipe
 - **⌨️ Keyboard Support** - Arrow keys and shortcuts
-- **🎨 Beautiful Book Cards** - Rich metadata display
+- **🎨 Beautiful Book Cards** - Rich metadata display with flip animation
+- **🔄 Card Flip** - Tap to see synopsis and genre tags
+- **📜 Scrollable Content** - Read long descriptions within cards
 - **🚀 Fast Performance** - Optimized loading and animations
-- **🔄 Real-time Progress** - See voting progress
+- **📊 Real-time Progress** - See voting progress
 - **✅ Vote Submission** - Secure PocketBase integration
+- **🎭 Mock Mode** - Test without backend (`?mock=true`)
 - **🔐 Smart Authentication** - Automatic user identification via Pomerium JWT (optional)
   - Shows user's display name when authenticated
   - Uses email address for vote attribution
@@ -295,9 +384,9 @@ Beautiful web-based presentation of voting results:
 Collections are automatically created when you run `npm run setup` in the admin-tools directory. The setup script creates:
 
 **books** collection with fields:
-
 - `title` (Text, required)
 - `author` (Text, required)
+- `country` (Text, optional)
 - `synopsis` (Editor)
 - `page_count` (Number)
 - `publication_year` (Number)
@@ -305,9 +394,10 @@ Collections are automatically created when you run `npm run setup` in the admin-
 - `cover_image_url` (URL)
 - `average_storygraph_rating` (Number)
 - `number_of_votes` (Number)
+- `suggester` (Text, optional)
+- `pitch` (Text, optional)
 
 **votes** collection with fields:
-
 - `user_name` (Text)
 - `votes` (JSON)
 - `session_id` (Text)
@@ -316,7 +406,6 @@ Collections are automatically created when you run `npm run setup` in the admin-
 ### API Rules
 
 Both collections are configured with:
-
 - **List/Search/View/Create:** Public access (empty)
 - **Update/Delete:** Admin only (`@request.auth.id != ""`)
 
@@ -344,9 +433,10 @@ Before deploying to production:
 - [ ] Update PocketBase URL in `docs/scripts/api-fetch.js` (line 23)
 - [ ] Test with production PocketBase instance
 - [ ] Verify CORS settings on PocketBase allow your domain
-- [ ] Increment cache-busting version in `docs/index.html` (`?v=4` → `?v=5`)
+- [ ] Increment cache-busting version in `docs/index.html` (e.g. `?v=5` → `?v=6`)
 - [ ] Test all functionality on target deployment platform
 - [ ] Ensure PocketBase collections have correct API rules for production
+- [ ] Test mock mode with `?mock=true` parameter
 
 ### Production Configuration
 
@@ -363,9 +453,21 @@ this.baseURL = "https://your-pocketbase-url.com";
 
 ## Development Workflow
 
+### Testing Locally
+
+```bash
+# Standard mode (requires PocketBase)
+cd docs
+python3 -m http.server 8000
+# Visit http://localhost:8000
+
+# Mock mode (no backend required)
+# Visit http://localhost:8000/?mock=true
+```
+
 ### Adding Books
 
-1. Create JSON file in `admin-tools/data/`
+1. Create JSON file in `admin-tools/data/books/`
 2. Run `npm run import-books`
 3. Select your file and import
 
@@ -374,19 +476,13 @@ this.baseURL = "https://your-pocketbase-url.com";
 1. Wait for voting sessions to accumulate
 2. Run `npm run analyze-votes`
 3. Check `data/exports/` for detailed reports
+4. Share `docs/results.html` with participants
 
 ### Updating Frontend
 
 1. Modify files in `docs/`
-2. Test locally
+2. Test locally (both standard and mock mode)
 3. Deploy updated folder to your host
-
-### Data Management
-
-```bash
-cd admin-tools
-# Manage your book data and analyze votes
-```
 
 ## Testing & Debugging
 
@@ -394,11 +490,15 @@ cd admin-tools
 
 - ✅ App loads without errors in browser console
 - ✅ Books display correctly with proper data
+- ✅ **Tap to flip** - Card flips to show synopsis
+- ✅ **Vertical scroll** - Text scrolls within card content
+- ✅ **Horizontal swipe** - Card swipes left/right to vote
 - ✅ Swipe gestures work on mobile devices
 - ✅ Button clicks work on desktop
+- ✅ Keyboard shortcuts (arrow keys) work
 - ✅ Votes are recorded and submitted successfully
+- ✅ **Mock mode works** - `?mock=true` loads sample data
 - ✅ Network errors display user-friendly messages
-- ✅ Offline functionality works as expected
 
 ### Debug Mode
 
@@ -409,24 +509,87 @@ Enable detailed logging in the browser console:
 window.bookSwipeApp.swipeHandler.debug = true;
 
 // Check application state:
-console.log(window.bookSwipeApp.userVotes); // Current votes
-console.log(window.bookSwipeApp.books); // Loaded books
+console.log(window.bookSwipeApp.userVotes);      // Current votes
+console.log(window.bookSwipeApp.books);          // Loaded books
 console.log(window.bookSwipeApp.currentBookIndex); // Current position
+
+// Check if mock mode is active:
+console.log(bookSwipeAPI.mockMode);              // true/false
+console.log(bookSwipeAPI.mockData);              // Mock data if loaded
 ```
 
 ### Browser Developer Tools
 
-1. **Network Tab**: Monitor API calls to PocketBase
-2. **Console Tab**: Check for JavaScript errors
+1. **Network Tab**: Monitor API calls to PocketBase (or lack thereof in mock mode)
+2. **Console Tab**: Check for JavaScript errors and logs
 3. **Application Tab**: Inspect local storage for offline votes
 4. **Performance Tab**: Analyze gesture smoothness
 
 ### Common Issues
 
 - **Books not loading**: Check PocketBase URL and collection permissions
+- **Mock mode not working**: Ensure `mock.json` exists at `docs/scripts/mock.json`
 - **Swipe not working**: Verify touch-action CSS properties
+- **Flip interfering with swipe**: Check gesture thresholds in `swipe-handler.js`
 - **Votes not submitting**: Check network connectivity and API endpoints
+- **Cards not flipping**: Verify pointer event handlers are bound
+
+## Architecture
+
+### Gesture Recognition System
+
+The SwipeHandler class implements a state machine for gesture recognition:
+
+```
+pointerdown → Record position & capture pointer
+     ↓
+pointermove → Detect intent (tap vs scroll vs swipe)
+     ↓
+  Intent = tap? → No movement, flip card on pointerup
+  Intent = scroll? → Release control, allow browser scroll
+  Intent = swipe? → Track drag, show indicators
+     ↓
+pointerup → Complete action based on detected intent
+```
+
+### Mock Mode Architecture
+
+When `?mock=true` is present:
+
+1. API layer (`api-fetch.js`) detects URL parameter
+2. `init()` fetches `scripts/mock.json` instead of PocketBase
+3. All API methods return mock data or simulate success
+4. Frontend works identically to production mode
+5. Perfect for development, testing, and demos
+
+## Technical Details
+
+### Browser Compatibility
+
+- **Modern Browsers**: Chrome, Firefox, Safari, Edge (latest versions)
+- **Mobile**: iOS Safari, Chrome Mobile, Samsung Internet
+- **Pointer Events**: All major browsers (IE11+)
+- **Touch-action**: All major browsers (IE10+)
+
+### Performance Optimizations
+
+- Progressive card loading (5 cards at a time)
+- CSS transforms for smooth animations
+- Pointer capture for reliable tracking
+- Debounced scroll detection
+- Lazy image loading
 
 ## License
 
 MIT License
+
+## Contributing
+
+Contributions welcome! Please open an issue or PR on GitHub.
+
+## Support
+
+For issues or questions:
+- Open an issue on GitHub
+- Check the [Troubleshooting](#troubleshooting) section
+- Test with mock mode first to isolate issues
