@@ -403,25 +403,24 @@
         const winnersHtml = winners
           .map(
             (winner) => `
-          <div style="background: rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 1.5rem; margin: 1rem 0; backdrop-filter: blur(5px); text-align: center;">
+          <div class="winner-card" style="flex: 1; min-width: 280px;">
             ${
               winner.cover_image_url
-                ? `<img src="${winner.cover_image_url}" alt="${winner.title} cover" class="tied-winner-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />`
+                ? `<img src="${winner.cover_image_url}" alt="${winner.title} cover" class="winner-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />`
                 : ""
             }
-            <div class="tied-winner-cover placeholder" style="${winner.cover_image_url ? "display: none;" : ""}">
-                ${winner.title.length > 15 ? winner.title.substring(0, 15) + "..." : winner.title}
+            <div class="winner-cover placeholder" style="${winner.cover_image_url ? "display: none;" : "display: flex;"}">
+                ${winner.title.length > 30 ? winner.title.substring(0, 30) + "..." : winner.title}
             </div>
-            
-            <h3 style="font-size: 1.8rem; margin-bottom: 0.5rem;">${winner.title}</h3>
-            <p style="font-size: 1.2rem; opacity: 0.9; margin-bottom: 1rem;">by ${winner.author}${winner.country ? ` ${winner.country}` : ""}</p>
-            
-            <div style="font-size: 1.2rem; font-weight: bold; margin: 0.5rem 0;">${winner.interested}👍 ${winner.not_interested}👎</div>
-            <div style="font-size: 0.9rem; margin-bottom: 1rem;">${winner.score.toFixed(1)}% liked</div>
-            
-            <div class="vote-bar" style="max-width: 250px; margin: 0 auto;">
-              <div class="liked-section" style="width: ${winner.score}%"></div>
-              <div class="disliked-section" style="width: ${100 - winner.score}%"></div>
+            <div class="winner-content">
+              <h2 style="margin-bottom: 0.3rem;">${winner.title}</h2>
+              <p class="author" style="margin-bottom: 1rem;">by ${winner.author}${winner.country ? ` ${winner.country}` : ""}</p>
+              <div style="font-size: 1.4rem; font-weight: bold; margin: 0.8rem 0;">${winner.interested}👍 ${winner.not_interested}👎</div>
+              <div style="font-size: 1rem; margin-bottom: 0.8rem;">${winner.score.toFixed(1)}% liked</div>
+              <div class="vote-bar" style="margin: 0 auto; max-width: 300px;">
+                <div class="liked-section" style="width: ${winner.score}%"></div>
+                <div class="disliked-section" style="width: ${100 - winner.score}%"></div>
+              </div>
             </div>
           </div>
         `
@@ -429,16 +428,13 @@
           .join("");
 
         winnerSection.innerHTML = `
-          <div class="winner-card">
-            <div style="font-size: 3rem; margin-bottom: 1rem;">🤝</div>
-            <h2 style="margin-bottom: 1rem;">We have a tie!</h2>
-            <p style="font-size: 1.2rem; margin-bottom: 2rem; opacity: 0.9;">
-              ${winners.length} books received the same top score of ${winners[0].score.toFixed(1)}%
-            </p>
-            
-            <div style="display: grid; gap: 1rem;">
-              ${winnersHtml}
-            </div>
+          <div style="text-align: center; margin-bottom: 1.5rem;">
+            <div style="font-size: 3rem; margin-bottom: 0.5rem;">🤝</div>
+            <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">We have a tie!</h2>
+            <p style="font-size: 1.1rem; opacity: 0.9;">${winners.length} books received the same top score of ${winners[0].score.toFixed(1)}%</p>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: center;">
+            ${winnersHtml}
           </div>
         `;
       }
