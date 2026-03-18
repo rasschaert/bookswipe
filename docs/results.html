@@ -379,15 +379,15 @@
                     <div class="winner-cover placeholder" style="${winner.cover_image_url ? "display: none;" : "display: flex;"}">
                         ${winner.title.length > 30 ? winner.title.substring(0, 30) + "..." : winner.title}
                     </div>
-                    
+
                     <div class="winner-content">
                         <div style="font-size: 3rem; margin-bottom: 0.5rem;">🏆</div>
                         <h2 style="margin-bottom: 0.3rem;">${winner.title}</h2>
                         <p class="author" style="margin-bottom: 1rem;">by ${winner.author}${winner.country ? ` ${winner.country}` : ""}</p>
-                        
+
                         <div style="font-size: 1.4rem; font-weight: bold; margin: 0.8rem 0;">${winner.interested}👍 ${winner.not_interested}👎</div>
                         <div style="font-size: 1rem; margin-bottom: 0.8rem;">${winner.score.toFixed(1)}% liked</div>
-                        
+
                         <div class="vote-bar" style="margin: 0 auto; max-width: 300px;">
                             <div class="liked-section" style="width: ${winner.score}%"></div>
                             <div class="disliked-section" style="width: ${100 - winner.score}%"></div>
@@ -423,7 +423,7 @@
               </div>
             </div>
           </div>
-        `
+        `,
           )
           .join("");
 
@@ -454,7 +454,7 @@
             return `
                     <div class="book-card ${isTop3 ? "top-3" : ""}" style="position: relative;">
                         ${isTop3 ? `<div class="ranking-badge">${book.rank}</div>` : ""}
-                        
+
                         ${
                           book.cover_image_url
                             ? `<img src="${book.cover_image_url}" alt="${book.title} cover" class="book-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />`
