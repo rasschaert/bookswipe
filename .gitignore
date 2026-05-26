@@ -12,6 +12,7 @@ admin-tools/config.json
 admin-tools/data/*.json
 admin-tools/data/*.csv
 admin-tools/data/books/
+admin-tools/data/books-archive/
 admin-tools/data/exports/
 admin-tools/data/backups/
 

@@ -5,6 +5,7 @@
   "main": "scripts/book-manager.js",
   "type": "module",
   "scripts": {
+    "fetch-book": "node scripts/fetch-book.js",
     "import-books": "node scripts/import-books.js",
     "clear-data": "node scripts/clear-data.js",
     "analyze-votes": "node scripts/analyze-votes.js",
@@ -23,6 +24,7 @@
     "csv-writer": "^1.6.0",
     "fs-extra": "^11.2.0",
     "inquirer": "^12.9.4",
+    "playwright": "^1.60.0",
     "pocketbase": "^0.21.3"
   },
   "devDependencies": {
