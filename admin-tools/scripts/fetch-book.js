@@ -220,8 +220,12 @@ async function fetchBookData(bookPath) {
       const author = authorEl?.textContent?.trim() || null;
 
       // ── Cover image ────────────────────────────────────────────────────────
-      const coverEl = document.querySelector('img[src*="cdn.thestorygraph.com"]');
-      const cover_image_url = coverEl?.src || null;
+      // The cover img has alt="[Title] by [Author]" — avatars have alt="Your profile picture".
+      // Fall back to the og:image meta tag which also reliably points to the cover.
+      const coverByAlt = [...document.querySelectorAll('img[src*="cdn.thestorygraph.com"]')]
+        .find((img) => img.alt && img.alt.includes(" by ") && !img.alt.includes("profile"));
+      const ogImage = document.querySelector('meta[property="og:image"]')?.content || null;
+      const cover_image_url = coverByAlt?.src || ogImage || null;
 
       // ── Page count ─────────────────────────────────────────────────────────
       const editionEl = document.querySelector('.toggle-edition-info-link');
