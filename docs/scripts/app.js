@@ -403,7 +403,12 @@ class BookSwipeApp {
 
     const pitchTextEl = card.querySelector(".pitch-text");
     if (pitchTextEl && pitch) {
-      pitchTextEl.textContent = `"${pitch}"`;
+      const SKIP_QUOTES_MARKER = "#SKIPQUOTES#";
+      if (pitch.startsWith(SKIP_QUOTES_MARKER)) {
+        pitchTextEl.textContent = pitch.slice(SKIP_QUOTES_MARKER.length);
+      } else {
+        pitchTextEl.textContent = `"${pitch}"`;
+      }
     }
 
     // Note: Card flipping is now handled by SwipeHandler
